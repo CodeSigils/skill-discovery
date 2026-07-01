@@ -144,7 +144,8 @@ skill-discovery/
 ├── LICENSE                                 # MIT
 ├── .gitignore
 ├── docs/
-│   └── 2026-07-01-hub-marketplace-research.md  # evidence base
+│   ├── 2026-07-01-hub-marketplace-research.md  # evidence base
+│   └── evidence-urls.json                       # machine-checkable URL expectations
 ├── skills/
 │   └── skill-discovery/
 │       └── SKILL.md                        # the methodology (~460 lines)
@@ -158,7 +159,7 @@ skill-discovery/
 │   └── scripts/verify-marketplace-urls.py  # ad-hoc URL drift detection (manual run)
 ```
 
-**11 files.** One skill. Two CI checks. One ad-hoc tool. Zero platform adapter files.
+**12 files.** One skill. Two CI checks. One ad-hoc tool. Zero platform adapter files.
 
 ---
 
