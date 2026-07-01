@@ -15,7 +15,7 @@ import subprocess
 import sys
 
 result = subprocess.run(
-    ["rg", "-n", r"(?i)(skill_view|skill_manage|hermes\s|~/\.hermes)", "skills/"],
+    ["grep", "-rnP", r"(?i)(skill_view|skill_manage|hermes\s|~/\.hermes)", "skills/"],
     capture_output=True, text=True
 )
 
