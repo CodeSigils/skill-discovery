@@ -138,74 +138,7 @@ but is not (yet) registered on the showcase.
 
 ---
 
-## 2. Case Study: hermes-skill-hq Discovery Pipeline
-
-The `hermes-skill-hq` repository (separate from this repo) ships a complete discovery
-methodology in its `hub-explorer` skill. This section documents its architecture as a
-reference — it was the primary influence for the `skill-discovery` methodology.
-
-### 2.1 The Search Pipeline
-
-```
-INDEX.md miss
-  → Hub catalog (hermes-index.json) — keyword, tag, source filter
-  → Featured cache (skills_sh_featured.json)
-  → External marketplaces (13 sources in references/sources.md)
-  → Hermes Atlas ecosystem directory
-  → Upstream GitHub search
-  → Build from scratch
-```
-
-### 2.2 Search Methods
-
-| Method | Tool | What it does |
-|--------|------|--------------|
-| Keyword search | Python script | Searches `name` + `description` in hermes-index.json |
-| Tag discovery | Python script | Filters by `tags` field |
-| Source filtering | Python script | Filters by source repo (e.g. `anthropics`, `microsoft`) |
-| Featured search | Python script | Queries skills_sh_featured.json |
-| External table | references/sources.md | 13 sources with trust posture, search path, use cases |
-
-### 2.3 Evaluation Checklist
-
-From hub-explorer SKILL.md:
-- Check name (descriptive?)
-- Read description (matches task?)
-- Check source (official > github > others)
-- Verify installed status
-- If not installed: extract guidance, execute directly, offer to build
-- Consider alternatives in same domain
-- Check Hermes compatibility
-
-### 2.4 Strengths
-
-- **No network calls.** All hub data is local cache.
-- **Structured fallback.** INDEX → hub → featured → external → build.
-- **Trust tiers.** `official` > `github` > others. Declared in source matrix.
-- **Portable methodology.** 95% of the discovery workflow is agent-agnostic.
-- **Evaluation rubric.** Systematic before proposing to user.
-- **Publishing pipeline.** `hermes skills publish`, `external_dirs`, Atlas registration.
-
-### 2.5 Weaknesses Found
-
-| Issue | Impact | Root cause |
-|-------|--------|------------|
-| Hub index stale (2026-05-26) | New skills invisible | Cache not auto-refreshed |
-| No freshness tracking | Can't know how stale a find is | No `last_verified` on results |
-| External sources table has 13 rows | Hard to maintain, risks drift | Hand-maintained prose |
-| agentskills.io Client Showcase is 404 | Can't verify client count | Platform URL drift |
-| Index has 7 sources but 3 dominate | skills.sh (50%) + lobehub (20%) + browse-sh (13%) = 83% | Uneven source import |
-| No registry-level comparison | No structured per-source comparison | No ecosystem comparison framework applied to marketplaces |
-
-**Cumulative:** The hermes-skill-hq discovery methodology is structurally sound
-(search → evaluate → fallback → recommend), but the data it depends on (hub index,
-external sources table) is hand-maintained and drifts. The `skill-discovery` methodology
-addresses this by including a freshness check as the first step and teaching runtime
-verification rather than hardcoding source tables.
-
----
-
-## 3. Discovery Layers — What Happens at Each Level
+## 2. Discovery Layers — What Happens at Each Level
 
 The landscape reveals three distinct layers. They're often conflated.
 
@@ -250,12 +183,12 @@ provides its own.
 
 ---
 
-## 4. How the Product Decisions Emerged
+## 3. How the Product Decisions Emerged
 
 This section traces the design evolution that produced the current
 `skill-discovery` methodology.
 
-### 4.1 What the Methodology Contains
+### 3.1 What the Methodology Contains
 
 1. **Fallback chain** (INDEX → hub → featured → marketplaces → GitHub → build)
 2. **Keyword generation** — how to map a task description to 2-3 search keywords
@@ -265,7 +198,7 @@ This section traces the design evolution that produced the current
 6. **Project-portfolio mapping** — map candidates to active projects, tier by impact
 7. **Skill creation fallback** — how to build a minimal skill when nothing matches
 
-### 4.2 Design Decisions
+### 3.2 Design Decisions
 
 | Decision | Rationale |
 |----------|-----------|
@@ -276,21 +209,20 @@ This section traces the design evolution that produced the current
 | One CI check | Hermes-reference drift is the only thing no runtime validates. Everything else is caught elsewhere. |
 | Runtime verification over hardcoded tables | URLs drift. Teach the agent to check reachability rather than trust stale data. |
 
-### 4.3 What This Repo Does NOT Do
+### 3.3 What This Repo Does NOT Do
 
 - **Not a skill collection.** Static collections are what addyosmani already does.
 - **Not a GitHub search tool.** The user's agent already has search capabilities.
 - **Not a Hermes-specific hub explorer.** The methodology is agent-agnostic.
 - **Not an index or catalog.** The hub index does that. This repo teaches agents to *use* it.
 - **Not a publish pipeline.** Each runtime provides its own.
-- **Not a comparison framework.** Cross-ecosystem comparison can be found in hermes-skill-hq's
-  ecosystem-comparison-framework reference.
+- **Not a comparison framework.** Cross-ecosystem comparisons belong in dedicated reference docs, not in a portable methodology.
 
 **This repo is a methodology, not a collection.**
 
 ---
 
-## 5. Sources
+## 4. Sources
 
 | Source | URL | Method | Finding | Verified |
 |--------|-----|--------|---------|----------|
@@ -302,11 +234,6 @@ This section traces the design evolution that produced the current
 | agentskills.io client-showcase | https://agentskills.io/client-showcase | Browser | **404 at ~02:00 UTC; 200 by ~06:24 UTC same day** | 2026-07-01 |
 | agentskills.io repo | https://github.com/agentskills/agentskills | Browser snapshot | 21,302★ (observed on page) | 2026-07-01 |
 | Hermes Atlas top skills | https://hermesatlas.com/lists/top-skills | Browser | 18 ranked entries, updated star counts (73.1K, 23.2K, 4.9K etc.) | 2026-07-01 |
-| hermes-skill-hq hub-explorer skill | `guides/hub-explorer/SKILL.md` (hermes-skill-hq repo) | Code review | Full discovery pipeline: search → evaluate → fallback → recommend | 2026-07-01 |
-| hermes-skill-hq external sources | `guides/hub-explorer/references/sources.md` (hermes-skill-hq repo) | Code review | 13 external sources with trust posture, search paths | 2026-07-01 |
-| hermes-skill-hq ecosystem framework | `guides/hub-explorer/references/ecosystem-comparison-framework.md` (hermes-skill-hq repo) | Code review | 10-dimensional comparison protocol | 2026-07-01 |
-| hermes-skill-hq cross-ecosystem skill | `research/cross-ecosystem-skill-research/SKILL.md` (hermes-skill-hq repo) | Code review | Platform vendor research, repo-level architecture, runtime bridge research | 2026-07-01 |
-| hermes-skill-hq platform vendor ref | `research/cross-ecosystem-skill-research/references/platform-vendor-skill-systems.md` (hermes-skill-hq repo) | Code review | 6-platform convergence/divergence table | 2026-07-01 |
 | skills.sh | https://skills.sh/ | HTTP 200 | Primary public leaderboard | 2026-07-01 |
 | agentskill.sh | https://agentskill.sh/ | HTTP 200 | Broad marketplace with quality scores | 2026-07-01 |
 | SkillsMP | https://skillsmp.com/ | HTTP 200 | Aggregator, 270K+ SKILL.md claimed | 2026-07-01 |
@@ -315,7 +242,7 @@ This section traces the design evolution that produced the current
 
 ---
 
-## 6. Open Questions (as of 2026-07-01)
+## 5. Open Questions (as of 2026-07-01)
 
 | # | Question | Evidence state | Suggested research path |
 |---|----------|---------------|------------------------|
@@ -326,9 +253,9 @@ This section traces the design evolution that produced the current
 
 ---
 
-## 7. Key Findings
+## 6. Key Findings
 
-### 7.1 Confirmed from Live Data
+### 6.1 Confirmed from Live Data
 
 - **2,460 skills indexed** in the Hermes hub from 7 sources — the hub is useful, but discovery must span beyond it.
 - **42 agentskills.io clients** — the standard is broadly adopted. The methodology follows it.
@@ -336,9 +263,9 @@ This section traces the design evolution that produced the current
   External dependencies drift. Runtime verification is essential.
 - **Hub index is 5 weeks stale** — discovery results may miss new skills. Freshness check is the first step.
 - **skills.sh dominates the index** (50% of entries) — single source risk. The methodology includes fallback sources.
-- **Hermes is NOT on the agentskills.io client showcase** — this repo could note this for ecosystem positioning.
+- **Hermes is NOT on the agentskills.io client showcase** — useful ecosystem positioning note.
 
-### 7.2 Design Evolution
+### 6.2 Design Evolution
 
 The initial plan treated this project as a **portable skill collection** — take existing
 Hermes skills, strip Hermes-specific references, and ship them cleanly. Three realizations
@@ -349,11 +276,11 @@ changed the direction:
 2. **Optimizing for file count masked the product question.** Reducing from 161 files to
    11 is a useful constraint exercise, but it doesn't answer "what does this repo do when
    invoked?"
-3. **The methodology already existed.** The `hub-explorer` skill in hermes-skill-hq already
-   had a complete discovery pipeline — it just needed to be extracted from its
-   Hermes-specific shell so any agent on any platform can follow it.
+3. **The methodology already existed in Hermes-specific form.** The `hub-explorer` skill
+   pattern from the Hermes ecosystem had a complete discovery pipeline — it just needed to
+   be extracted into an agent-agnostic form so any platform can follow it.
 
-### 7.3 Current Direction
+### 6.3 Current Direction
 
 > This repo ships a **portable discovery methodology skill** that teaches any agent
 > how to scan the ecosystem — hub catalog, featured cache, external marketplaces, GitHub
@@ -365,16 +292,3 @@ changed the direction:
 | How does it find skills? | From the repo's `skills/` directory | From the ecosystem — hub, marketplaces, GitHub |
 | What's the core artifact? | A collection of SKILL.md files | A single SKILL.md teaching the search/evaluate/recommend workflow |
 | How does it stay fresh? | CI checks file counts | The methodology always starts with a staleness check on the hub index |
-
----
-
-## 8. Related Research
-
-The data in this document was collected as part of a broader research cycle.
-Related evidence:
-
-| Resource | Location |
-|----------|----------|
-| Durable findings (cross-project patterns) | `~/labs/agent-concepts-study/2026-07-01-skill-discovery-durable-findings.md` |
-| Hermes hub source code | Hermes Agent docs at hermes-agent.nousresearch.com |
-| agentskills.io specification | agentskills.io/specification |
