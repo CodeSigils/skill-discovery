@@ -1,0 +1,30 @@
+name: validate
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**/*.md'
+      - '.github/workflows/ci.yml'
+      - '.github/scripts/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'skills/**/*.md'
+      - '.github/workflows/ci.yml'
+      - '.github/scripts/**'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check for Hermes-specific references
+        run: python .github/scripts/ci-check.py

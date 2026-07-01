@@ -1,0 +1,17 @@
+__pycache__/
+.ruff_cache/
+.vscode/
+*.swp
+*.swo
+
+# Agent runtime data (user-local, not repo config)
+.hermes/
+.claude/
+.cursor/
+.gemini/
+.codex/
+.open-mem/
+.omo/
+
+# Plan artifacts (research docs — kept for provenance, not shipped)
+plan/
