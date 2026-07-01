@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![agentskills.io](https://img.shields.io/badge/agentskills.io-v1-blue)](https://agentskills.io/specification)
 [![Skill](https://img.shields.io/badge/skill-discovery-purple)](skills/skill-discovery/SKILL.md)
-[![GitHub last commit](https://img.shields.io/github/last-commit/CodeSigils/skill-discovery)](https://github.com/CodeSigils/skill-discovery)
+[![CI](https://github.com/CodeSigils/skill-discovery/workflows/validate/badge.svg)](https://github.com/CodeSigils/skill-discovery/actions)
 
 **A portable discovery methodology for agent skills.** This repo teaches
 any agentskills.io-compatible agent how to find the best skill for a task
