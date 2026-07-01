@@ -3,83 +3,109 @@ status: reference
 date: 2026-07-01
 updated: 2026-07-01
 purpose: >
-  Reference map of the agent-skill ecosystem — hub index, external marketplaces,
-  client ecosystem, discovery layers, and design principles that shaped this repo.
-  Archived research, not the shipped product itself.
+  Reference map of the agent-skill ecosystem as of mid-2026 — hub indexes,
+  external marketplaces, client platforms, ecosystem directories, and open
+  questions. A raw evidence snapshot for anyone researching how agent skills
+  are indexed, discovered, and distributed.
 ---
 
 # Hub & Marketplace Catalog Research
 
-> **Purpose:** This document maps every discoverable source in the agent skill
-> ecosystem as of 2026-07-01. It is the evidence base that informed the
-> `skill-discovery` methodology. The data is a snapshot — live-verified at
-> the date shown, but the ecosystem drifts continuously.
+> **Warning:** This is a point-in-time research snapshot (2026-07-01).
+> URLs drift, indexes age, marketplaces change. Every source below records
+> its verification timestamp and method so you can assess freshness.
+> Treat all findings as hypotheses, not truths, until re-verified.
 
 ---
 
-## 1. The Landscape (live-verified 2026-07-01)
+## 1. The Landscape
 
 ### 1.1 Hermes Built-in Hub (local cache)
 
-The Hermes agent ships with a pre-populated hub index. No network calls needed.
+The Hermes agent ships with a pre-populated hub index — no network calls
+needed for a local search.
 
 | Field | Value | Source |
 |-------|-------|--------|
 | Index format | JSON (`version`, `generated_at`, `skill_count`, `skills`) | `~/.hermes/skills/.hub/index-cache/hermes-index.json` |
-| Index age | 2026-05-26 — **stale (~5 weeks)** | `generated_at` field |
+| Index age | 2026-05-26 — stale (~5 weeks at time of research) | `generated_at` field |
 | Total indexed | 2,460 skills | Live cache count |
 
 **Source breakdown of the 2,460 indexed skills:**
 
-| Source | Skills | Trust | Notes |
-|--------|--------|-------|-------|
-| skills.sh | 1,218 | Community | Primary public leaderboard. Powers featured cache. Install via `npx skills add` |
-| lobehub | 500 | Community | LobeChat skill catalog |
-| browse-sh | 330 | Community | Browser-level skill collection |
-| clawhub | 200 | Evaluate | OpenClaw marketplace — treat as untrusted until inspected |
-| github | 127 | High | Community repos, transparent |
-| official | 84 | Highest | Hermes-bundled, maintained |
-| claude-marketplace | 1 | High | Single entry |
-| **Total** | **2,460** | | |
+| Source | Skills | Share | Trust tier | Notes |
+|--------|--------|-------|------------|-------|
+| skills.sh | 1,218 | 49.5% | Community | Primary public leaderboard. Powers the featured cache. Install via `npx skills add` |
+| lobehub | 500 | 20.3% | Community | LobeChat skill catalog |
+| browse-sh | 330 | 13.4% | Community | Browser-level skill collection |
+| clawhub | 200 | 8.1% | Evaluate | OpenClaw marketplace — source quality not yet confirmed |
+| github | 127 | 5.2% | High | Community repos, fully transparent |
+| official | 84 | 3.4% | Highest | Hermes-bundled, maintained |
+| claude-marketplace | 1 | <0.1% | High | A single entry |
+| **Total** | **2,460** | **100%** | | |
 
-**Metadata fields per skill (all sources):** `name`, `description`, `identifier`, `source`, `repo`, `path`, `tags`, `extra`, `trust_level`. The `skills.sh` source also includes `resolved_github_id`.
-
-**Available metadata across sources:**
+**Metadata available per skill:**
 
 ```text
-All sources:  name, description, identifier, source, repo, path, tags, extra, trust_level
+All sources:  name, description, identifier, source, repo, path, tags,
+              extra, trust_level
 skills.sh:    + resolved_github_id
 ```
 
-**Featured skills cache:** 100 curated skills from major vendors (Anthropic, Microsoft Azure, Vercel, Remotion) at
-`skills_sh_featured.json`. All sourced from skills.sh.
+**Featured skills cache:** 100 curated skills from major vendors (Anthropic,
+Microsoft Azure, Vercel, Remotion) stored in `skills_sh_featured.json`. All
+sourced from skills.sh.
 
-**Key constraint: The hub catalog is an INDEX, not an INSTALL.** Most skills exist only in the index — they are not
-downloaded locally. A hub search finds entries, but physically loading a skill requires it to be installed separately.
+**Key structural note:** The hub catalog is an **index, not an install**.
+Most of the 2,460 entries exist only as metadata. A hub search finds
+entries, but physically loading a skill requires it to be installed
+separately (either via the hub's install mechanism or direct filesystem
+placement). This means search hit count does not equal available tools.
+
+#### 1.1.1 Concentration Risk
+
+Three sources account for 83.2% of the index: skills.sh (49.5%), lobehub
+(20.3%), and browse-sh (13.4%). This means the hub's breadth depends heavily
+on skills.sh staying healthy and indexed. If skills.sh changes its format or
+goes offline, nearly half the index becomes metadata-only with no resolution
+path.
 
 ---
 
-### 1.2 External Marketplaces (live scan 2026-07-01)
+### 1.2 External Marketplaces
 
-All URLs verified with `curl -s -o /dev/null -w "%{http_code}"`.
+All URLs verified with `curl -s -o /dev/null -w "%{http_code}"` at the
+timestamp shown. These are live external services — verify reachability
+before depending on any of them.
 
-| Marketplace | URL | Status | Role | Coverage signal |
-|-------------|-----|--------|------|-----------------|
-| skills.sh | https://skills.sh/ | 200 | Primary public leaderboard | 1,218 skills in hub index. All-time leaderboard, per-skill pages. |
-| agentskill.sh | https://agentskill.sh/ | 200 | Broad marketplace; role/platform filtering, quality + security scores | Large cross-platform catalog |
-| SkillsMP | https://skillsmp.com/ | 200 | Broad SKILL.md aggregator; occupation/category map | 270K+ SKILL.md files claimed |
-| ClawHub | https://clawhub.ai/ | 200 | OpenClaw skills and plugins marketplace | 200 skills in hub index |
-| skilldock.io | https://skilldock.io/ | 200 | Registry of agent skills; versioned, publish/install | 1st gen: 10+ repos, 20+ skills. V2 in development. |
-| agentskills.io | https://agentskills.io/ | 200 (spec); Showcase 404→200 same day | Open specification standard | 21.3K★ repo. Showcase was 404 at ~02:00 UTC, returned to 200 by ~06:24 UTC — drift confirmed within hours |
+| Marketplace | URL | HTTP status | Role | Notes |
+|-------------|-----|-------------|------|-------|
+| skills.sh | https://skills.sh/ | 200 | Primary public leaderboard | All-time leaderboard, per-skill pages. Installed via `npx skills add`. 1,218 entries in the Hermes hub index. |
+| agentskill.sh | https://agentskill.sh/ | 200 | Cross-platform marketplace | Role/platform filtering, quality scores, security audits. Large catalog. |
+| SkillsMP | https://skillsmp.com/ | 200 | Broad aggregator | Occupation and category maps. Claims 270K+ indexed SKILL.md files. |
+| ClawHub | https://clawhub.ai/ | 200 | OpenClaw skills/plugins marketplace | 200 entries in hub index. Source quality should be evaluated before use. |
+| skilldock.io | https://skilldock.io/ | 200 | Versioned skill registry | Publish/install workflow. V1 had 10+ repos / 20+ skills. V2 in development. |
+| agentskills.io | https://agentskills.io/ | 200 (spec page) | Open specification standard | 21,302★ GitHub repo. Client Showcase was 404 at ~02:00 UTC, returned 200 by ~06:24 UTC same day — drift confirmed within hours. |
+
+#### 1.2.1 Discovered: agentskills.io Client Showcase Drift
+
+At approximately 02:00 UTC on 2026-07-01, the agentskills.io Client Showcase
+page returned HTTP 404. By approximately 06:24 UTC the same day, it returned
+HTTP 200. The root cause is unknown — page moved, server flake, or routing
+issue. This was the research team's first encounter with ecosystem URL drift
+in real time: between two research sessions on the same day, a source URL
+changed behaviour and then self-recovered. It confirms the principle that
+external URLs must be verified at query time, not recorded once and trusted.
 
 ---
 
 ### 1.3 agentskills.io Client Ecosystem
 
-Live count from the home page carousel (deduplicated): **42 clients**.
+Live count from the home page carousel (deduplicated): **42 client platforms**
+as of 2026-07-01.
 
-| Client | Type | URL |
-|--------|------|-----|
+| Client | Category | URL |
+|--------|----------|-----|
 | Claude Code | IDE agent | claude.ai/code |
 | OpenAI Codex | CLI agent | developers.openai.com/codex |
 | Gemini CLI | CLI agent | geminicli.com |
@@ -107,44 +133,51 @@ Live count from the home page carousel (deduplicated): **42 clients**.
 | VS Code Extensions (VT Code, Amp, bub, etc.) | IDE extensions | — |
 | **... and 18 more** | | |
 
-**Notable:** Hermes Agent is NOT listed on the agentskills.io client carousel.
-Hermes is an agentskills.io-compatible client (it loads skills from `skills/*/SKILL.md`),
-but is not (yet) registered on the showcase.
+**Notable observation:** Hermes Agent was NOT listed on the carousel at
+time of research, despite being an agentskills.io-compatible client (it
+loads skills from `skills/*/SKILL.md`). Whether this is intentional,
+an oversight, or a stale carousel is unknown.
 
 ---
 
 ### 1.4 Ecosystem Directories
 
-| Directory | URL | Content | Structure data? |
-|-----------|-----|---------|-----------------|
-| Hermes Atlas | hermesatlas.com | 178+ Hermes repos across 12 categories, weekly star velocity | GitHub stars, descriptions, categories — but NOT file trees, skill counts, or reference ratios |
-| agentskills.io repo | github.com/agentskills/agentskills | Specification, tools, reference implementation | README, not a skill directory |
-| awesome-copilot | github.com/github/awesome-copilot | 35.9K★ community marketplace for Copilot | Links, categories — not machine-parseable |
-| anthropics/claude-plugins-official | github.com/anthropics/claude-plugins-official | 37 plugins, 29+ SKILL.md files | Full repo tree |
-| openai/skills | github.com/openai/skills | Official Codex skill catalog | Full repo tree |
+| Directory | URL | What it contains | Machine-parseable? |
+|-----------|-----|------------------|--------------------|
+| Hermes Atlas | hermesatlas.com | 178+ repos across 12 categories, weekly star velocity | GitHub stars, descriptions, categories — but not file trees, skill counts, or reference ratios |
+| agentskills.io repo | github.com/agentskills/agentskills | Specification, tools, reference implementation | README only |
+| awesome-copilot | github.com/github/awesome-copilot | Community-curated Copilot resources (35.9K★) | Links + categories — not programmatically parseable |
+| anthropics/claude-plugins-official | github.com/anthropics/claude-plugins-official | 37 plugins, 29+ SKILL.md files | Full repo tree (git-cloneable) |
+| openai/skills | github.com/openai/skills | Official Codex skill catalog | Full repo tree (git-cloneable) |
 
 ---
 
-### 1.5 Platform-Vendor Skill Repos (reference)
+### 1.5 Platform-Vendor Skill Repos
 
-| Repo | Stars | Skills | Format | Discovery |
-|------|-------|--------|--------|-----------|
-| addyosmani/agent-skills | 68K | 24 | Flat SKILL.md, no YAML frontmatter | README only |
-| anthropics/claude-plugins-official | 31.3K | 37 plugins, 29+ SKILL.md | agentskills.io + extensions | `.claude-plugin/` discovery |
-| openai/skills | — | ~20 | agentskills.io | Codex $skill-installer |
-| wondelai/skills | 1.5K | 50 | agentskills.io (book-philosophy) | Flat root directory |
-| vercel-labs/skills | — | Featured on skills.sh | agentskills.io | npx skills |
-| microsoft/azure-skills | — | Featured on skills.sh | agentskills.io | Featured cache |
+These are individual repositories that ship SKILL.md files — the
+"leaf nodes" of the ecosystem. The list is not exhaustive; it represents
+repos that appeared in hub index data and marketplace scans.
+
+| Repo | Stars | Skills | Format | Discovery mechanism |
+|------|-------|--------|--------|--------------------|
+| addyosmani/agent-skills | 68K | 24 | Flat SKILL.md, no YAML frontmatter | README-based browsing |
+| anthropics/claude-plugins-official | 31.3K | 37 plugins, 29+ SKILL.md | agentskills.io + extensions | `.claude-plugin/` directory |
+| openai/skills | — | ~20 | agentskills.io | `$skill-installer` CLI |
+| wondelai/skills | 1.5K | 50 | agentskills.io (book-philosophy format) | Flat root directory |
+| vercel-labs/skills | — | Featured on skills.sh | agentskills.io | `npx skills` |
+| microsoft/azure-skills | — | Featured on skills.sh | agentskills.io | Featured cache in hub |
 
 ---
 
 ## 2. Discovery Layers — What Happens at Each Level
 
-The landscape reveals three distinct layers. They're often conflated.
+The agent-skill ecosystem operates across three distinct layers.
+Understanding the separation helps diagnose why certain searches succeed
+or fail.
 
 ### Layer A: Agent-Side Retrieval (what the runtime provides)
 
-The CLI, config, or API that loads skills into a session. This is platform-specific:
+Each platform has its own mechanism for loading skills into a session:
 
 | Platform | Retrieval mechanism |
 |----------|---------------------|
@@ -152,143 +185,150 @@ The CLI, config, or API that loads skills into a session. This is platform-speci
 | Claude Code | Directory walk `.claude/skills/`, plugin.json, skillOverrides config |
 | Codex CLI | Directory walk `.codex/skills/`, `$skill-installer` |
 | Gemini CLI | `gemini skills list`, `gemini skills install`, directory walk |
-| Cursor | `.cursor/rules/` — no search, just glob match |
+| Cursor | `.cursor/rules/` — no search, just glob match on file name |
 
-**Key decision:** This repo does NOT ship a retrieval mechanism for every
-platform. The runtime provides those. What it ships is a **discovery methodology**
-that any agent can follow to find skills, regardless of platform.
+These mechanisms are platform-specific and not interchangeable. A skill
+placed in `.claude/skills/` is invisible to Codex CLI, and vice versa.
 
 ### Layer B: Catalog Research (what the agent does to find skills)
 
-The systematic search across index → marketplaces → GitHub.
+Three sub-methods exist, typically used as a fallback chain:
 
-**Three sub-methods:**
-- **Catalog search** — keyword + tag + source filter against the hub index
-- **Marketplace scan** — fallback chain through known marketplaces
+- **Catalog search** — keyword + tag + source filter against a hub index
+  (fastest, but index is stale)
+- **Marketplace scan** — fallback chain through external marketplaces
+  (broader, but URLs drift)
 - **GitHub deep search** — direct repo inspection when catalogs miss
+  (most current, but slowest and requires network)
 
 ### Layer C: Publishing / Registration (how skills become discoverable)
 
-Getting a skill into the findable pool:
-- `hermes skills publish` (Hermes-specific)
-- `external_dirs` config entry (Hermes-specific)
-- skills.sh auto-indexing (auto from GitHub activity)
-- agentskill.sh submission (manual)
-- Hermes Atlas registration (GitHub issue)
-- Claude Code plugin.json (platform-specific)
+Getting a skill into the findable pool involves different channels per
+platform:
 
-**Key decision:** The repo registers itself on discoverable channels
-(Atlas, skills.sh auto-index), but does NOT ship publish scripts — each runtime
-provides its own.
-
----
-
-## 3. How the Product Decisions Emerged
-
-This section traces the design evolution that produced the current
-`skill-discovery` methodology.
-
-### 3.1 What the Methodology Contains
-
-1. **Fallback chain** (INDEX → hub → featured → marketplaces → GitHub → build)
-2. **Keyword generation** — how to map a task description to 2-3 search keywords
-3. **Search methods** — Python scripts for hub keyword/tag/source search
-4. **Evaluation rubric** — name, description, source trust, installed status, alternatives
-5. **Freshness check** — verify index age, note staleness in results
-6. **Project-portfolio mapping** — map candidates to active projects, tier by impact
-7. **Skill creation fallback** — how to build a minimal skill when nothing matches
-
-### 3.2 Design Decisions
-
-| Decision | Rationale |
-|----------|-----------|
-| Single methodology skill, not a collection | The hub already has 2,460 indexed skills — a collection adds nothing next to that. |
-| No install scripts | Every platform provides native skill consumption paths. A script would compete and drift. |
-| No generated indexes or catalogs | Filesystem discovery is sufficient at 1 skill. |
-| No platform adapter files | User-side setup only. The repo ships only `skills/*/SKILL.md` and a cross-tool symlink. |
-| One CI check | Hermes-reference drift is the only thing no runtime validates. Everything else is caught elsewhere. |
-| Runtime verification over hardcoded tables | URLs drift. Teach the agent to check reachability rather than trust stale data. |
-
-### 3.3 What This Repo Does NOT Do
-
-- **Not a skill collection.** Static collections are what addyosmani already does.
-- **Not a GitHub search tool.** The user's agent already has search capabilities.
-- **Not a Hermes-specific hub explorer.** The methodology is agent-agnostic.
-- **Not an index or catalog.** The hub index does that. This repo teaches agents to *use* it.
-- **Not a publish pipeline.** Each runtime provides its own.
-- **Not a comparison framework.** Cross-ecosystem comparisons belong in dedicated reference docs, not in a portable methodology.
-
-**This repo is a methodology, not a collection.**
+| Channel | Platforms served | Access |
+|---------|-----------------|--------|
+| `hermes skills publish` | Hermes | Hermes-specific CLI |
+| `external_dirs` config | Hermes | Config file entry |
+| skills.sh auto-indexing | Hermes, generic | Automatic from GitHub activity |
+| agentskill.sh submission | Multi-platform | Manual submission form |
+| Hermes Atlas registration | Hermes ecosystem | GitHub issue |
+| Claude Code plugin.json | Claude Code | Platform-specific manifest |
 
 ---
 
-## 4. Sources
+## 3. Sources
 
-| Source | URL | Method | Finding | Verified |
-|--------|-----|--------|---------|----------|
+Every source was accessed and verified on 2026-07-01. The "Method" column
+documents how the data was collected so you can reproduce or update it.
+
+| Source | URL / Path | Method | Finding | Verified |
+|--------|------------|--------|---------|----------|
 | Hermes hub index (local cache) | `~/.hermes/skills/.hub/index-cache/hermes-index.json` | Live cache read | 2,460 skills, 7 sources, index dated 2026-05-26 | 2026-07-01 |
 | Hermes hub featured cache | `~/.hermes/skills/.hub/index-cache/skills_sh_featured.json` | Live cache read | 100 featured skills from skills.sh | 2026-07-01 |
-| Hermes installed skills | `hermes skills list` | CLI | ~240 installed, from builtin/local/skills.sh | 2026-07-01 |
-| agentskills.io overview | https://agentskills.io/home | Browser | 42 client logos visible on home page | 2026-07-01 |
-| agentskills.io spec | https://agentskills.io/specification | Browser | name + description required, optional ref/scripts/assets | 2026-07-01 |
+| Hermes installed skills | `hermes skills list` | CLI command | ~240 installed, mix of builtin/local/skills.sh | 2026-07-01 |
+| agentskills.io overview | https://agentskills.io/home | Browser | 42 client logos visible on home page carousel | 2026-07-01 |
+| agentskills.io spec | https://agentskills.io/specification | Browser | `name` + `description` required; optional `ref`, `scripts`, `assets` | 2026-07-01 |
 | agentskills.io client-showcase | https://agentskills.io/client-showcase | Browser | **404 at ~02:00 UTC; 200 by ~06:24 UTC same day** | 2026-07-01 |
-| agentskills.io repo | https://github.com/agentskills/agentskills | Browser snapshot | 21,302★ (observed on page) | 2026-07-01 |
-| Hermes Atlas top skills | https://hermesatlas.com/lists/top-skills | Browser | 18 ranked entries, updated star counts (73.1K, 23.2K, 4.9K etc.) | 2026-07-01 |
+| agentskills.io repo | https://github.com/agentskills/agentskills | Browser | 21,302★ (observed on page) | 2026-07-01 |
+| Hermes Atlas top skills | https://hermesatlas.com/lists/top-skills | Browser | 18 ranked entries with star counts (73.1K, 23.2K, 4.9K etc.) | 2026-07-01 |
 | skills.sh | https://skills.sh/ | HTTP 200 | Primary public leaderboard | 2026-07-01 |
 | agentskill.sh | https://agentskill.sh/ | HTTP 200 | Broad marketplace with quality scores | 2026-07-01 |
-| SkillsMP | https://skillsmp.com/ | HTTP 200 | Aggregator, 270K+ SKILL.md claimed | 2026-07-01 |
+| SkillsMP | https://skillsmp.com/ | HTTP 200 | Aggregator claiming 270K+ SKILL.md files | 2026-07-01 |
 | ClawHub | https://clawhub.ai/ | HTTP 200 | OpenClaw marketplace | 2026-07-01 |
-| skilldock.io | https://skilldock.io/ | HTTP 200 | Versioned skill registry, V2 in development | 2026-07-01 |
+| skilldock.io | https://skilldock.io/ | HTTP 200 | Versioned skill registry; V2 in development | 2026-07-01 |
 
 ---
 
-## 5. Open Questions (as of 2026-07-01)
+## 4. Open Questions
 
-| # | Question | Evidence state | Suggested research path |
-|---|----------|---------------|------------------------|
-| 1 | How often does the Hermes hub index auto-refresh? | Index is dated 2026-05-26. Not known if this is pull-based or push-based. | `rg -r 'hub.*refresh\|index.*update\|sync' ~/.hermes/config.yaml ~/.hermes/plugins/ --include='*.py' 2>/dev/null \| head` |
-| 2 | Is there a CLI command to force-refresh the hub index? | Not in `hermes skills list` or `hermes skills search` docs seen so far. | `hermes help` / `hermes skills --help` / check `hermes_cli/skills_hub.py` in the Hermes source |
-| 3 | Which agentskills.io clients support SKILL.md with optional features (scripts, references)? | Spec says optional, but per-platform support unknown. | Test on each target platform or check per-platform docs |
-| 4 | What are the actual root-level skill repo patterns for top-20 Atlas repos? | Only 7 repos measured so far (research note). 20 would give statistical confidence. | `for r in ...; do curl -s "https://api.github.com/repos/$r/git/trees/main?recursive=1" \| python3 -c "..." ; done` |
+These questions were identified during research and remain unanswered.
+They represent the gap between what is known and what would be useful to
+know about the ecosystem.
+
+| # | Question | Current evidence | Would benefit from |
+|---|----------|-----------------|--------------------|
+| 1 | How often does the Hermes hub index auto-refresh? | Index dated 2026-05-26. Pull-based or push-based unknown. | Source code audit of `hermes_cli/skills_hub.py` or config grep for sync/refresh patterns. |
+| 2 | Is there a CLI command to force-refresh the hub index? | Not documented in `hermes skills list` or `hermes skills search`. | `hermes help` / `hermes skills --help` review. |
+| 3 | Which agentskills.io clients support optional SKILL.md features (scripts, references)? | Spec marks them as optional; per-platform implementation unknown. | Per-platform testing or documentation review. |
+| 4 | What are the root-level skill repo directory patterns for the top-20 Atlas repos? | Only 7 repos measured; 20 would give statistical confidence. | GitHub API tree queries for each repo (non-mutating). |
+| 5 | How many total unique agent skills exist across all marketplaces? | Upper bound unknown. SkillsMP claims 270K+ SKILL.md files but no deduplication methodology is published. | Cross-marketplace deduplication study. |
 
 ---
 
-## 6. Key Findings
+## 5. Key Findings
 
-### 6.1 Confirmed from Live Data
+All findings are based on live-verified data from 2026-07-01.
 
-- **2,460 skills indexed** in the Hermes hub from 7 sources — the hub is useful, but discovery must span beyond it.
-- **42 agentskills.io clients** — the standard is broadly adopted. The methodology follows it.
-- **agentskills.io Client Showcase page was 404 at ~02:00 UTC, 200 by ~06:24 UTC** — drift confirmed within hours.
-  External dependencies drift. Runtime verification is essential.
-- **Hub index is 5 weeks stale** — discovery results may miss new skills. Freshness check is the first step.
-- **skills.sh dominates the index** (50% of entries) — single source risk. The methodology includes fallback sources.
-- **Hermes is NOT on the agentskills.io client showcase** — useful ecosystem positioning note.
+### 5.1 The Hub Index Provides Breadth but Not Depth
 
-### 6.2 Design Evolution
+- **2,460 skills indexed** from 7 sources. The hub is useful as a starting
+  point but most entries (91%) are community-contributed; only 3.4% are
+  officially maintained.
+- **Hub index is 5 weeks stale** (last generated 2026-05-26). New skills
+  published between 2026-05-26 and 2026-07-01 are invisible to hub searches.
+  A freshness check should precede any hub-dependent search.
 
-The initial plan treated this project as a **portable skill collection** — take existing
-Hermes skills, strip Hermes-specific references, and ship them cleanly. Three realizations
-changed the direction:
+### 5.2 The Ecosystem Has a Single-Source Risk
 
-1. **The product was never a collection.** A static set of skills contradicts the core
-   purpose — "scan best resources and discover best skills."
-2. **Optimizing for file count masked the product question.** Reducing from 161 files to
-   11 is a useful constraint exercise, but it doesn't answer "what does this repo do when
-   invoked?"
-3. **The methodology already existed in Hermes-specific form.** The `hub-explorer` skill
-   pattern from the Hermes ecosystem had a complete discovery pipeline — it just needed to
-   be extracted into an agent-agnostic form so any platform can follow it.
+- **skills.sh dominates**: 49.5% of the hub index. Combined with lobehub
+  (20.3%) and browse-sh (13.4%), three sources make up 83.2% of all indexed
+  skills. If any of these changes format or availability, coverage drops
+  sharply.
+- **ClawHub (8.1%) has untrusted quality.** Its 200 entries are in the
+  index but marked "Evaluate" — no quality guarantee.
 
-### 6.3 Current Direction
+### 5.3 agentskills.io Adoption Is Real but Hard to Count
 
-> This repo ships a **portable discovery methodology skill** that teaches any agent
-> how to scan the ecosystem — hub catalog, featured cache, external marketplaces, GitHub
-> — evaluate candidates, and recommend the best skill for a task. It does NOT ship skills.
+- **42 client platforms** confirmed via the home page carousel. The standard
+  is broadly adopted across IDE agents, CLI agents, frameworks, and data
+  platforms.
+- **Hermes Agent is not listed** on the carousel despite being a compatible
+  client. The showcase may be incomplete or voluntary.
+- **The Client Showcase page drifted (404 → 200) within 4 hours on the same
+  day.** This concretely demonstrates that URL reachability can change
+  between research sessions. Any study of the ecosystem must verify URLs
+  at the time of use, not rely on a one-time snapshot.
 
-| Question | Earlier answer | Current answer (research-informed) |
-|----------|---------------|-------------------------------------|
-| What does this repo do? | Ships 3 clean portable skills | Ships a discovery methodology any agent can follow |
-| How does it find skills? | From the repo's `skills/` directory | From the ecosystem — hub, marketplaces, GitHub |
-| What's the core artifact? | A collection of SKILL.md files | A single SKILL.md teaching the search/evaluate/recommend workflow |
-| How does it stay fresh? | CI checks file counts | The methodology always starts with a staleness check on the hub index |
+### 5.4 External Marketplaces Are Reachable but Uneven
+
+All 6 marketplaces verified returned HTTP 200 on 2026-07-01. However:
+
+- **SkillsMP claims 270K+ SKILL.md files** — this is an order of magnitude
+  larger than the hub index. If accurate, the hub is indexing <1% of
+  available skills. The claim could not be independently verified.
+- **skilldock.io** is the only versioned registry with a publish/install
+  workflow. Its V2 status means its current shape is transitional.
+
+### 5.5 The agentskills.io Spec Is Minimal
+
+The open standard requires only `name` and `description` in YAML frontmatter.
+Optional fields (`ref`, `scripts`, `assets`) exist but have unknown adoption
+rates across the 42 clients. This minimal surface is both a strength
+(low barrier to entry) and a weakness (no standard way to declare
+dependencies, version constraints, or installation requirements).
+
+---
+
+## 6. Research Methodology
+
+### Data Collection
+
+- Hub index data: local cache read from `~/.hermes/skills/.hub/index-cache/`
+- Marketplace status: `curl -s -o /dev/null -w "%{http_code}" <url>`
+- Client ecosystem: manual browser inspection of agentskills.io home page carousel, deduplicated by logo
+- Platform repos: GitHub API and manual repo inspection
+- All timestamps are UTC
+
+### Known Limitations
+
+- The 42-client count is from a home page carousel — logos that were not
+  rendered (scroll depth) may have been missed.
+- Marketplace HTTP status is a liveness check only, not a content-quality
+  assessment. A 200 means the server responded, not that the content is
+  accurate or well-maintained.
+- Skill counts (2,460 indexed, 240 installed, 100 featured) are from a
+  single Hermes agent instance. Other agents may have different index
+  snapshots depending on when they last synced.
+- "270K+ SKILL.md files" from SkillsMP is the marketplace's own claim.
+  No independent verification was performed.
