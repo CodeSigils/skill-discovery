@@ -153,13 +153,13 @@ skill-discovery/
 │   └── skills/
 │       └── skill-discovery -> ../../skills/skill-discovery/  # symlink
 ├── .github/
-│   ├── workflows/ci.yml                    # checkout → deps → Hermes-refs → docs validation
+│   ├── workflows/ci.yml                    # checkout → deps → 3 validation steps
 │   ├── scripts/ci-check.py                 # Hermes-reference gate (portability guard)
 │   ├── scripts/validate-docs.py            # frontmatter & expiry check for docs/
-│   └── scripts/verify-marketplace-urls.py  # ad-hoc URL drift detection (manual run)
+│   └── scripts/verify-marketplace-urls.py  # URL drift detection (weekly cron + push)
 ```
 
-**12 files.** One skill. Two CI checks. One ad-hoc tool. Zero platform adapter files.
+**12 files.** One skill. Three CI checks. Zero platform adapter files.
 
 ---
 
