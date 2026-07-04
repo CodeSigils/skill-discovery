@@ -245,6 +245,7 @@ documents how the data was collected so you can reproduce or update it.
 | SkillsMP | https://skillsmp.com/ | HTTP 200 | Aggregator claiming 270K+ SKILL.md files | 2026-07-01 |
 | ClawHub | https://clawhub.ai/ | HTTP 200 | OpenClaw marketplace | 2026-07-01 |
 | skilldock.io | https://skilldock.io/ | HTTP 200 | Versioned skill registry; V2 in development | 2026-07-01 |
+| CrossAITools | https://crossaitools.com | HTTP 200 | Multi-directory: 21K+ skills, 2.5K+ marketplaces, public JSON API | 2026-07-04 |
 
 ---
 

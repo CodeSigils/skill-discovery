@@ -148,7 +148,7 @@ skill-discovery/
 │   └── evidence-urls.json                       # machine-checkable URL expectations
 ├── skills/
 │   └── skill-discovery/
-│       └── SKILL.md                        # the methodology (~663 lines)
+│       └── SKILL.md                        # the methodology (~776 lines)
 ├── .agents/
 │   └── skills/
 │       └── skill-discovery -> ../../skills/skill-discovery/  # symlink
@@ -186,7 +186,7 @@ When invoked, `skill-discovery` guides any agent through:
 4. **Depth-aware search** -- handle flat and categorized skill directories correctly
 5. **Source filtering** -- prefer official over community sources
 6. **Featured/curated source search** -- when keyword search is thin
-7. **Marketplace API search** -- query public JSON APIs (skills.sh, GitHub) programmatically
+7. **Marketplace API search** -- query public JSON APIs (skills.sh, CrossAITools, GitHub) programmatically
 8. **Evaluation rubric** -- systematically assess each candidate, including depth and keyword-expansion checks
 9. **Skill creation fallback** -- build a minimal skill when nothing matches
 
