@@ -29,7 +29,7 @@ needed for a local search.
 | Field | Value | Source |
 |-------|-------|--------|
 | Index format | JSON (`version`, `generated_at`, `skill_count`, `skills`) | `~/.hermes/skills/.hub/index-cache/hermes-index.json` |
-| Index age | 2026-05-26 — stale (~5 weeks at time of research) | `generated_at` field |
+| Index age | 2026-05-26 — stale (~5 weeks at time of research, now ~6 weeks stale) | `generated_at` field |
 | Total indexed | 2,460 skills | Live cache count |
 
 **Source breakdown of the 2,460 indexed skills:**
@@ -162,12 +162,13 @@ an oversight, or a stale carousel is unknown.
 
 These are individual repositories that ship SKILL.md files — the
 "leaf nodes" of the ecosystem. The list is not exhaustive; it represents
-repos that appeared in hub index data and marketplace scans.
+repos that appeared in hub index data and marketplace scans. Skill counts
+are approximate snapshot values from the repo tree at research time.
 
 | Repo | Stars | Skills | Format | Discovery mechanism |
 |------|-------|--------|--------|--------------------|
 | addyosmani/agent-skills | [![stars](https://img.shields.io/github/stars/addyosmani/agent-skills)](https://github.com/addyosmani/agent-skills/stargazers) | 24 | Flat SKILL.md, no YAML frontmatter | README-based browsing |
-| anthropics/claude-plugins-official | [![stars](https://img.shields.io/github/stars/anthropics/claude-plugins-official)](https://github.com/anthropics/claude-plugins-official/stargazers) | 37 plugins, 29+ SKILL.md | agentskills.io + extensions | `.claude-plugin/` directory |
+| anthropics/claude-plugins-official | [![stars](https://img.shields.io/github/stars/anthropics/claude-plugins-official)](https://github.com/anthropics/claude-plugins-official/stargazers) | ~37 plugins, 29+ SKILL.md | agentskills.io + extensions | `.claude-plugin/` directory |
 | openai/skills | — | ~20 | agentskills.io | `$skill-installer` CLI |
 | wondelai/skills | [![stars](https://img.shields.io/github/stars/wondelai/skills)](https://github.com/wondelai/skills/stargazers) | 50 | agentskills.io (book-philosophy format) | Flat root directory |
 | vercel-labs/skills | — | Featured on skills.sh | agentskills.io | `npx skills` |
@@ -237,7 +238,7 @@ documents how the data was collected so you can reproduce or update it.
 | agentskills.io spec | https://agentskills.io/specification | Browser | `name` + `description` required; optional `ref`, `scripts`, `assets` | 2026-07-01 |
 | agentskills.io client-showcase | https://agentskills.io/client-showcase | Browser | **404 at ~02:00 UTC; 200 by ~06:24 UTC same day** | 2026-07-01 |
 | agentskills.io repo | https://github.com/agentskills/agentskills | Browser | [![stars](https://img.shields.io/github/stars/agentskills/agentskills)](https://github.com/agentskills/agentskills/stargazers) (observed on page) | 2026-07-01 |
-| Hermes Atlas top skills | https://hermesatlas.com/lists/top-skills | Browser | 18 ranked entries with star counts (73.1K, 23.2K, 4.9K etc.) | 2026-07-01 |
+| Hermes Atlas top skills | https://hermesatlas.com/lists/top-skills | Browser | 18 ranked entries with live star counts (verify per visit) | 2026-07-01 |
 | skills.sh | https://skills.sh/ | HTTP 200 | Primary public leaderboard | 2026-07-01 |
 | agentskill.sh | https://agentskill.sh/ | HTTP 200 | Broad marketplace with quality scores | 2026-07-01 |
 | SkillsMP | https://skillsmp.com/ | HTTP 200 | Aggregator claiming 270K+ SKILL.md files | 2026-07-01 |
@@ -365,4 +366,7 @@ Re-verification events recorded after the initial 2026-07-01 snapshot:
 | 2026-07-04 | awesome-copilot stars | ~35.9K | 36,160 | +~260 (now ~36K) |
 | 2026-07-04 | hub index age | 5 weeks stale | ~6 weeks stale | Index not refreshed since 2026-05-26 |
 | 2026-07-04 | Hub catalog scan count | 2,460 | 2,460 | Index unchanged; still accurate |
+| 2026-07-04 | Hermes Atlas star counts | Hardcoded (73.1K, 23.2K, 4.9K) | Replaced with live-count notice | Drift eliminated by design |
+| 2026-07-04 | Hub index age note (table) | ~5 weeks | ~5 weeks (now ~6 weeks stale) | Inconsistency with §5.1 body fixed |
+| 2026-07-04 | anthropics/claude-plugins skill count | 37 (exact) | ~37 (approximate) | Softened to reflect snapshot nature |
 
