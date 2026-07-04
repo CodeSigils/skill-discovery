@@ -182,11 +182,13 @@ When invoked, `skill-discovery` guides any agent through:
 
 1. **Freshness check** -- verify the catalog is up to date before searching
 2. **Keyword search** -- match tasks to skills by name, description, and tags
-3. **Source filtering** -- prefer official over community sources
-4. **Featured/curated source search** -- when keyword search is thin
-5. **External marketplace scan** -- fallback through marketplaces and GitHub
-6. **Evaluation rubric** -- systematically assess each candidate
-7. **Skill creation fallback** -- build a minimal skill when nothing matches
+3. **Keyword expansion** -- expand acronyms and short forms ("js" for "javascript", "k8s" for "kubernetes")
+4. **Depth-aware search** -- handle flat and categorized skill directories correctly
+5. **Source filtering** -- prefer official over community sources
+6. **Featured/curated source search** -- when keyword search is thin
+7. **External marketplace scan** -- fallback through marketplaces and GitHub
+8. **Evaluation rubric** -- systematically assess each candidate, including depth and keyword-expansion checks
+9. **Skill creation fallback** -- build a minimal skill when nothing matches
 
 The methodology is self-verifying -- it teaches agents to check
 source reachability at runtime rather than relying on hardcoded

@@ -53,14 +53,21 @@ Search skill catalogs by matching keywords in skill `name` and
 
 **Steps:**
 
-1. Map the task to 2-3 keywords:
+1. Map the task to 2-3 core nouns:
    - "Set up CI/CD pipeline" -> keywords: `ci`, `cd`, `pipeline`
    - "Write Python tests"   -> keywords: `python`, `testing`
    - "Deploy to Kubernetes" -> keywords: `kubernetes`, `deploy`
-2. Find the catalog file (commonly a JSON index or a directory of
+2. Expand each keyword to cover acronyms, short forms, and common
+   aliases. Acronyms and abbreviations are especially easy to miss:
+   - "javascript"  -> also search `js`, `nodejs`, `node`
+   - "kubernetes"  -> also search `k8s`
+   - "python"      -> also search `py`
+   - "typescript"  -> also search `ts`, `tsx`
+   - "react"       -> also search `jsx`
+3. Find the catalog file (commonly a JSON index or a directory of
    `SKILL.md` files)
-3. Search across `name` and `description` fields
-4. Also search across `tags` fields when available
+4. Search across `name` and `description` fields
+5. Also search across `tags` fields when available
 
 **Python method (JSON index):**
 
@@ -90,7 +97,10 @@ matches.sort(key=lambda s: (
 **Filesystem method (directory of SKILL.md files):**
 
 ```bash
-grep -rl "^name:" skills/*/SKILL.md | xargs grep -l "description:.*python"
+# Use find to reach skills at any depth (flat or categorized)
+find skills -name SKILL.md \
+  -exec grep -l "^name:" {} + \
+  -exec grep -l "description:.*python" {} +
 ```
 
 Or scan frontmatter programmatically:
@@ -117,6 +127,16 @@ def scan_skills_dir(skills_dir, keyword):
                     results.append((name, desc, root))
     return results
 ```
+
+> **Catalog depth warning:** Skills directories may be flat
+> (`skills/skillname/SKILL.md`) or organized by category
+> (`skills/category/skillname/SKILL.md`). A shell glob like
+> `skills/*/SKILL.md` **only reaches one level deep** and will
+> miss every categorized skill. Always use a recursive method
+> (`find`, `os.walk()`, or a `**` glob with `globstar` enabled)
+> to ensure full coverage. The JSON-index methods described above
+> are depth-independent since they read from a flat list;
+> the filesystem methods are the ones that need depth awareness.
 
 ### 1.3 Tag-Based Discovery
 
@@ -306,6 +326,12 @@ against these criteria.
 - [ ] **Source trust:** Official > GitHub/verified > community > unknown
 - [ ] **Freshness:** When was the catalog last updated? Note staleness
       if >2 weeks.
+- [ ] **Keyword expansion:** Did you search for acronyms, short forms,
+      and aliases alongside the primary keyword? (e.g., "js" alongside
+      "javascript", "k8s" alongside "kubernetes")
+- [ ] **Search depth:** Did the search method reach all levels of
+      the skills directory? (Filesystem methods only — JSON indexes
+      are depth-independent)
 - [ ] **Alternatives:** Check if multiple skills cover the same
       territory. Prefer the one with clearer instructions.
 - [ ] **Format check:** Does it follow the agentskills.io standard?
@@ -363,6 +389,10 @@ Keywords: "ci", "cd", "pipeline", "github actions"
 Map the task to 2-3 core nouns. Avoid filler words ("how to",
 "show me", "all the").
 
+**Then expand each keyword** for acronyms, abbreviations, and short
+forms (see §1.2 step 2). This is the most commonly missed step in
+the methodology — it turns a zero-result search into a match.
+
 ### Pattern 2: Category Expansion
 
 When you find one skill in a domain, expand to find related ones:
@@ -378,6 +408,29 @@ For multi-stack tasks, use §1.5: search each stack component
 separately, then prefer skills that cover the intersection. If no
 multi-stack skill exists, recommend one skill per stack component.
 
+### Pattern 4: Depth Verification
+
+After a filesystem search returns zero results, verify depth
+coverage before concluding no matches exist:
+
+1. **Count the SKILL.md files discovered:**
+   ```bash
+   find skills -name SKILL.md | wc -l
+   ```
+2. **Compare against total files in the directory:**
+   ```bash
+   find skills -name SKILL.md | wc -l
+   # vs
+   ls -d skills/*/SKILL.md skills/*/*/SKILL.md 2>/dev/null | wc -l
+   ```
+   If the counts mismatch, your glob is too shallow (see §1.2
+   catalog depth warning).
+3. **Test with a known-present skill:** if you know a specific
+   skill exists (e.g., `node-inspect-debugger`), search for its
+   exact name. If it doesn't appear, your search depth is wrong.
+4. **Expand your search method** before falling back to higher
+   stages of the fallback chain.
+
 ---
 
 ## Section 6: Task-to-Search-Term Examples
@@ -386,23 +439,25 @@ These are user-task keywords, not necessarily catalog tags. Use them
 to seed name/description searches when structured tags are absent or
 sparse.
 
-| Task keyword    | What to find                          |
-|-----------------|---------------------------------------|
-| python          | Python dev, debugging, testing skills |
-| docker          | Container best practices, deployment  |
-| api             | REST API design, endpoints, GraphQL   |
-| security        | Auth, secrets scanning, hardening     |
-| testing         | TDD, unit tests, integration tests    |
-| database        | SQL, Postgres, migrations             |
-| react           | React best practices, frontend design |
-| cli             | Command-line tools, shell scripting   |
-| git             | Git workflows, branching strategies   |
-| cloud           | AWS, Azure, GCP                       |
-| data            | Data analysis, pandas, pipelines      |
-| video           | Video processing, FFmpeg              |
-| audio           | Audio processing, transcription       |
-| automation      | Workflow automation, bots             |
-| writing         | Content writing, copywriting          |
+| Task keyword    | Also try               | What to find                          |
+|-----------------|------------------------|---------------------------------------|
+| python          | `py`                   | Python dev, debugging, testing skills |
+| javascript      | `js`, `node`, `nodejs` | JS/TS, Node.js, frontend development |
+| docker          | —                      | Container best practices, deployment  |
+| api             | `rest`, `graphql`      | REST API design, endpoints, GraphQL   |
+| security        | `auth`, `hardening`    | Auth, secrets scanning, hardening     |
+| testing         | `tdd`, `unit`          | TDD, unit tests, integration tests    |
+| database        | `sql`, `postgres`      | SQL, Postgres, migrations             |
+| react           | `jsx`, `frontend`      | React best practices, frontend design |
+| typescript      | `ts`, `tsx`            | TypeScript development, type safety   |
+| cli             | `shell`, `terminal`    | Command-line tools, shell scripting   |
+| git             | —                      | Git workflows, branching strategies   |
+| cloud           | `aws`, `azure`, `gcp`  | Cloud infrastructure, deployment      |
+| data            | `pandas`, `etl`        | Data analysis, pipelines              |
+| video           | `ffmpeg`               | Video processing, encoding            |
+| audio           | `transcription`        | Audio processing, speech-to-text      |
+| automation      | `workflow`, `ci`, `cd` | Workflow automation, CI/CD            |
+| writing         | `docs`, `content`      | Content writing, documentation        |
 
 ---
 
@@ -486,5 +541,5 @@ Add entries here when a skill is consistently needed across sessions.
 
 - **[CodeSigils/agents-markdown-formatter/markdown-formatter](https://github.com/CodeSigils/agents-markdown-formatter)** —
   GFM/MDX Markdown formatter with table, pipe, and fence structural
-  guards. Zero npm dependencies. Installed via `hermes skills install
-  CodeSigils/agents-markdown-formatter/markdown-formatter`.
+  guards. Zero npm dependencies. Install by adding the repo's skill
+  directory to your agent's skills path (see §3.2).
