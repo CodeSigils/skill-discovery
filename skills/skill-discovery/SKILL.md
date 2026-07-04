@@ -222,8 +222,15 @@ known to index agent skills. **Verify reachability at query time**
 
 ### 2.1 Marketplace Fallback Order
 
+Marketplaces are ordered by ecosystem significance (total indexed skills,
+community adoption, breadth of catalog), not by API availability. If a
+marketplace has a public search JSON API, prefer curl (§2.4). If it's
+JS-rendered, use a browser (§2.5). When no match exists, fall through
+to the next marketplace.
+
 1. **skills.sh** (https://skills.sh/) -- Primary public leaderboard.
    Supports agent type filtering, install via `npx skills add`.
+   **Has public JSON API** (§2.4).
 2. **agentskill.sh** (https://agentskill.sh/) -- Broad marketplace
    with quality scores, security audits, and role/platform filters.
 3. **SkillsMP** (https://skillsmp.com/) -- Broad aggregator with
@@ -234,6 +241,7 @@ known to index agent skills. **Verify reachability at query time**
    registry with publish/install workflow. V2 in development.
 6. **Direct GitHub search** -- Search for `<tool> SKILL.md`,
    `<tool> agent skill`, or `<tool> agentskills.io`.
+   **Has public REST API** (§2.4).
 
 ### 2.2 GitHub Source Search
 
@@ -280,7 +288,9 @@ catalogs), check:
 Some marketplaces expose public JSON APIs that let agents search for
 skills programmatically — no browser needed. This is faster and more
 reliable than browser-based search. Try API search before falling
-back to interactive browsing (§2.5).
+back to interactive browsing (§2.5). Marketplaces with public APIs
+take priority in the fallback chain (§2.1) because they provide
+structured, machine-readable results.
 
 **skills.sh search API (primary):**
 
