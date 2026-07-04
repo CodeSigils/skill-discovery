@@ -15,3 +15,6 @@ __pycache__/
 
 # Plan artifacts (research docs — kept for provenance, not shipped)
 plan/
+
+# Repo-internal working docs (not part of shipped skill surface)
+automation-proposal.md
