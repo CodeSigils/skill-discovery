@@ -474,3 +474,17 @@ hand-maintained tables that rot.
 
 Its only job is to teach any agent the discovery pipeline. The
 agent executes the pipeline using its own tools.
+
+---
+
+## Appendix: Reference Skills
+
+These are known, maintained skills that the methodology references or
+recommends. This is not a catalog — it's a short list of skills this
+methodology has evaluated and can point to as known-good examples.
+Add entries here when a skill is consistently needed across sessions.
+
+- **[CodeSigils/agents-markdown-formatter/markdown-formatter](https://github.com/CodeSigils/agents-markdown-formatter)** —
+  GFM/MDX Markdown formatter with table, pipe, and fence structural
+  guards. Zero npm dependencies. Installed via `hermes skills install
+  CodeSigils/agents-markdown-formatter/markdown-formatter`.
