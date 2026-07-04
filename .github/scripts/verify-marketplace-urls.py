@@ -25,7 +25,6 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_PATH = ROOT / "docs" / "evidence-urls.json"
-SUCCESS_STATUSES = {200, 201, 202, 204}
 
 
 def load_manifest(path: Path = MANIFEST_PATH) -> list[dict[str, Any]]:

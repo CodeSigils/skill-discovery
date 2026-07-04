@@ -271,8 +271,8 @@ All findings are based on live-verified data from 2026-07-01.
 - **2,460 skills indexed** from 7 sources. The hub is useful as a starting
   point but most entries (91%) are community-contributed; only 3.4% are
   officially maintained.
-- **Hub index is 5 weeks stale** (last generated 2026-05-26). New skills
-  published between 2026-05-26 and 2026-07-01 are invisible to hub searches.
+- **Hub index is ~6 weeks stale** (last generated 2026-05-26). New skills
+  published since 2026-05-26 are invisible to hub searches.
   A freshness check should precede any hub-dependent search.
 
 ### 5.2 The Ecosystem Has a Single-Source Risk

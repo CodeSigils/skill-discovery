@@ -5,6 +5,8 @@ permissions:
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
   push:
     branches: [main]
     paths:
@@ -37,3 +39,5 @@ jobs:
         run: python .github/scripts/ci-check.py
       - name: Validate docs frontmatter
         run: python .github/scripts/validate-docs.py
+      - name: Verify marketplace URLs
+        run: python .github/scripts/verify-marketplace-urls.py
