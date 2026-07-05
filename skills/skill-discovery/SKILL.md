@@ -385,6 +385,21 @@ Each result includes `name`, `description`, `repo`, `stars`,
 a subset of the site's total 21,600+ listed skills (primarily
 partner-indexed content).
 
+**Mercury Skills listing API (quaternary):**
+
+Mercury Skills (skills.mercuryagent.sh) has a public JSON listing API
+at `/api/skills`. Like CrossAITools, it returns a paginated list with
+no search endpoint. Each result includes rich metadata: `id`, `name`,
+`title`, `category`, `description`, `tags`, `author`, `version`,
+`githubUrl`, and `stats`:
+
+```bash
+curl -sL "https://skills.mercuryagent.sh/api/skills?limit=10"
+```
+
+The `author` field is notable — it records the identity of the skill
+creator, which can inform trust evaluation (section 4).
+
 ### 2.5 Browser-Based Marketplace Search
 
 When API search (§2.4) returns no results — either because the

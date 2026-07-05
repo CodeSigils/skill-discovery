@@ -119,6 +119,16 @@
       ],
       "source_section": "docs/hub-marketplace-research.md \u00a71.4 and \u00a73",
       "notes": "Curated ecosystem directory."
+    },
+    {
+      "name": "Mercury Skills API",
+      "url": "https://skills.mercuryagent.sh/api/skills",
+      "expected_statuses": [
+        200
+      ],
+      "content_type": "json",
+      "source_section": "SKILL.md \u00a72.4",
+      "notes": "Mercury Skills listing API. Returns paginated JSON with skill metadata including author identity."
     }
   ]
 }
