@@ -148,7 +148,7 @@ skill-discovery/
 │   └── evidence-urls.json                       # machine-checkable URL expectations
 ├── skills/
 │   └── skill-discovery/
-│       └── SKILL.md                        # the methodology (~776 lines)
+│       └── SKILL.md                        # the runtime methodology
 ├── .agents/
 │   └── skills/
 │       └── skill-discovery -> ../../skills/skill-discovery/  # symlink

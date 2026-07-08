@@ -1,791 +1,306 @@
 ---
 name: skill-discovery
-description: >
-  A portable methodology for finding the right skill for any task.
-  Teaches agents how to scan catalogs, marketplaces, and GitHub;
-  evaluate candidates; and recommend the best match. Agent-agnostic,
-  works on any platform that supports the agentskills.io standard.
-compatibility: agentskills.io
+description: Find, evaluate, and recommend agent skills for a task or domain. Use when asked to find a relevant skill, compare skill candidates, search skill catalogs or marketplaces, inspect GitHub skill sources, map skills to a project stack, or decide that a new skill should be created because no existing skill fits.
 ---
 
 # Skill Discovery Methodology
 
-> **This is a methodology, not a skill collection.** It teaches
-> agents how to find skills. It does not ship the skills themselves.
+This is a methodology, not a skill collection. It teaches agents how to
+find skills, evaluate them, and recommend the best match.
 
-When you are asked to find a skill for a specific task or domain,
-follow this fallback chain. Each stage widens the search until a
-match is found.
+## Operating Contract
 
----
+When asked to find a skill:
+
+1. Convert the user's task into search terms.
+2. Search from local and structured sources outward.
+3. Inspect candidate metadata and source files before recommending.
+4. Rank candidates by task fit, trust, compatibility, freshness, and installability.
+5. Report what was searched, what was skipped, and why the recommendation fits.
+6. If no skill fits, offer a focused creation fallback instead of forcing a weak match.
+
+Do not stop after the first keyword hit. A skill is only useful if its
+instructions actually cover the user's task and can be loaded or installed by
+the user's agent.
 
 ## Fallback Chain
 
+Use the narrowest reliable source first, then widen the search:
+
+```text
+1. Installed/local skills
+2. Local or hosted catalog index
+3. Featured or curated sources
+4. Marketplace APIs
+5. Browser-rendered marketplace search
+6. GitHub and web research
+7. Build or draft a new skill
 ```
-1. Catalog search    → local index (keyword, tag, source filter)
-2. Featured search   → curated / featured sources
-3. Marketplace API   → public JSON APIs (skills.sh, GitHub)
-4. Browser search    → interactive browser search on JS-rendered marketplaces
-5. Web research      → search engines, GitHub search, blog posts
-6. Build from scratch → when nothing matches
+
+Before relying on any catalog or marketplace, check freshness and reachability
+when the tooling exists. If a source cannot be checked because the agent lacks
+network, browser, or shell access, say so in the final recommendation.
+
+## Search Workflow
+
+### 1. Map the Task to Terms
+
+Extract 2-5 high-signal terms from the request. Prefer nouns, product names,
+frameworks, file formats, and workflows.
+
+```text
+"Set up CI/CD for a Node service"
+terms: ci, cd, pipeline, github actions, node
+
+"Find a skill for editing Word docs with tracked changes"
+terms: docx, word, tracked changes, redline
 ```
 
-Always start at stage 1 and proceed until a match is found that
-passes the Evaluation Rubric (§4). Before any search, check
-catalog freshness (§1.1). Stages 1-3 (catalog, featured, API) can
-often be done with HTTP/curl alone. Stage 4 (browser search) and
-stage 5 (web research) require browser or web-search tooling
-available to the agent — skip them if the agent has no web access
-and report which stages were skipped.
+Expand each term with common aliases:
 
----
+| Term | Also search |
+|------|-------------|
+| javascript | js, node, nodejs |
+| typescript | ts, tsx |
+| kubernetes | k8s |
+| python | py |
+| react | jsx, frontend |
+| database | sql, postgres, mysql |
+| ci/cd | github actions, workflow, automation |
+| docx | word, office, ooxml |
+| video | ffmpeg, encoding |
+| audio | transcription, speech-to-text |
 
-## Section 1: Search Methods
+For multi-stack tasks, search each stack component separately, then prefer
+skills that cover the intersection. If no single skill covers the whole stack,
+recommend a small set of complementary skills.
 
-### 1.1 Freshness Check
+### 2. Search Installed and Local Skills
 
-Before searching, verify the catalog or index you're searching is
-fresh. Stale indexes miss recently published skills.
+Use the agent's native skill list/search tools when available. If only
+filesystem access exists, recursively scan for `SKILL.md`; skill directories
+may be nested by category.
 
-**Method:** Check the catalog's metadata for a timestamp or version
-field. If the catalog is more than 2 weeks old, note the staleness
-in your recommendation: "This catalog was last updated on <date>; a
-fresh index may contain more recent skills."
+```bash
+find . -name SKILL.md -print
+```
 
-### 1.2 Keyword Search
+Inspect frontmatter first. A candidate should have at least `name` and
+`description`. Search `name`, `description`, and `tags` if present.
 
-Search skill catalogs by matching keywords in skill `name` and
-`description` fields. This is the most common discovery path.
+Avoid shallow globs such as `skills/*/SKILL.md`; they miss categorized layouts
+like `skills/cloud/aws-deploy/SKILL.md`.
 
-**Steps:**
+### 3. Search Catalog Indexes
 
-1. Map the task to 2-3 core nouns:
-   - "Set up CI/CD pipeline" -> keywords: `ci`, `cd`, `pipeline`
-   - "Write Python tests"   -> keywords: `python`, `testing`
-   - "Deploy to Kubernetes" -> keywords: `kubernetes`, `deploy`
-2. Expand each keyword to cover acronyms, short forms, and common
-   aliases. Acronyms and abbreviations are especially easy to miss:
-   - "javascript"  -> also search `js`, `nodejs`, `node`
-   - "kubernetes"  -> also search `k8s`
-   - "python"      -> also search `py`
-   - "typescript"  -> also search `ts`, `tsx`
-   - "react"       -> also search `jsx`
-3. Find the catalog file (commonly a JSON index or a directory of
-   `SKILL.md` files)
-4. Search across `name` and `description` fields
-5. Also search across `tags` fields when available
-
-**Python method (JSON index):**
+If a JSON catalog is available, parse it instead of grepping raw text. Catalogs
+usually expose a flat list and may include trust, tags, source, repo, path, or
+install commands.
 
 ```python
 import json
-from pathlib import Path
 
-catalog = json.load(open(catalog_path))
-skills = catalog if isinstance(catalog, list) else \
-         catalog.get("skills", catalog.get("data", []))
+with open(catalog_path, encoding="utf-8") as f:
+    catalog = json.load(f)
 
-keyword = "python"
+skills = catalog if isinstance(catalog, list) else catalog.get("skills", catalog.get("data", []))
+terms = ["python", "testing"]
+
+def haystack(skill):
+    fields = [
+        skill.get("name", ""),
+        skill.get("description", ""),
+        " ".join(skill.get("tags", [])),
+    ]
+    return " ".join(fields).lower()
+
 matches = [
-    s for s in skills
-    if keyword.lower() in s.get("name", "").lower()
-    or keyword.lower() in s.get("description", "").lower()
+    skill for skill in skills
+    if any(term.lower() in haystack(skill) for term in terms)
 ]
 
-# Sort: official sources first, then alphabetical
-matches.sort(key=lambda s: (
-    s.get("trust_level") != "official",
-    s.get("source") != "official",
-    s.get("name", "")
+matches.sort(key=lambda skill: (
+    skill.get("trust_level") != "official",
+    skill.get("source") != "official",
+    skill.get("name", ""),
 ))
 ```
 
-**Filesystem method (directory of SKILL.md files):**
+Check catalog metadata such as `generated_at`, `updated_at`, `version`, or
+`expires`. If the index is more than two weeks old, keep searching newer
+sources and mention the staleness.
 
-```bash
-# Use find to reach skills at any depth (flat or categorized)
-find skills -name SKILL.md \
-  -exec grep -l "^name:" {} + \
-  -exec grep -l "description:.*python" {} +
-```
+### 4. Search Marketplace APIs
 
-Or scan frontmatter programmatically:
+Prefer structured API results over browser scraping when they exist. Verify
+URLs at query time; endpoints and schemas can drift.
 
-```python
-import yaml, os
-
-def scan_skills_dir(skills_dir, keyword):
-    results = []
-    for root, dirs, files in os.walk(skills_dir):
-        if "SKILL.md" in files:
-            with open(os.path.join(root, "SKILL.md")) as f:
-                content = f.read()
-            # Extract YAML frontmatter (between --- delimiters)
-            parts = content.split("---", 2)
-            if len(parts) >= 3:
-                frontmatter = yaml.safe_load(parts[1])
-                name = frontmatter.get("name", "")
-                desc = frontmatter.get("description", "")
-                tags = " ".join(frontmatter.get("tags", []))
-                if (keyword.lower() in name.lower()
-                    or keyword.lower() in desc.lower()
-                    or keyword.lower() in tags.lower()):
-                    results.append((name, desc, root))
-    return results
-```
-
-> **Catalog depth warning:** Skills directories may be flat
-> (`skills/skillname/SKILL.md`) or organized by category
-> (`skills/category/skillname/SKILL.md`). A shell glob like
-> `skills/*/SKILL.md` **only reaches one level deep** and will
-> miss every categorized skill. Always use a recursive method
-> (`find`, `os.walk()`, or a `**` glob with `globstar` enabled)
-> to ensure full coverage. The JSON-index methods described above
-> are depth-independent since they read from a flat list;
-> the filesystem methods are the ones that need depth awareness.
-
-### 1.3 Tag-Based Discovery
-
-When you have a broad category or domain, search by tag. Tags are
-wider than keywords and catch skills that use different terminology.
-
-```python
-tag = "devops"
-matches = [
-    s for s in skills
-    if tag.lower() in [t.lower() for t in s.get("tags", [])]
-]
-```
-
-**Common tags found across skill catalogs:**
-
-| Tag             | What it covers                       |
-|-----------------|--------------------------------------|
-| python          | Python development, testing, packaging|
-| javascript      | JS/TS, frontend, Node                |
-| programming     | General coding best practices        |
-| devops          | CI/CD, deployment, infra             |
-| security        | Auth, scanning, hardening            |
-| data            | Analysis, pipelines, ETL             |
-| testing         | TDD, unit tests, integration         |
-| api             | REST, GraphQL, endpoints             |
-| automation      | Workflows, bots, scripts             |
-| writing         | Content, copywriting, documentation  |
-| research        | Literature review, discovery         |
-| cloud           | AWS, Azure, GCP                      |
-
-### 1.4 Source Filtering
-
-When you find matches across multiple sources, filter by source
-trust level. This prioritizes officially maintained skills over
-community ones.
-
-```python
-# Prefer official sources
-source = "official"  # also: "github", "community"
-matches = [
-    s for s in skills
-    if source in s.get("source", "").lower()
-]
-```
-
-**Source trust tiers (best practice):**
-
-| Tier  | Source type     | Examples                   |
-|-------|-----------------|----------------------------|
-| 1     | Official        | Platform-bundled, maintained |
-| 2     | GitHub/verified | Community repos, transparent |
-| 3     | Aggregator      | Marketplaces, third-party collections |
-
-### 1.5 Stack-Based Discovery
-
-Given a user's tech stack, discover skills across multiple
-keywords:
+Useful starting points:
 
 ```text
-Stack: Kubernetes + Python + PostgreSQL
-Keywords: "kubernetes", "python", "database"
-→ kubernetes-best-practices, python-development, postgres-migrations
+https://skills.sh/api/search?q=<term>
+https://api.github.com/search/code?q=<term>+SKILL.md&per_page=10
+https://crossaitools.com/api/skills?limit=100
+https://skills.mercuryagent.sh/api/skills?limit=100
 ```
 
-This pattern works best when you search each keyword separately
-and intersect the results by relevance.
+API search guidance:
 
----
+- Search multiple aliases, not just the user's exact wording.
+- Treat install counts and stars as weak signals, not proof of fit.
+- Fetch or inspect the underlying `SKILL.md` for top candidates.
+- Prefer official/vendor sources, then transparent GitHub repos, then
+  aggregators.
+- If an API returns a broad paginated listing with no search endpoint, filter
+  locally by `name`, `description`, `tags`, and repo fields.
 
-## Section 2: External Marketplace Scan
+### 5. Use Browser Search When Needed
 
-When local/searchable catalogs and featured/curated sources return
-nothing, scan external marketplaces. The following sources are
-known to index agent skills. **Verify reachability at query time**
--- URLs drift.
+Some marketplaces are JavaScript-rendered. If API search returns nothing or a
+marketplace has no useful API, use browser tooling when available:
 
-### 2.1 Marketplace Fallback Order
+1. Open the marketplace search page with the strongest term.
+2. Trigger the search if the SPA does not load results automatically.
+3. Read result names, descriptions, source repos, install counts, and badges.
+4. Click through to top candidates.
+5. Inspect the raw source repo or `SKILL.md` before recommending.
 
-Marketplaces are ordered by ecosystem significance (total indexed skills,
-community adoption, breadth of catalog), not by API availability. If a
-marketplace has a public search JSON API, prefer curl (§2.4). If it's
-JS-rendered, use a browser (§2.5). When no match exists, fall through
-to the next marketplace.
+If browser tooling is unavailable, skip this stage explicitly and continue with
+GitHub or web search if available.
 
-1. **skills.sh** (https://skills.sh/) -- Primary public leaderboard.
-   Supports agent type filtering, install via `npx skills add`.
-   **Has public JSON API** (§2.4).
-2. **agentskill.sh** (https://agentskill.sh/) -- Broad marketplace
-   with quality scores, security audits, and role/platform filters.
-3. **SkillsMP** (https://skillsmp.com/) -- Broad aggregator with
-   occupation and category maps. Claims 270K+ indexed files.
-4. **CrossAITools (Claude Skills Hub)** (https://crossaitools.com) --
-   Multi-directory covering 21,600+ skills, 2,500+ marketplaces, and
-   12,500+ MCP servers. Incorporates claudeskills.info and
-   claudemarketplaces.com. **Has public JSON listing API** (see §2.4).
-5. **ClawHub** (https://clawhub.ai/) -- OpenClaw skills and plugins
-   marketplace. Higher risk -- inspect source before use.
-6. **skilldock.io** (https://skilldock.io/) -- Versioned skill
-   registry with publish/install workflow. V2 in development.
-7. **Direct GitHub search** -- Search for `<tool> SKILL.md`,
-   `<tool> agent skill`, or `<tool> agentskills.io`.
-   **Has public REST API** (§2.4).
+### 6. Search GitHub and the Web
 
-### 2.2 GitHub Source Search
+Use this when catalogs and marketplaces miss, look stale, or only return weak
+matches.
 
-When marketplaces don't have what you need, search GitHub directly.
-Do not rely on hand-maintained repo lists or star counts — repository
-membership, popularity, and format details drift.
-
-**Recommended searches:**
+Recommended searches:
 
 ```text
 "SKILL.md" "<domain>"
 "agentskills.io" "<domain>"
-"<agent-name>" "skill"
-site:github.com SKILL.md "<task keyword>"
+"<agent-name>" "skill" "<domain>"
+site:github.com "SKILL.md" "<task keyword>"
+github topic: agent-skill, claude-skill, codex-skill, mcp
 ```
 
-Evaluate each discovered repo using §4:
+For each repo result, check:
 
-- Does it contain `SKILL.md` files or an agentskills.io-compatible format?
-- Is the source transparent and inspectable?
-- Does recent activity suggest the repo is maintained?
-- Does the skill match the user's task, or only the broad domain?
-- Are install/discovery instructions compatible with the current agent?
+- Does it contain a real `SKILL.md` or compatible skill instructions?
+- Does frontmatter include a clear `name` and `description`?
+- Is the repo source transparent and inspectable?
+- Is the skill maintained recently enough for the domain?
+- Does the skill solve the user's task, or only share a broad category?
+- Can the user's agent load or install it?
 
-Prefer official/vendor repos first, then transparent GitHub repos, then
-aggregators or marketplaces. Treat star counts as freshness hints only —
-verify the actual files before recommending a skill.
+For volatile domains such as APIs, security tooling, legal workflows, cloud
+providers, and actively changing libraries, prefer recently maintained skills
+and verify current docs before relying on the skill.
 
-### 2.3 Ecosystem Directories
+## Evaluation Rubric
 
-For agent-ecosystem-specific searches (not general skill
-catalogs), check:
+Classify each candidate before recommending it.
 
-- **hermesatlas.com** -- Community directory that lists repos
-  by category and star ranking. Most thorough ecosystem directory
-  for discovering agent repos across platforms.
-- **awesome-copilot** (github.com/github/awesome-copilot) --
-  [stargazers](https://github.com/github/awesome-copilot/stargazers), community-curated Copilot resources.
-- **anthropics/claude-plugins-official** -- Official Claude
-  Code plugins and extensions repo.
+| Tier | Criteria | Action |
+|------|----------|--------|
+| Direct hit | The name, description, and body clearly match the requested task. Source is trusted or inspectable. Install path is clear. | Recommend first. |
+| Good partial | Covers the domain but misses a feature, platform, or workflow detail. | Recommend only with the gap stated. |
+| Weak partial | Shares keywords but would require substantial adaptation. | Mention only if no better option exists. |
+| Off-domain | Does not actually solve the task. | Exclude. |
 
-### 2.4 Marketplace API Search
+Use these checks:
 
-Some marketplaces expose public JSON APIs that let agents search for
-skills programmatically — no browser needed. This is faster and more
-reliable than browser-based search. Try API search before falling
-back to interactive browsing (§2.5). Marketplaces with public APIs
-take priority in the fallback chain (§2.1) because they provide
-structured, machine-readable results.
+- Task fit: Does the body describe the exact workflow the user needs?
+- Trigger quality: Would the description cause the skill to be invoked for this task?
+- Trust: Is it official, vendor-maintained, or from an inspectable repo?
+- Freshness: Is the catalog or repo recent enough for the domain?
+- Compatibility: Does it use the user's skill format and loading path?
+- Installability: Is there a clear install command or directory placement?
+- Resource quality: Are referenced scripts, assets, and docs present?
+- Safety: Does it ask the agent to run risky commands, hide network behavior, or trust opaque binaries?
+- Coverage: Did the search include aliases, tags, and nested directories?
 
-**skills.sh search API (primary):**
+When two skills are close, prefer the one with clearer procedural guidance and
+fewer hidden assumptions over the one with higher popularity.
 
-skills.sh has a public, unauthenticated search endpoint:
+## Recommendation Format
 
-```
-GET https://skills.sh/api/search?q=<keyword>
-```
+Keep recommendations short, evidence-based, and reproducible.
 
-Response format (JSON):
+```text
+I searched: <sources and terms>
+Skipped: <sources skipped because of missing tooling or access>
 
-```json
-{
-  "query": "tmux",
-  "searchType": "fuzzy",
-  "skills": [
-    {
-      "id": "owner/repo/skill-name",
-      "skillId": "tmux",
-      "name": "tmux",
-      "installs": 5082,
-      "source": "owner/repo"
-    }
-  ],
-  "count": 32,
-  "duration_ms": 256
-}
-```
+Top recommendation: <skill-name>
+Source: <official/vendor/GitHub/community/marketplace>
+Why it fits: <task-specific reason>
+How to use/install: <command or path if known>
+Notes: <freshness, compatibility, or safety caveats>
 
-Extract results with any HTTP-capable agent tool:
+Alternatives:
+- <skill-name>: <when it is better/worse>
+- <skill-name>: <when it is better/worse>
 
-```bash
-curl -sL "https://skills.sh/api/search?q=tmux" | \
-  python3 -c "
-import sys, json
-data = json.load(sys.stdin)
-print(f\"Found {data['count']} skills for '{data['query']}':\")
-for s in data['skills']:
-    print(f\"  {s['skillId']} — {s['installs']} installs — {s['source']}\")
-"
+If none fit:
+No direct match found. The closest partial is <name>, but it lacks <gap>.
+I recommend creating a small skill for <specific workflow>.
 ```
 
-**Features:**
-- No API key, no authentication, no rate limiting observed
-- Fuzzy search (min 2 characters)
-- Results are sorted by install count (most popular first)
-- Each result includes `name`, `installs`, and `source` (GitHub owner/repo)
+Mention the most important negative evidence. For example, say "I found five
+Kubernetes skills, but none mentioned Helm charts" when that distinction
+matters to the user's task.
 
-**Limitations:**
-- Returns max ~30 results — deeper results may require refinement
-- No pagination parameters observed
-- No filtering by platform, category, or audit status
-- Install counts are not real-time (cached between refreshes)
+## Project-Portfolio Mapping
 
-**GitHub API (secondary):**
+When asked which skills would help a set of projects:
 
-GitHub's code search can find skills even when they're not indexed by
-skills.sh. Use the REST API to search for `SKILL.md` files in public
-repositories:
+1. Inventory each project's stack, workflows, and pain points.
+2. Search for skills per stack component and repeated workflow.
+3. Check whether an installed skill already covers the need.
+4. Rank by immediate utility: direct blocker, repeated workflow, quality
+   improvement, already covered, speculative.
+5. Recommend a small portfolio, not every plausible skill.
 
-```bash
-curl -sL "https://api.github.com/search/code?q=tmux+SKILL.md&per_page=10"
-```
+## Creation Fallback
 
-This returns repositories that contain a SKILL.md file matching your
-keyword. Results are less structured than skills.sh (free-text file
-matches rather than indexed skill metadata), but coverage is broader.
+Create or draft a new skill when:
 
-**When to use each API:**
-- skills.sh first — it's designed for skill discovery, has install
-  counts, and is faster
-- GitHub API second — catches skills not indexed by skills.sh, or
-  when you need to inspect raw SKILL.md content before recommending
+- No direct or useful partial match exists.
+- The best candidate is stale or unsafe for the domain.
+- The user's workflow depends on local conventions no public skill can know.
+- Multiple partial skills would be more confusing than one focused skill.
 
-**CrossAITools listing API (tertiary):**
-
-CrossAITools (crossaitools.com) has a public JSON listing API at
-`/api/skills`. Unlike skills.sh, it has no search endpoint — it
-returns a paginated list of all indexed skills. Use it when the
-other APIs return nothing:
-
-```bash
-curl -sL "https://crossaitools.com/api/skills?limit=10"
-```
-
-Each result includes `name`, `description`, `repo`, `stars`,
-`installs`, and `installCommand`. Note that the API exposes only
-a subset of the site's total 21,600+ listed skills (primarily
-partner-indexed content).
-
-**Mercury Skills listing API (quaternary):**
-
-Mercury Skills (skills.mercuryagent.sh) has a public JSON listing API
-at `/api/skills`. Like CrossAITools, it returns a paginated list with
-no search endpoint. Each result includes rich metadata: `id`, `name`,
-`title`, `category`, `description`, `tags`, `author`, `version`,
-`githubUrl`, and `stats`:
-
-```bash
-curl -sL "https://skills.mercuryagent.sh/api/skills?limit=10"
-```
-
-The `author` field is notable — it records the identity of the skill
-creator, which can inform trust evaluation (section 4).
-
-### 2.5 Browser-Based Marketplace Search
-
-When API search (§2.4) returns no results — either because the
-marketplace has no public API, or the keyword didn't match — use a
-browser to search interactively. Most marketplaces (skills.sh,
-agentskill.sh) are JavaScript-rendered single-page applications. A
-simple `curl` probe only checks whether the server responds; it
-cannot search for skills, extract results, or read SKILL.md content
-from rendered pages.
-
-**Workflow:**
-
-1. Verify the marketplace is reachable (section 7), then navigate
-   to its search URL with your keyword as a query parameter:
-   ```
-   browser_navigate("https://skills.sh/search?q=<keyword>")
-   ```
-2. If the page is a JS SPA, the search box may be pre-filled but
-   results not yet loaded. Press Enter or click the search button
-   to trigger the search.
-3. **Read the results from the rendered snapshot.** Each result
-   typically shows rank, skill name, repository name, and install
-   count — enough for a first pass tier classification (section 4.2).
-4. **Click through to top candidates** to inspect the full SKILL.md
-   content, security audit badges, and install command.
-5. **Read the raw SKILL.md** from the source repository when the
-   marketplace page only shows a summary. Most marketplaces link
-   to the source repo; use `curl` or the browser to fetch:
-   ```
-   curl -sL "https://raw.githubusercontent.com/<owner>/<repo>/main/skills/<skill>/SKILL.md"
-   ```
-6. **Apply the evaluation rubric (section 4)** to each candidate —
-   same criteria as catalog search results.
-
-**Pitfalls:**
-- Bot detection varies. If a marketplace blocks the browser session,
-  fall back to curl/API methods or try a different marketplace.
-- Some marketplaces have a search API even if the main page is a
-   SPA. Check `https://skills.sh/api/search?q=<keyword>` or similar
-  before falling through to the browser.
-- Results are sorted by install count, which biases toward older
-  skills. Check the last few pages for newer entries.
-
-### 2.6 General Web Research
-
-When structured marketplaces return nothing, use general-purpose
-web research to find skills through search engines, blog posts,
-documentation, and community discussions. This is the widest net
-and the final fallback before building from scratch.
-
-**Search patterns:**
-
-```
-"<domain>" SKILL.md
-"<domain>" agent skill
-"<domain>" agentskills.io
-site:github.com "<domain>" SKILL.md
-"<domain>" terminal multiplexer  (when the exact domain term is obscure)
-best agent skill for "<domain>"
-```
-
-**Sources to check:**
-
-| Source | Search method | Notes |
-|--------|---------------|-------|
-| GitHub code search | API or browser | Search for `SKILL.md` + keyword. Some repos don't use agentskills.io format but still contain useful instructions. |
-| GitHub topic search | `https://github.com/topics/<topic>` | Browse repos by topic tag (e.g., `agent-skill`, `claude-skill`). |
-| Blog posts / tutorials | Browser search engine | Agents and their skills are often described in blog posts that link to or describe the skill. |
-| Platform documentation | Vendor docs (curated) | Official skill registries (Anthropic, OpenAI Codex, Gemini CLI) may list skills not indexed by third-party marketplaces. |
-| Community discussion | Discord/forum archives | New skills often appear in community channels before they reach marketplaces. |
-
-**Workflow:**
-
-1. Search for `"<keyword>" SKILL.md` across multiple sources
-2. For each result, evaluate whether it contains agentskills.io
-   frontmatter or usable skill instructions
-3. Apply the evaluation rubric (section 4)
-4. If the best result is a blog post that describes a skill without
-   providing a SKILL.md file, note the approach for section 3
-   (skill creation fallback) rather than recommending the post
-   directly
-
----
-
-## Section 3: Skill Creation Fallback
-
-When no existing skill matches the task, build one from scratch.
-
-### 3.1 Minimal SKILL.md Template
+Minimal structure:
 
 ```yaml
 ---
 name: my-skill-name
-description: What this skill does and when to use it.
+description: What this skill does and when to use it, including concrete triggers.
 ---
+
 # My Skill Name
 
-## Purpose
-One paragraph explaining the problem this skill solves.
+## Workflow
 
-## Instructions
-Step-by-step instructions the agent should follow.
-
-## Commands
-Any relevant CLI commands, code blocks, or examples.
+1. Do the first essential action.
+2. Inspect or validate the relevant artifact.
+3. Apply the domain-specific procedure.
+4. Verify the result.
 
 ## Pitfalls
-Known issues, gotchas, or edge cases to watch for.
+
+- Name the edge cases that would otherwise be missed.
 ```
 
-### 3.2 Placement
-
-Copy the skill directory to your agent's skills directory:
-
-| Agent            | Skills directory         |
-|------------------|--------------------------|
-| agentskills.io    | `.agents/skills/` (cross-platform) |
-| Claude Code      | `.claude/skills/`                 |
-| Codex CLI        | `.codex/skills/`                  |
-| Gemini CLI       | `.gemini/skills/`                 |
-| Cursor           | `.cursor/rules/`                  |
-
-Check your agent's documentation -- discovery paths vary.
-
----
-
-## Section 4: Evaluation Rubric
-
-Before proposing a skill to the user, evaluate each candidate
-against these criteria.
-
-### 4.1 Checklist
-
-- [ ] **Name:** Is it descriptive enough to understand the domain?
-- [ ] **Description:** Does it explicitly mention the user's task or
-      domain? (Not just a generic match)
-- [ ] **Source trust:** Official > GitHub/verified > community > unknown
-- [ ] **Freshness:** When was the catalog last updated? Note staleness
-      if >2 weeks.
-- [ ] **Keyword expansion:** Did you search for acronyms, short forms,
-      and aliases alongside the primary keyword? (e.g., "js" alongside
-      "javascript", "k8s" alongside "kubernetes")
-- [ ] **Search depth:** Did the search method reach all levels of
-      the skills directory? (Filesystem methods only — JSON indexes
-      are depth-independent)
-- [ ] **Alternatives:** Check if multiple skills cover the same
-      territory. Prefer the one with clearer instructions.
-- [ ] **Format check:** Does it follow the agentskills.io standard?
-      (Must have `name` + `description` frontmatter)
-- [ ] **Compatibility:** Does the skill declare a `compatibility` field
-      that might limit which agents can use it?
-
-### 4.2 Tiered Recommendation
-
-Classify each candidate into one of three tiers:
-
-| Tier | Criteria | Action |
-|------|----------|--------|
-| **Direct hit** | Name and description clearly match the task. Source is trusted. | Recommend first. |
-| **Partial match** | Covers a related domain but isn't a precise match. | Consider if no direct hit exists. Note the gap. |
-| **Off-domain** | Unrelated to the task. | Skip. Document as excluded with brief reason. |
-
-### 4.3 Recommendation Template
-
-```
-I searched [source] for "[keyword]" and found [N] matches.
-
-Top recommendation: `[skill-name]`
-  What it does: [description]
-  Source trust: [official / github / community]
-  Why: [reason it fits this task]
-
-Alternatives: [other-matching-skills]
-
-If none fit, I can build a minimal skill from the methodology's
-creation fallback (Section 3).
-```
-
-### 4.4 Project-Portfolio Mapping
-
-When evaluating a pool of candidates against active projects:
-
-1. Inventory active projects and their primary purpose
-2. Map each skill to a specific project
-3. Check if an existing installed skill already covers this territory
-4. Tier by impact: direct need > useful improvement > already covered
-5. Recommend with project-specific rationale
-
----
-
-## Section 5: Discovery Patterns
-
-### Pattern 1: Task-to-Keyword Mapping
-
-```
-Task: "Set up CI/CD pipeline"
-Keywords: "ci", "cd", "pipeline", "github actions"
-```
-
-Map the task to 2-3 core nouns. Avoid filler words ("how to",
-"show me", "all the").
-
-**Then expand each keyword** for acronyms, abbreviations, and short
-forms (see §1.2 step 2). This is the most commonly missed step in
-the methodology — it turns a zero-result search into a match.
-
-### Pattern 2: Category Expansion
-
-When you find one skill in a domain, expand to find related ones:
-
-```
-Found: github-pr-workflow
-Expand search for: "github", "pull-request", "code-review", "git"
-```
-
-### Pattern 3: Stack-Based Discovery
-
-For multi-stack tasks, use §1.5: search each stack component
-separately, then prefer skills that cover the intersection. If no
-multi-stack skill exists, recommend one skill per stack component.
-
-### Pattern 4: Depth Verification
-
-After a filesystem search returns zero results, verify depth
-coverage before concluding no matches exist:
-
-1. **Count the SKILL.md files discovered:**
-   ```bash
-   find skills -name SKILL.md | wc -l
-   ```
-2. **Compare against total files in the directory:**
-   ```bash
-   find skills -name SKILL.md | wc -l
-   # vs
-   ls -d skills/*/SKILL.md skills/*/*/SKILL.md 2>/dev/null | wc -l
-   ```
-   If the counts mismatch, your glob is too shallow (see §1.2
-   catalog depth warning).
-3. **Test with a known-present skill:** if you know a specific
-   skill exists (e.g., `node-inspect-debugger`), search for its
-   exact name. If it doesn't appear, your search depth is wrong.
-4. **Expand your search method** before falling back to higher
-   stages of the fallback chain.
-
-### Pattern 5: Web Research Fallback
-
-When all structured sources return nothing, research the web
-using search engines, GitHub topic pages, and vendor docs:
-
-```
-Task: "find ssh skill"
-Marketplace returns: 40 results but all are off-domain or partial
-→ Web research search terms:
-  "ssh terminal multiplexer SKILL.md"
-  "ssh remote access agent skill"
-  site:github.com "ssh" "SKILL.md"
-→ Check vendor skill registries:
-  https://github.com/anthropics/claude-plugins-official (search repo for "ssh")
-  https://github.com/openai/skills (browse catalog)
-  https://github.com/topics/agent-skill (browse by topic)
-```
-
-For each web result, apply the same evaluation rubric (§4). A blog
-post describing a skill approach without providing SKILL.md is a
-signal for §3 (skill creation fallback), not a recommendation.
-
----
-
-## Section 6: Task-to-Search-Term Examples
-
-These are user-task keywords, not necessarily catalog tags. Use them
-to seed name/description searches when structured tags are absent or
-sparse.
-
-| Task keyword    | Also try               | What to find                          |
-|-----------------|------------------------|---------------------------------------|
-| python          | `py`                   | Python dev, debugging, testing skills |
-| javascript      | `js`, `node`, `nodejs` | JS/TS, Node.js, frontend development |
-| docker          | —                      | Container best practices, deployment  |
-| api             | `rest`, `graphql`      | REST API design, endpoints, GraphQL   |
-| security        | `auth`, `hardening`    | Auth, secrets scanning, hardening     |
-| testing         | `tdd`, `unit`          | TDD, unit tests, integration tests    |
-| database        | `sql`, `postgres`      | SQL, Postgres, migrations             |
-| react           | `jsx`, `frontend`      | React best practices, frontend design |
-| typescript      | `ts`, `tsx`            | TypeScript development, type safety   |
-| cli             | `shell`, `terminal`    | Command-line tools, shell scripting   |
-| git             | —                      | Git workflows, branching strategies   |
-| cloud           | `aws`, `azure`, `gcp`  | Cloud infrastructure, deployment      |
-| data            | `pandas`, `etl`        | Data analysis, pipelines              |
-| video           | `ffmpeg`               | Video processing, encoding            |
-| audio           | `transcription`        | Audio processing, speech-to-text      |
-| automation      | `workflow`, `ci`, `cd` | Workflow automation, CI/CD            |
-| writing         | `docs`, `content`      | Content writing, documentation        |
-
----
-
-## Section 7: Runtime Verification
-
-External sources drift. Before relying on a marketplace or source
-URL, verify it is reachable.
-
-**Method:** Use the agent's native HTTP/query capability to check each
-source before searching it. If shell access is available, one example is:
-
-```bash
-curl -s -o /dev/null -w "%{http_code}" <url>
-```
-
-A 200 or 3xx response means the source is reachable. 4xx or 5xx means
-skip or fall back.
-
-**URLs to verify (best-effort, last checked 2026-07-04):**
-
-| Source        | URL                            | Status |
-|---------------|--------------------------------|--------|
-| skills.sh     | https://skills.sh/             | 200    |
-| agentskill.sh | https://agentskill.sh/         | 200    |
-| SkillsMP      | https://skillsmp.com/          | 200    |
-| ClawHub       | https://clawhub.ai/            | 200    |
-| skilldock.io  | https://skilldock.io/          | 200    |
-| agentskills   | https://agentskills.io/        | 200    |
-
-**Note:** External source status can change between sessions. Treat
-recorded HTTP statuses as examples only; verify every source at query
-time before relying on it.
-
-### When All Sources Are Exhausted
-
-If no source returns a match and the search was thorough:
-
-1. Report what was searched (catalog, featured, marketplaces,
-   browser searches, web research) and which stages were skipped
-   due to missing tooling
-2. Check if you have browser tooling that wasn't used — many
-   marketplaces require a browser to render search results
-   (see §2.5)
-3. Offer to build a minimal skill (Section 3)
-4. If the skill already exists somewhere not indexed, note the gap
-   for future catalog ingestion
-
----
-
-## Section 8: Sources & Methodology Evidence
-
-This methodology was built from live research on 2026-07-01:
-
-- **Hub catalog scan:** 2,460 indexed skills across 7 sources
-- **agentskills.io client count:** [42 confirmed via home page carousel](https://agentskills.io/home)
-- **External marketplaces:** 7 reachable (verified), 1 Showcase page (resolved 404→200 same day)
-- **`hub-explorer` skill (archived):** Source for the search/evaluate/recommend
-  pipeline (Hermes-specific references removed for portability)
-
-This methodology is designed to be self-verifying — it teaches you
-how to check source freshness at runtime rather than relying on
-hand-maintained tables that rot.
-
----
-
-## Section 9: What This Skill Does NOT Do
-
-- Does **not** ship a collection of skills
-- Does **not** hardcode catalog paths or source URLs (it teaches
-  runtime verification instead)
-- Does **not** include platform-specific adapter files
-- Does **not** generate indexes or catalogs
-- Does **not** maintain an external source table that drifts
-
-Its only job is to teach any agent the discovery pipeline. The
-agent executes the pipeline using its own tools.
-
----
-
-## Appendix: Reference Skills
-
-These are known, maintained skills that the methodology references or
-recommends. This is not a catalog — it's a short list of skills this
-methodology has evaluated and can point to as known-good examples.
-Add entries here when a skill is consistently needed across sessions.
-
-- **[tmux](https://www.skills.sh/steipete/clawdis/tmux)** —
-  Tmux terminal multiplexer skill: session/panel management, send keys,
-  capture output, prompt checks. ~5K installs. Security-audited (Gen AI
-  Trust Hub, Socket, Snyk). Source: `steipete/clawdis` on GitHub. Install
-  via `npx skills add https://github.com/steipete/clawdis --skill tmux`.
-
-- **[CodeSigils/agents-markdown-formatter/markdown-formatter](https://github.com/CodeSigils/agents-markdown-formatter)** —
-  GFM/MDX Markdown formatter with table, pipe, and fence structural
-  guards. Zero npm dependencies. Install by adding the repo's skill
-  directory to your agent's skills path (see §3.2).
+For Codex-authored skills, keep frontmatter to `name` and `description` unless
+the target platform explicitly requires more fields.
+
+## Runtime Notes
+
+External sources drift. Treat marketplace names, counts, URLs, API shapes, and
+install commands as current only after verification. Static research snapshots
+are useful for orientation, but recommendations should be based on what the
+agent can verify during the task.
+
+If the environment has no network access, still search local and installed
+skills thoroughly, then report that external marketplace and GitHub stages were
+not checked.
