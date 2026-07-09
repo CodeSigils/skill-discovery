@@ -35,7 +35,7 @@ Then make the skill discoverable. Choose your platform:
 ```yaml
 skills:
   external_dirs:
-    - /path/to/skill-discovery/skills/skill-discovery
+    - /path/to/skill-discovery/skills
 ```
 
 This makes skill changes visible without reinstalling and survives
@@ -44,7 +44,7 @@ Hermes upgrades.
 **Alternative:** Copy the skill directly:
 
 ```bash
-cp -r skill-discovery/skills/skill-discovery ~/.hermes/skills/
+cp -r skills/skill-discovery ~/.hermes/skills/
 ```
 </details>
 
