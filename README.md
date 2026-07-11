@@ -29,23 +29,21 @@ Then make the skill discoverable. Choose your platform:
 <details>
 <summary><b>Hermes Agent</b></summary>
 
-**Recommended:** Add the repo path to `skills.external_dirs` in
-`~/.hermes/config.yaml`:
-
+**Recommended for development — clone the repo and add to `external_dirs`:**
 ```yaml
 skills:
   external_dirs:
     - /path/to/skill-discovery/skills
 ```
-
 This makes skill changes visible without reinstalling and survives
 Hermes upgrades.
 
-**Alternative:** Copy the skill directly:
-
+**For end users — install from hub:**
 ```bash
-cp -r skills/skill-discovery ~/.hermes/skills/
+hermes skills install CodeSigils/skill-discovery
 ```
+
+*Other agents: see sections below for their native setup commands.*
 </details>
 
 <details>
