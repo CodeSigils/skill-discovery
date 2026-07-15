@@ -1,19 +1,5 @@
 #!/usr/bin/env python3
-"""Verify evidence URLs against the documented expected state.
-
-The URL list lives in docs/evidence-urls.json so the research evidence base has
-one machine-readable source of truth. If the doc adds or removes URLs, update
-that manifest instead of editing this script's code.
-
-Usage:
-  python3 .github/scripts/verify-marketplace-urls.py
-  # Windows: py -3 .github/scripts/verify-marketplace-urls.py
-  # Virtualenvs may also support: python .github/scripts/verify-marketplace-urls.py
-
-Outputs a table of URL -> final status with drift annotations.
-Exit code 0 = all URLs match documented expected state.
-Exit code 1 = one or more URLs differs from the manifest.
-"""
+"""Monitor evidence URLs, redirects, JSON syntax, and minimal response shapes."""
 
 from __future__ import annotations
 
@@ -21,6 +7,7 @@ import json
 import sys
 import urllib.error
 import urllib.request
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -28,121 +15,136 @@ ROOT = Path(__file__).resolve().parents[2]
 MANIFEST_PATH = ROOT / "docs" / "evidence-urls.json"
 
 
-def load_manifest(path: Path = MANIFEST_PATH) -> list[dict[str, Any]]:
-    """Load URL entries from the evidence manifest."""
-    try:
-        manifest = json.loads(path.read_text(encoding="utf-8"))
-    except OSError as exc:
-        raise SystemExit(f"FAIL: could not read {path}: {exc}") from exc
-    except json.JSONDecodeError as exc:
-        raise SystemExit(f"FAIL: invalid JSON in {path}: {exc}") from exc
+class RedirectTracker(urllib.request.HTTPRedirectHandler):
+    """Count redirects followed by one opener invocation."""
 
-    urls = manifest.get("urls")
-    if not isinstance(urls, list):
+    def __init__(self) -> None:
+        super().__init__()
+        self.count = 0
+
+    def redirect_request(self, request, file_pointer, code, message, headers, new_url):
+        self.count += 1
+        return super().redirect_request(request, file_pointer, code, message, headers, new_url)
+
+
+@dataclass(frozen=True)
+class CheckResult:
+    status: int | str
+    redirects: int
+    content: str
+
+
+def load_manifest(path: Path = MANIFEST_PATH) -> list[dict[str, Any]]:
+    """Load and validate the manifest envelope."""
+    try:
+        document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise SystemExit(f"FAIL: could not load {path}: {exc}") from exc
+    entries = document.get("urls") if isinstance(document, dict) else None
+    if not isinstance(entries, list):
         raise SystemExit(f"FAIL: {path} must contain a top-level 'urls' list")
-    return urls
+    return entries
 
 
 def validate_entry(entry: dict[str, Any]) -> None:
-    """Validate one manifest entry before using it."""
-    required = ("name", "url", "expected_statuses")
-    missing = [key for key in required if key not in entry]
-    if missing:
-        raise ValueError(f"missing required field(s): {', '.join(missing)}")
-    if not isinstance(entry["expected_statuses"], list) or not entry["expected_statuses"]:
-        raise ValueError("expected_statuses must be a non-empty list")
-    for status in entry["expected_statuses"]:
-        if not isinstance(status, int):
-            raise ValueError("expected_statuses must contain integers")
+    """Validate one manifest entry before network access."""
+    for field in ("name", "url", "expected_statuses", "source_section"):
+        if field not in entry:
+            raise ValueError(f"missing required field '{field}'")
+    if not isinstance(entry["name"], str) or not isinstance(entry["url"], str):
+        raise ValueError("name and url must be strings")
+    statuses = entry["expected_statuses"]
+    if not isinstance(statuses, list) or not statuses or not all(isinstance(value, int) for value in statuses):
+        raise ValueError("expected_statuses must be a non-empty integer list")
+    schema = entry.get("json_schema")
+    if schema is not None:
+        if entry.get("content_type") != "json" or not isinstance(schema, dict):
+            raise ValueError("json_schema requires content_type=json and an object schema")
+        if schema.get("type") not in {"array", "object"}:
+            raise ValueError("json_schema.type must be 'array' or 'object'")
+        required = schema.get("required_keys", [])
+        if not isinstance(required, list) or not all(isinstance(key, str) for key in required):
+            raise ValueError("json_schema.required_keys must be a string list")
 
 
-def check_url(url: str, content_type: str | None = None) -> tuple[int | str, int, str | None]:
-    """Return (final_status_code, redirect_count, content_or_error) for one URL.
+def validate_json_shape(value: Any, schema: dict[str, Any] | None) -> str:
+    """Return a compact semantic validation result."""
+    if schema is None:
+        return "VALID_JSON"
+    expected = schema["type"]
+    if expected == "array" and not isinstance(value, list):
+        return "SCHEMA:expected-array"
+    if expected == "object" and not isinstance(value, dict):
+        return "SCHEMA:expected-object"
+    if isinstance(value, dict):
+        missing = [key for key in schema.get("required_keys", []) if key not in value]
+        if missing:
+            return f"SCHEMA:missing-{','.join(missing)}"
+    return "VALID_SCHEMA"
 
-    When content_type is "json", captures response body and validates JSON.
-    """
+
+def check_url(entry: dict[str, Any], timeout: int = 15) -> CheckResult:
+    """Fetch one URL and validate JSON when requested."""
+    tracker = RedirectTracker()
+    opener = urllib.request.build_opener(tracker)
     request = urllib.request.Request(
-        url,
+        entry["url"],
         method="GET",
-        headers={"User-Agent": "skill-discovery-url-verify"},
+        headers={"User-Agent": "skill-discovery-contract-monitor/2"},
     )
-
     try:
-        with urllib.request.urlopen(request, timeout=10) as response:
-            status = response.status
-            redirect_count = len(response.headers.get("Location", "").split("\n")) if "Location" in response.headers else 0
-            # For a more accurate redirect count, we'd need to track intermediate responses
-            # urllib follows redirects automatically, so we just check final status
-
-            if content_type == "json":
-                body = response.read().decode("utf-8")
-                try:
-                    json.loads(body)
-                    return status, redirect_count, "VALID"
-                except (json.JSONDecodeError, ValueError):
-                    return status, redirect_count, "INVALID_JSON"
-            return status, redirect_count, None
-
+        with opener.open(request, timeout=timeout) as response:
+            body = response.read() if entry.get("content_type") == "json" else b""
+            if entry.get("content_type") != "json":
+                return CheckResult(response.status, tracker.count, "-")
+            try:
+                value = json.loads(body.decode("utf-8"))
+            except (UnicodeDecodeError, json.JSONDecodeError):
+                return CheckResult(response.status, tracker.count, "INVALID_JSON")
+            return CheckResult(
+                response.status,
+                tracker.count,
+                validate_json_shape(value, entry.get("json_schema")),
+            )
     except urllib.error.HTTPError as exc:
-        return exc.code, 0, f"HTTP {exc.code}"
-    except urllib.error.URLError as exc:
-        return "ERROR", 0, str(exc.reason)
-    except TimeoutError:
-        return "TIMEOUT", 0, "timeout"
-    except ValueError as exc:
-        return "ERROR", 0, f"invalid URL: {exc}"
+        return CheckResult(exc.code, tracker.count, f"HTTP_{exc.code}")
+    except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+        return CheckResult("ERROR", tracker.count, str(exc))
 
 
-def classify_status(status: int | str, expected_statuses: list[int]) -> str:
-    """Return OK when status matches the manifest, else DRIFT."""
-    if isinstance(status, int) and status in expected_statuses:
-        return "OK"
-    return "DRIFT"
+def result_is_valid(entry: dict[str, Any], result: CheckResult) -> bool:
+    """Return whether both status and optional content contract match."""
+    if result.status not in entry["expected_statuses"]:
+        return False
+    if entry.get("content_type") == "json":
+        return result.content in {"VALID_JSON", "VALID_SCHEMA"}
+    return True
 
 
 def main() -> int:
+    """Run scheduled external contract monitoring."""
     entries = load_manifest()
-
-    print("=== Evidence URL Re-verification ===")
-    print(f"{'Name':<30s} {'Status':<8s} {'Expected':<12s} {'Redirects':<9s} {'Content':<12s} {'Note':<10s}")
-    print("-" * 90)
-
-    drift_found = False
-    for entry in sorted(entries, key=lambda item: item["name"].lower()):
+    failed = False
+    print(f"{'Name':<44} {'Status':<8} {'Redirects':<10} {'Content':<28} Result")
+    print("-" * 105)
+    for entry in sorted(entries, key=lambda value: str(value.get("name", "")).casefold()):
         try:
             validate_entry(entry)
         except ValueError as exc:
-            print(f"  {entry.get('name', '<unnamed>'):<30s} {'-':<8s} {'-':<12s} {'-':<9s} {'-':<12s} MANIFEST: {exc}")
-            drift_found = True
+            print(f"{entry.get('name', '<unnamed>'):<44} {'-':<8} {'-':<10} {'-':<28} MANIFEST: {exc}")
+            failed = True
             continue
-
-        content_type = entry.get("content_type")
-        status, redirects, content = check_url(entry["url"], content_type)
-        expected = entry["expected_statuses"]
-        note = classify_status(status, expected)
-        if note == "DRIFT":
-            drift_found = True
-
-        # Content check trumps status check for JSON endpoints
-        content_label = content or "—"
-        if content_type == "json" and content == "INVALID_JSON":
-            note = "BROKEN"
-            drift_found = True
-
-        expected_text = "/".join(str(code) for code in expected)
-        marker = "  ← DRIFT" if note == "DRIFT" else ""
-        marker = "  ← BROKEN" if note == "BROKEN" else marker
+        result = check_url(entry)
+        valid = result_is_valid(entry, result)
+        failed = failed or not valid
         print(
-            f"  {entry['name']:<30s} {str(status):<8s} {expected_text:<12s} "
-            f"{str(redirects):<9s} {content_label:<12s} {note:<10s}{marker}"
+            f"{entry['name']:<44} {str(result.status):<8} {result.redirects:<10} "
+            f"{result.content[:28]:<28} {'OK' if valid else 'DRIFT'}"
         )
-
-    if drift_found:
-        print("\nRESULT: Drift or broken content detected — one or more URLs differ from docs/evidence-urls.json.")
-        print("Update the manifest and research doc together after investigating the changed URL state.")
+    if failed:
+        print("\nFAIL: one or more external contracts drifted")
         return 1
-
-    print("\nRESULT: All URLs match documented expected state and content validates OK")
+    print("\nPASS: external status and minimal response contracts match")
     return 0
 
 

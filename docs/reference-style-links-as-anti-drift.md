@@ -1,6 +1,8 @@
 ---
 status: reference
 date: 2026-07-08
+updated: 2026-07-15
+expires: 2027-07-15
 purpose: >
   Anti-drift note: reference-style Markdown links ([label] in prose,
   [label]: url at bottom) reduce URL maintenance surfaces from N to 1.

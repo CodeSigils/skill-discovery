@@ -1,156 +1,189 @@
 #!/usr/bin/env python3
-"""Validate docs/ frontmatter: required fields, expiry check, basic integrity.
-
-Checks:
-  - Required frontmatter fields present (status, date, purpose)
-  - expires field exists (or warn if missing)
-  - YAML parses correctly
-  - No unlabelled code fences (maintainability)
-"""
+"""Validate repository documentation and the shipped Agent Skills payload."""
 
 from __future__ import annotations
 
-import os
 import re
 import sys
-from datetime import datetime, date
+from datetime import date, datetime
 from pathlib import Path
 
 import yaml
 
-DOCS_DIR = Path(__file__).resolve().parents[2] / "docs"
-
-# Regex to match frontmatter between --- delimiters
-FRONTMATTER_RE = re.compile(r"^---\n(.*?)\n---", re.DOTALL)
-# Regex to match code fences with optional language label
-FENCE_RE = re.compile(r"^```(\w*)$")
+ROOT = Path(__file__).resolve().parents[2]
+DOCS_DIR = ROOT / "docs"
+SKILLS_DIR = ROOT / "skills"
+README_PATH = ROOT / "README.md"
+FRONTMATTER_RE = re.compile(r"\A---\r?\n(.*?)\r?\n---(?:\r?\n|\Z)", re.DOTALL)
+FENCE_RE = re.compile(r"^```([^`]*)$")
+MARKDOWN_LINK_RE = re.compile(r"\[[^]]+\]\(([^)]+)\)")
+SKILL_NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
 def parse_frontmatter(content: str) -> dict | None:
-    """Parse YAML frontmatter from markdown content. Returns None if missing."""
+    """Return parsed leading YAML frontmatter, or None."""
     match = FRONTMATTER_RE.search(content)
     if not match:
         return None
     try:
-        fm = yaml.safe_load(match.group(1))
+        frontmatter = yaml.safe_load(match.group(1))
     except yaml.YAMLError:
         return None
-    return fm if isinstance(fm, dict) else None
+    return frontmatter if isinstance(frontmatter, dict) else None
 
 
-def check_expiry(fm: dict, fname: str) -> tuple[list[str], list[str]]:
-    """Check expires field. Returns (errors, warnings)."""
-    errors = []
-    warnings = []
-
-    if "expires" not in fm:
-        warnings.append(f"{fname}: no 'expires' field — add one for freshness guidance")
-        return errors, warnings
-
-    expires_val = fm["expires"]
-    expiry: datetime | None = None
-
-    if isinstance(expires_val, date) and not isinstance(expires_val, datetime):
-        expiry = datetime.combine(expires_val, datetime.min.time())
-    elif isinstance(expires_val, str):
+def check_expiry(frontmatter: dict, label: str) -> list[str]:
+    """Require a valid, non-expired expiry date for dated research docs."""
+    value = frontmatter.get("expires")
+    if value is None:
+        return [f"{label}: missing required field 'expires'"]
+    if isinstance(value, datetime):
+        expiry = value.date()
+    elif isinstance(value, date):
+        expiry = value
+    elif isinstance(value, str):
         try:
-            expiry = datetime.strptime(expires_val, "%Y-%m-%d")
+            expiry = date.fromisoformat(value)
         except ValueError:
-            errors.append(f"{fname}: 'expires' not a valid YYYY-MM-DD date")
-            return errors, warnings
-    elif isinstance(expires_val, datetime):
-        expiry = expires_val
+            return [f"{label}: 'expires' is not YYYY-MM-DD"]
     else:
-        errors.append(f"{fname}: 'expires' not a date or string")
-        return errors, warnings
-
-    if expiry and expiry < datetime.now():
-        warnings.append(f"{fname}: expired on {fm['expires']}")
-
-    return errors, warnings
+        return [f"{label}: 'expires' is not a date or string"]
+    if expiry < date.today():
+        return [f"{label}: expired on {expiry.isoformat()}"]
+    return []
 
 
-def check_fences(content: str, fname: str) -> list[str]:
-    """Check for unlabelled code fences. Returns list of warnings."""
-    warnings = []
-    lines = content.split("\n")
-    fences: list[tuple[int, str]] = []  # (line_number, language)
-
-    for i, line in enumerate(lines):
+def check_fences(content: str, label: str) -> list[str]:
+    """Require matched fences and a language on opening fences."""
+    errors: list[str] = []
+    opening: tuple[int, str] | None = None
+    for line_number, line in enumerate(content.splitlines(), start=1):
         match = FENCE_RE.match(line)
-        if match:
-            # Skip frontmatter delimiters (---)
-            if line.startswith("---"):
-                continue
-            lang = match.group(1).strip()
-            fences.append((i + 1, lang))
+        if not match:
+            continue
+        if opening is None:
+            language = match.group(1).strip()
+            opening = (line_number, language)
+            if not language:
+                errors.append(f"{label}:{line_number}: opening code fence has no language")
+        else:
+            opening = None
+    if opening is not None:
+        errors.append(f"{label}:{opening[0]}: unmatched code fence")
+    return errors
 
-    # Pair up opening/closing fences
-    for i in range(0, len(fences), 2):
-        if i + 1 >= len(fences):
-            warnings.append(f"{fname}: unmatched code fence at line {fences[i][0]}")
-            break
-        open_line, lang = fences[i]
-        close_line, _ = fences[i + 1]
-        if not lang:
-            warnings.append(f"{fname}: unlabelled code fence at line {open_line} (closes at {close_line})")
 
-    return warnings
+def check_relative_links(path: Path, content: str) -> list[str]:
+    """Ensure relative Markdown links resolve inside the repository."""
+    errors: list[str] = []
+    for target in MARKDOWN_LINK_RE.findall(content):
+        target = target.split("#", 1)[0].strip()
+        if not target or "://" in target or target.startswith(("#", "mailto:")):
+            continue
+        resolved = (path.parent / target).resolve()
+        try:
+            resolved.relative_to(ROOT.resolve())
+        except ValueError:
+            errors.append(f"{path.relative_to(ROOT)}: link escapes repository: {target}")
+            continue
+        if not resolved.exists():
+            errors.append(f"{path.relative_to(ROOT)}: missing link target: {target}")
+    return errors
+
+
+def validate_research_doc(path: Path) -> list[str]:
+    """Validate one dated repository-only research document."""
+    label = str(path.relative_to(ROOT))
+    content = path.read_text(encoding="utf-8")
+    frontmatter = parse_frontmatter(content)
+    if frontmatter is None:
+        return [f"{label}: missing or invalid YAML frontmatter"]
+    errors = [
+        f"{label}: missing required field '{field}'"
+        for field in ("status", "date", "purpose")
+        if field not in frontmatter
+    ]
+    errors.extend(check_expiry(frontmatter, label))
+    errors.extend(check_fences(content, label))
+    errors.extend(check_relative_links(path, content))
+    return errors
+
+
+def validate_skill(path: Path) -> list[str]:
+    """Validate Agent Skills frontmatter, size, references, and fences."""
+    label = str(path.relative_to(ROOT))
+    content = path.read_text(encoding="utf-8")
+    frontmatter = parse_frontmatter(content)
+    if frontmatter is None:
+        return [f"{label}: missing or invalid YAML frontmatter"]
+
+    errors: list[str] = []
+    name = frontmatter.get("name")
+    description = frontmatter.get("description")
+    if not isinstance(name, str) or not SKILL_NAME_RE.fullmatch(name):
+        errors.append(f"{label}: invalid or missing skill name")
+    elif name != path.parent.name:
+        errors.append(f"{label}: name '{name}' does not match directory '{path.parent.name}'")
+    if not isinstance(description, str) or not description.strip():
+        errors.append(f"{label}: missing non-empty description")
+    elif len(description) > 1024:
+        errors.append(f"{label}: description exceeds 1024 characters")
+    line_count = len(content.splitlines())
+    if line_count > 500:
+        errors.append(f"{label}: {line_count} lines exceeds the 500-line payload budget")
+    errors.extend(check_fences(content, label))
+    errors.extend(check_relative_links(path, content))
+    return errors
+
+
+def validate_skill_reference(path: Path) -> list[str]:
+    """Validate one supporting Markdown file in a shipped skill payload."""
+    label = str(path.relative_to(ROOT))
+    content = path.read_text(encoding="utf-8")
+    errors = check_fences(content, label)
+    errors.extend(check_relative_links(path, content))
+    return errors
 
 
 def main() -> int:
+    """Run all deterministic Markdown and payload checks."""
     errors: list[str] = []
-    warnings: list[str] = []
+    paths = sorted(DOCS_DIR.glob("*.md"))
+    skills = sorted(SKILLS_DIR.glob("*/SKILL.md"))
+    skill_references = sorted(
+        path for path in SKILLS_DIR.rglob("*.md") if path.name != "SKILL.md"
+    )
+    if not paths:
+        errors.append("docs: no Markdown research documents found")
+    if not skills:
+        errors.append("skills: no SKILL.md payload found")
 
-    if not DOCS_DIR.exists():
-        print(f"FAIL: docs directory not found at {DOCS_DIR}")
-        return 1
+    for path in paths:
+        errors.extend(validate_research_doc(path))
+        print(f"CHECK {path.relative_to(ROOT)}")
+    for path in skills:
+        errors.extend(validate_skill(path))
+        print(f"CHECK {path.relative_to(ROOT)}")
+    for path in skill_references:
+        errors.extend(validate_skill_reference(path))
+        print(f"CHECK {path.relative_to(ROOT)}")
 
-    for fname in sorted(os.listdir(DOCS_DIR)):
-        if not fname.endswith(".md"):
-            continue
-        path = DOCS_DIR / fname
-        try:
-            content = path.read_text(encoding="utf-8")
-        except OSError as exc:
-            errors.append(f"{fname}: could not read: {exc}")
-            continue
-
-        fm = parse_frontmatter(content)
-        if fm is None:
-            errors.append(f"{fname}: missing or invalid YAML frontmatter")
-            continue
-
-        # Required fields
-        for field in ("status", "date", "purpose"):
-            if field not in fm:
-                errors.append(f"{fname}: missing required field '{field}'")
-
-        # Expiry check
-        e, w = check_expiry(fm, fname)
-        errors.extend(e)
-        warnings.extend(w)
-
-        # Fence check
-        warnings.extend(check_fences(content, fname))
-
-        print(f"  PASS  {fname}")
-
-    if warnings:
-        print("\nWarnings:")
-        for w in warnings:
-            print(f"  WARN  {w}")
+    if not README_PATH.exists():
+        errors.append("README.md: missing")
+    else:
+        readme = README_PATH.read_text(encoding="utf-8")
+        errors.extend(check_fences(readme, "README.md"))
+        errors.extend(check_relative_links(README_PATH, readme))
+        print("CHECK README.md")
 
     if errors:
-        print(f"\n{'=' * 50}")
-        for e in errors:
-            print(f"  FAIL  {e}")
+        print("\nFAIL: documentation or payload validation failed")
+        for error in errors:
+            print(f"  {error}")
         return 1
-
-    print("\nPASS: All docs valid")
+    print("\nPASS: documentation and shipped payload are valid")
     return 0
 
 
 if __name__ == "__main__":
-    from pathlib import Path
     sys.exit(main())

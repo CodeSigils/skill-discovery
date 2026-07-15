@@ -3,218 +3,112 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![agentskills.io](https://img.shields.io/badge/agentskills.io-v1-blue)](https://agentskills.io/specification)
 [![Skill](https://img.shields.io/badge/skill-discovery-purple)](skills/skill-discovery/SKILL.md)
-[![CI](https://github.com/CodeSigils/skill-discovery/workflows/validate/badge.svg)](https://github.com/CodeSigils/skill-discovery/actions)
+[![CI](https://github.com/CodeSigils/skill-discovery/actions/workflows/ci.yml/badge.svg)](https://github.com/CodeSigils/skill-discovery/actions/workflows/ci.yml)
 
-**A portable discovery methodology for agent skills.** This repo teaches
-any agentskills.io-compatible agent how to find the best skill for a task
--- scanning catalogs, marketplaces, and GitHub; evaluating candidates; and
-recommending the best match.
+A portable workflow for finding, inspecting, and recommending agent skills.
+It searches local installations and external catalogs, checks candidate safety
+and compatibility, and reports what it found without installing or creating
+anything unless the user explicitly asks.
 
-> This is a **methodology**, not a skill collection. It teaches agents
-> how to find skills. The hub already has 2,460 indexed skills -- a static
-> collection adds nothing next to that.
+This repository contains a methodology, not a static skill collection. Catalog
+sizes, client support, endpoints, and install commands change frequently, so the
+shipped workflow verifies volatile contracts at use time and keeps dated research
+outside the core instructions.
 
----
+## Quick start
 
-## Quick Start
-
-Clone this repo and tell your agent to load `skill-discovery`:
+Clone the repository:
 
 ```bash
 git clone --filter=blob:none https://github.com/CodeSigils/skill-discovery
 ```
 
-Then make the skill discoverable. Choose your platform:
+The clone exposes the skill at `.agents/skills/skill-discovery`, a symlink to the
+canonical `skills/skill-discovery` directory. Codex, Cursor, Gemini CLI, OpenCode,
+and GitHub Copilot support `.agents/skills` as a project location. Launch the
+client from this repository or copy the canonical directory into the appropriate
+project or user-level location.
 
-<details>
-<summary><b>Hermes Agent</b></summary>
+| Client | Project location | Notes |
+|---|---|---|
+| Codex | `.agents/skills/skill-discovery` | Scans from the working directory to the repository root. |
+| Claude Code | `.claude/skills/skill-discovery` | Native Agent Skills support. |
+| Cursor | `.agents/skills/skill-discovery` or `.cursor/skills/skill-discovery` | Native Agent Skills support; do not place the skill under `.cursor/rules`. |
+| OpenCode | `.agents/skills/skill-discovery` or `.opencode/skills/skill-discovery` | Also supports Claude-compatible locations. |
+| Gemini CLI | `.agents/skills/skill-discovery` or `.gemini/skills/skill-discovery` | Supports project and user scopes. |
+| GitHub Copilot | `.agents/skills/skill-discovery` or `.github/skills/skill-discovery` | Also supports `.claude/skills` and personal skill directories. |
 
-**Recommended for development — clone the repo and add to `external_dirs`:**
+For a generic Agent Skills client:
+
+```bash
+cp -R skill-discovery/skills/skill-discovery <client-skill-directory>/
+```
+
+### Hermes Agent
+
+For local development, point Hermes at the repository's canonical skills
+directory:
+
 ```yaml
 skills:
   external_dirs:
     - /path/to/skill-discovery/skills
 ```
-This makes skill changes visible without reinstalling and survives
-Hermes upgrades.
 
-**For end users — install from hub:**
-```bash
-hermes skills install CodeSigils/skill-discovery
-```
+The repository is not currently indexed in the Hermes hub, so no hub-install
+command is advertised. Clone plus `external_dirs` is the verified Hermes path
+until registration. Review the skill before enabling it; catalog registration is
+a later distribution step, not a prerequisite for local use.
 
-*Other agents: see sections below for their native setup commands.*
-</details>
+## Repository layout
 
-<details>
-<summary><b>Claude Code (Anthropic)</b></summary>
-
-```bash
-cp -r skill-discovery/skills/skill-discovery .claude/skills/
-```
-
-Claude Code discovers skills by scanning `.claude/skills/` for
-`SKILL.md` files.
-</details>
-
-<details>
-<summary><b>Codex CLI (OpenAI)</b></summary>
-
-```bash
-cp -r skill-discovery/skills/skill-discovery .codex/skills/
-```
-
-Codex CLI discovers skills in `.codex/skills/` via filesystem walk.
-</details>
-
-<details>
-<summary><b>OpenCode CLI</b></summary>
-
-```bash
-cp -r skill-discovery/skills/skill-discovery .opencode/skills/
-```
-
-Or create a symlink (zero-maintenance pointer):
-
-```bash
-ln -s /path/to/skill-discovery/skills/skill-discovery .opencode/skills/
-```
-</details>
-
-<details>
-<summary><b>Cursor</b></summary>
-
-Cursor uses `.cursor/rules/` for skill-like content:
-
-```bash
-cp -r skill-discovery/skills/skill-discovery .cursor/rules/
-```
-
-Note: Cursor applies rules as chat context, not via
-invocation-based discovery like CLI-focused agents.
-</details>
-
-<details>
-<summary><b>GitHub Copilot</b></summary>
-
-Copilot uses a plugin marketplace model rather than filesystem-based
-skill discovery. For platform-native skills, search the
-[awesome-copilot](https://github.com/topics/awesome-copilot) ecosystem.
-
-The methodology's content can be adapted as a Copilot extension,
-but direct SKILL.md loading is not natively supported.
-</details>
-
-<details>
-<summary><b>Gemini CLI (Google)</b></summary>
-
-```bash
-cp -r skill-discovery/skills/skill-discovery .agents/skills/
-```
-
-Gemini CLI explicitly supports `.agents/skills/` as a cross-tool path.
-</details>
-
-<details>
-<summary><b>Generic agentskills.io client</b></summary>
-
-Copy the skill to your agent's configured skills directory. Most
-clients that support the agentskills.io standard scan a `skills/`
-or `.agents/skills/` directory.
-
-```bash
-cp -r skill-discovery/skills/skill-discovery <your-skills-dir>/
-```
-</details>
-
-The repo also ships a `skill-discovery` symlink under `.agents/skills/`
-for clients that auto-scan that path. If your agent reads
-`.agents/skills/`, discovery is automatic after clone.
-
----
-
-## What This Repo Contains
-
-```
+```text
 skill-discovery/
-├── README.md                               # you are here
-├── SECURITY.md                             # vulnerability reporting
-├── LICENSE                                 # MIT
-├── .gitignore
-├── docs/
-│   ├── hub-marketplace-research.md  # evidence base
-│   └── evidence-urls.json                       # machine-checkable URL expectations
-├── skills/
-│   └── skill-discovery/
-│       └── SKILL.md                        # the methodology (~776 lines)
-├── .agents/
-│   └── skills/
-│       └── skill-discovery -> ../../skills/skill-discovery/  # symlink
-├── .github/
-│   ├── workflows/ci.yml                    # checkout → deps → 3 validation steps
-│   ├── scripts/ci-check.py                 # Hermes-reference gate (portability guard)
-│   ├── scripts/validate-docs.py            # frontmatter & expiry check for docs/
-│   └── scripts/verify-marketplace-urls.py  # URL drift detection (weekly cron + push)
+├── README.md
+├── SECURITY.md
+├── docs/                              # dated research and evidence manifest
+├── skills/skill-discovery/
+│   ├── SKILL.md                       # focused discovery workflow
+│   └── references/                    # loaded only when relevant
+├── .agents/skills/skill-discovery     # symlink to the canonical skill
+└── .github/
+    ├── scripts/                       # deterministic and network validators
+    └── workflows/ci.yml
 ```
 
-**12 files.** One skill. Three CI checks. Zero platform adapter files.
+The canonical payload is `skills/skill-discovery/`. The `.agents` entry is only
+a zero-copy discovery adapter; changes belong in the canonical directory.
 
----
+## What the methodology teaches
 
-## What This Repo Does NOT Include
+1. Search installed and repository-local skills first.
+2. Expand task keywords and inspect all relevant directory depths.
+3. Search documented catalog interfaces, then authenticated source search and
+   browser/web fallbacks.
+4. Read the complete candidate payload and evaluate provenance, behavior,
+   dependencies, permissions, freshness, compatibility, and task fit.
+5. Recommend candidates with evidence and disclosed gaps.
+6. Ask before installing a candidate or creating a replacement skill.
 
-| Excluded | Reason |
-|----------|--------|
-| Static skill collection | The hub already has 2,460 indexed skills — a collection adds nothing next to that number. |
-| Install scripts | Every platform provides native skill consumption paths. A script would compete and drift. |
-| Platform adapter files (`.claude/`, `.cursor/`, `.codex/` etc.) | User-side setup only. The repo ships only `skills/*/SKILL.md` and a single cross-tool symlink. |
-| index.json or plugin.json | No marketplace distribution. Filesystem discovery is sufficient at 1 skill. |
-| Hermes-specific references | Any `skill_view()` or `hermes` CLI reference would silently break on non-Hermes agents. CI catches this. |
-| Development artifacts (ADRs, review pipeline, architecture docs) | These stay in the source repo. This repo ships only the shipping surface. |
+## Evidence and validation
 
----
+[`docs/hub-marketplace-research.md`](docs/hub-marketplace-research.md) is a
+dated historical snapshot, not current product documentation. Its measurements
+must not be copied into recommendations without re-verification.
 
-## What the Methodology Teaches
+CI performs deterministic payload and documentation checks on pushes and pull
+requests. External URL monitoring runs on a schedule or manually so transient
+third-party outages do not make ordinary documentation changes flaky.
 
-When invoked, `skill-discovery` guides any agent through:
+The repository is directly installable by compatible GitHub skill installers,
+but it is not yet indexed by skills.sh or the Hermes hub. “Installable” and
+“discoverable in a catalog” are intentionally reported as separate states.
 
-1. **Freshness check** -- verify the catalog is up to date before searching
-2. **Keyword search** -- match tasks to skills by name, description, and tags
-3. **Keyword expansion** -- expand acronyms and short forms ("js" for "javascript", "k8s" for "kubernetes")
-4. **Depth-aware search** -- handle flat and categorized skill directories correctly
-5. **Source filtering** -- prefer official over community sources
-6. **Featured/curated source search** -- when keyword search is thin
-7. **Marketplace API search** -- query public JSON APIs (skills.sh, CrossAITools, GitHub) programmatically
-8. **Evaluation rubric** -- systematically assess each candidate, including depth and keyword-expansion checks
-9. **Skill creation fallback** -- build a minimal skill when nothing matches
+## Security
 
-The methodology is self-verifying -- it teaches agents to check
-source reachability at runtime rather than relying on hardcoded
-URLs that drift.
-
----
-
-## Evidence Base
-
-This methodology was formed from live research on 2026-07-01. Key findings:
-
-- **2,460 skills** indexed in the Hermes hub from 7 sources
-- **42 clients** confirmed on agentskills.io (home page carousel)
-- **7 external marketplaces** verified reachable
-- **agentskills.io Client Showcase: 404 at ~02:00 UTC, recovered to 200 by ~06:24 UTC, reverted to 404 later same day** -- drift confirmed within hours
-- **Hub index: ~6 weeks stale** -- freshness check essential
-- **Concentration risk:** 83.2% of the index comes from 3 sources (skills.sh, lobehub, browse-sh)
-- **Open questions:** 5 documented unknowns (refresh cadence, CLI force-refresh, optional-feature support, top-20 repo patterns, total deduplicated count)
-
-The full research snapshot lives in [`docs/hub-marketplace-research.md`](docs/hub-marketplace-research.md)
-and includes a **Drift Register** tracking which claims have been re-verified since publication.
-
-> `docs/` is a repo-only artifact -- it provides provenance and audit trail but does
-> not ship with any skill installation. The shipped methodology (`skills/skill-discovery/SKILL.md`)
-> is self-contained and agent-agnostic.
-
----
+Discovery results are untrusted input. Read [`SECURITY.md`](SECURITY.md) and the
+skill's trust-review reference before installing or running third-party content.
 
 ## License
 
-MIT -- see LICENSE.
+MIT — see [LICENSE](LICENSE).
