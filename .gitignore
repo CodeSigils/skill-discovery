@@ -1,11 +1,17 @@
 __pycache__/
+*.py[codz]
+*$py.class
 .ruff_cache/
 .venv/
+venv/
+env/
+ENV/
 .vscode/
 .DS_Store
 node_modules/
 *.swp
 *.swo
+tmp/
 
 # Agent runtime data (user-local, not repo config)
 .hermes/
