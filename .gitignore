@@ -13,6 +13,7 @@ node_modules/
 .cursor/
 .gemini/
 .codex/
+.opencode/
 .open-mem/
 .omo/
 
