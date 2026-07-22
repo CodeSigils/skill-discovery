@@ -9,14 +9,19 @@ ENV/
 .vscode/
 .idea/
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
 node_modules/
 .cache/
 *.log
 Thumbs.db
+[Dd]esktop.ini
 *.swp
 *.swo
 *~
 tmp/
+.tmp/
 
 # Local environment and secret files (keep shareable templates)
 .env
