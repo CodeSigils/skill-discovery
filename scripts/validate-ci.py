@@ -15,6 +15,12 @@ PAYLOAD_DIR = ROOT / "skills" / "skill-discovery"
 SHA_PIN_RE = re.compile(r"^[^@\s]+@[0-9a-f]{40}$")
 EXACT_VERSION_RE = re.compile(r"^[0-9]+(?:\.[0-9]+){2}$")
 
+# NOTE: validate-ci.py verifies that actions are SHA-pinned but does NOT
+# verify the SHA matches the claimed version tag. That check requires a
+# network call to the GitHub API and belongs in CI, not a local validator.
+# Dependabot keeps SHAs current; this script catches policy drift (unpinned
+# actions, missing steps, broken anchors).
+
 REQUIRED_VALIDATE_COMMANDS = (
     "python3 scripts/validate-ci.py",
     "ruff check .github/scripts/ scripts/",

@@ -54,7 +54,7 @@ def check_relative_links(path: Path, content: str, root: Path) -> list[str]:
     """Ensure relative Markdown links resolve inside the repository."""
     errors: list[str] = []
     for target in MARKDOWN_LINK_RE.findall(content):
-        target = target.split("#", 1)[0].strip()
+        target = target.split("#", 1)[0].split("?", 1)[0].strip()
         if not target or "://" in target or target.startswith(("#", "mailto:")):
             continue
         resolved = (path.parent / target).resolve()

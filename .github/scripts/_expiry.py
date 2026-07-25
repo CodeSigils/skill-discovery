@@ -4,25 +4,14 @@ from __future__ import annotations
 
 import json
 import subprocess
-from datetime import date
+import sys
+from datetime import date, datetime
 from pathlib import Path
+from pathlib import Path as _Path
 from typing import Any
 
-
-def parse_frontmatter(content: str) -> dict[str, Any]:
-    """Extract YAML frontmatter from markdown content (no PyYAML dependency)."""
-    if not content.startswith("---"):
-        return {}
-    end = content.find("---", 3)
-    if end == -1:
-        return {}
-    frontmatter = content[3:end].strip()
-    result: dict[str, Any] = {}
-    for line in frontmatter.split("\n"):
-        if ":" in line:
-            key, value = line.split(":", 1)
-            result[key.strip()] = value.strip().strip('"').strip("'")
-    return result
+sys.path.insert(0, str(_Path(__file__).resolve().parents[2] / "scripts"))
+from _common import parse_frontmatter
 
 
 def check_research_expiry(docs_dir: Path, warning_days: int = 14) -> list[dict[str, Any]]:
@@ -34,13 +23,24 @@ def check_research_expiry(docs_dir: Path, warning_days: int = 14) -> list[dict[s
             content = md_file.read_text(encoding="utf-8")
         except OSError:
             continue
-        frontmatter = parse_frontmatter(content)
-        expires_str = frontmatter.get("expires")
-        if not expires_str:
+        fm = parse_frontmatter(content)
+        frontmatter = fm if fm is not None else {}
+        expires_raw = frontmatter.get("expires")
+        if not expires_raw:
             continue
-        try:
-            expires = date.fromisoformat(expires_str)
-        except ValueError:
+        if isinstance(expires_raw, datetime):
+            expires = expires_raw.date()
+            expires_str = expires.isoformat()
+        elif isinstance(expires_raw, date):
+            expires = expires_raw
+            expires_str = expires.isoformat()
+        elif isinstance(expires_raw, str):
+            try:
+                expires = date.fromisoformat(expires_raw)
+            except ValueError:
+                continue
+            expires_str = expires_raw
+        else:
             continue
         days_until = (expires - today).days
         if days_until <= warning_days:
