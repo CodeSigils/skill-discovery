@@ -67,6 +67,7 @@ node_modules/
 .opencode/
 .open-mem/
 .omo/
+.codegraph
 
 # Plan artifacts (research docs — kept for provenance, not shipped)
 plan/
