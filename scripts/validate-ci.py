@@ -96,7 +96,7 @@ def validate_workflow(workflow: str) -> list[str]:
     else:
         if not re.search(r"(?m)^\s*paths:\s*&ci_paths\s*$", push):
             errors.append("ci.yml: push paths must define the shared ci_paths anchor")
-        if not re.search(r"(?m)^\s+-\s+[\"']?\.gitignore[\"']?\s*$", push):
+        if not re.search(r'(?m)^\s+-\s+["\']?\.gitignore["\']?\s*$', push):
             errors.append("ci.yml: shared workflow paths must include .gitignore")
     if pull_request is None:
         errors.append("ci.yml: missing pull_request event")
@@ -117,7 +117,7 @@ def validate_workflow(workflow: str) -> list[str]:
             errors.append("ci.yml: lint job must run uv audit for vulnerability checking")
         if "matrix:" in lint:
             errors.append("ci.yml: lint job must not use a matrix (runs once)")
-        if not re.search(rf'python-version:\s*["\']{re.escape(LINT_PYTHON_VERSION)}["\']', lint):
+        if not re.search(rf"python-version:\s*['\"]{re.escape(LINT_PYTHON_VERSION)}['\"]", lint):
             errors.append(f"ci.yml: lint job must pin Python {LINT_PYTHON_VERSION}")
 
     # Test job
