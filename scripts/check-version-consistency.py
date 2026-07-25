@@ -25,20 +25,21 @@ def get_citation_version() -> str | None:
 
 
 def get_pyproject_version() -> str | None:
-    """Extract version from pyproject.toml [project] section."""
+    """Extract version from pyproject.toml [project] section.
+
+    Uses a line-by-line parser that respects section boundaries —
+    avoids matching version fields in unrelated sections like [tool.ruff].
+    """
     pyproject = ROOT / "pyproject.toml"
     if not pyproject.exists():
         return None
     text = pyproject.read_text(encoding="utf-8")
-    match = re.search(r'^(?:\[project\].*?)?version\s*=\s*["\']([^"\']+)["\']', text, re.MULTILINE | re.DOTALL)
-    if match:
-        return match.group(1)
-    # Simpler pattern: find version = "x.y.z" under [project]
     in_project = False
     for line in text.splitlines():
-        if line.strip().startswith("[project]"):
+        stripped = line.strip()
+        if stripped.startswith("[project]"):
             in_project = True
-        elif line.strip().startswith("["):
+        elif stripped.startswith("["):
             in_project = False
         elif in_project:
             m = re.match(r'^version\s*=\s*["\']([^"\']+)["\']', line)

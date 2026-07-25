@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import re
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
 
@@ -26,6 +27,25 @@ def parse_frontmatter(content: str) -> dict[str, Any] | None:
     except yaml.YAMLError:
         return None
     return frontmatter if isinstance(frontmatter, dict) else None
+
+
+def parse_expiry_date(value: Any) -> date | None:
+    """Parse an expiry value (datetime, date, or ISO string) into a date.
+
+    Returns None if the value is missing, unparseable, or not a date-like type.
+    """
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        return value.date()
+    if isinstance(value, date):
+        return value
+    if isinstance(value, str):
+        try:
+            return date.fromisoformat(value)
+        except ValueError:
+            return None
+    return None
 
 
 def check_fences(content: str, label: str) -> list[str]:

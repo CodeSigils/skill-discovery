@@ -4,18 +4,19 @@
 from __future__ import annotations
 
 import sys
-from datetime import date, datetime
+from datetime import date
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
 from _common import (
+    ROOT,
     check_fences,
     check_relative_links,
+    parse_expiry_date,
     parse_frontmatter,
     validate_skill,
 )
 
-ROOT = Path(__file__).resolve().parents[2]
 DOCS_DIR = ROOT / "docs"
 SKILLS_DIR = ROOT / "skills"
 README_PATH = ROOT / "README.md"
@@ -26,17 +27,9 @@ def check_expiry(frontmatter: dict, label: str) -> list[str]:
     value = frontmatter.get("expires")
     if value is None:
         return [f"{label}: missing required field 'expires'"]
-    if isinstance(value, datetime):
-        expiry = value.date()
-    elif isinstance(value, date):
-        expiry = value
-    elif isinstance(value, str):
-        try:
-            expiry = date.fromisoformat(value)
-        except ValueError:
-            return [f"{label}: 'expires' is not YYYY-MM-DD"]
-    else:
-        return [f"{label}: 'expires' is not a date or string"]
+    expiry = parse_expiry_date(value)
+    if expiry is None:
+        return [f"{label}: 'expires' is not a valid date"]
     if expiry < date.today():
         return [f"{label}: expired on {expiry.isoformat()}"]
     return []

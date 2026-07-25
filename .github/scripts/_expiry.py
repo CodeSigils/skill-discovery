@@ -5,13 +5,12 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
-from datetime import date, datetime
+from datetime import date
 from pathlib import Path
-from pathlib import Path as _Path
 from typing import Any
 
-sys.path.insert(0, str(_Path(__file__).resolve().parents[2] / "scripts"))
-from _common import parse_frontmatter
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
+from _common import parse_expiry_date, parse_frontmatter
 
 
 def check_research_expiry(docs_dir: Path, warning_days: int = 14) -> list[dict[str, Any]]:
@@ -28,25 +27,14 @@ def check_research_expiry(docs_dir: Path, warning_days: int = 14) -> list[dict[s
         expires_raw = frontmatter.get("expires")
         if not expires_raw:
             continue
-        if isinstance(expires_raw, datetime):
-            expires = expires_raw.date()
-            expires_str = expires.isoformat()
-        elif isinstance(expires_raw, date):
-            expires = expires_raw
-            expires_str = expires.isoformat()
-        elif isinstance(expires_raw, str):
-            try:
-                expires = date.fromisoformat(expires_raw)
-            except ValueError:
-                continue
-            expires_str = expires_raw
-        else:
+        expires = parse_expiry_date(expires_raw)
+        if expires is None:
             continue
         days_until = (expires - today).days
         if days_until <= warning_days:
             expiring.append({
                 "file": md_file.name,
-                "expires": expires_str,
+                "expires": expires.isoformat(),
                 "days_until": days_until,
                 "status": frontmatter.get("status", "unknown"),
                 "purpose": frontmatter.get("purpose", "").strip(),

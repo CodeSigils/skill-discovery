@@ -28,7 +28,33 @@ on:
     paths: *ci_paths
 
 jobs:
-  validate:
+  lint:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6
+        with:
+          python-version: '3.14'
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked --only-dev
+      - name: Validate CI policy
+        run: uv run python3 scripts/validate-ci.py
+      - name: Check version consistency
+        run: uv run python3 scripts/check-version-consistency.py
+      - name: Check README tree
+        run: uv run python3 scripts/check-readme-tree.py
+      - name: Lint Python with ruff
+        run: uv run ruff check .github/scripts/ scripts/
+      - name: Check portable payload references
+        run: uv run python .github/scripts/ci-check.py
+      - name: Audit dependencies for vulnerabilities
+        run: uv audit --preview-features audit
+
+  test:
     if: github.event_name != 'schedule'
     runs-on: ${{ matrix.os }}
     strategy:
@@ -45,26 +71,14 @@ jobs:
           enable-cache: true
       - name: Install dependencies
         run: uv sync --locked --only-dev
-      - name: Validate CI policy
-        run: uv run python3 scripts/validate-ci.py
-      - name: Check version consistency
-        run: uv run python3 scripts/check-version-consistency.py
-      - name: Check README tree
-        run: uv run python3 scripts/check-readme-tree.py
-      - name: Lint Python with ruff
-        run: uv run ruff check .github/scripts/ scripts/
       - name: Run validator unit tests
         run: uv run python .github/scripts/test_validators.py
       - name: Run integration tests
         run: uv run python -m pytest .github/scripts/test_integration.py -v
       - name: Run validate-skill tests
         run: uv run python scripts/test_validate_skill.py
-      - name: Check portable payload references
-        run: uv run python .github/scripts/ci-check.py
       - name: Validate documentation and skill payload
         run: uv run python .github/scripts/validate-docs.py
-      - name: Audit dependencies for vulnerabilities
-        run: uv audit --preview-features audit
 
   monitor-external-contracts:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'

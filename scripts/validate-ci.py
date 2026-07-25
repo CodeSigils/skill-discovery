@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-WORKFLOW = ROOT / ".github/workflows" / "ci.yml"
+WORKFLOW = ROOT / ".github" / "workflows" / "ci.yml"
 AGENTS_SYMLINK = ROOT / ".agents" / "skills" / "skill-discovery"
 PAYLOAD_DIR = ROOT / "skills" / "skill-discovery"
 
@@ -20,15 +20,20 @@ SHA_PIN_RE = re.compile(r"^[^@\s]+@[0-9a-f]{40}$")
 # Dependabot keeps SHAs current; this script catches policy drift (unpinned
 # actions, missing steps, broken anchors).
 
-REQUIRED_VALIDATE_COMMANDS = (
+# Lint job: version-independent checks that only need to run once
+LINT_COMMANDS = (
     "uv run python3 scripts/validate-ci.py",
     "uv run python3 scripts/check-version-consistency.py",
     "uv run python3 scripts/check-readme-tree.py",
     "uv run ruff check .github/scripts/ scripts/",
+    "uv run python .github/scripts/ci-check.py",
+)
+
+# Test job: version-dependent checks that run across the matrix
+TEST_COMMANDS = (
     "uv run python .github/scripts/test_validators.py",
     "uv run python -m pytest .github/scripts/test_integration.py -v",
     "uv run python scripts/test_validate_skill.py",
-    "uv run python .github/scripts/ci-check.py",
     "uv run python .github/scripts/validate-docs.py",
 )
 
@@ -102,25 +107,40 @@ def validate_workflow(workflow: str) -> list[str]:
     elif not re.search(r"(?m)^\s*paths:\s*\*ci_paths\s*$", pull_request):
         errors.append("ci.yml: pull_request paths must reuse the ci_paths anchor")
 
-    # Validate job
-    validate = section_body(active, "validate")
-    if validate is None:
-        errors.append("ci.yml: missing validate job")
+    # Lint job
+    lint = section_body(active, "lint")
+    if lint is None:
+        errors.append("ci.yml: missing lint job")
     else:
-        if "verify-marketplace-urls" in validate:
+        for command in LINT_COMMANDS:
+            if not has_run_command(lint, command):
+                errors.append(f"ci.yml: lint job missing run command {command!r}")
+        if "uv sync" not in lint:
+            errors.append("ci.yml: lint job must install deps with uv sync")
+        if "uv audit" not in lint:
+            errors.append("ci.yml: lint job must run uv audit for vulnerability checking")
+        if "matrix:" in lint:
+            errors.append("ci.yml: lint job must not use a matrix (runs once)")
+        if not re.search(r'python-version:\s*["\']3\.14["\']', lint):
+            errors.append("ci.yml: lint job must pin Python 3.14")
+
+    # Test job
+    test = section_body(active, "test")
+    if test is None:
+        errors.append("ci.yml: missing test job")
+    else:
+        if "verify-marketplace-urls" in test:
             errors.append(
-                "ci.yml: live URL checks must not run in the validation matrix"
+                "ci.yml: live URL checks must not run in the test matrix"
             )
-        for command in REQUIRED_VALIDATE_COMMANDS:
-            if not has_run_command(validate, command):
-                errors.append(f"ci.yml: validation matrix missing run command {command!r}")
-        if "uv sync" not in validate:
-            errors.append("ci.yml: validation matrix must install deps with uv sync")
-        if "uv audit" not in validate:
-            errors.append("ci.yml: validation matrix must run uv audit for vulnerability checking")
-        if "matrix:" not in validate:
-            errors.append("ci.yml: validate job must use a matrix strategy")
-        if 'python-version: ["3.10", "3.14"]' not in validate:
+        for command in TEST_COMMANDS:
+            if not has_run_command(test, command):
+                errors.append(f"ci.yml: test job missing run command {command!r}")
+        if "uv sync" not in test:
+            errors.append("ci.yml: test job must install deps with uv sync")
+        if "matrix:" not in test:
+            errors.append("ci.yml: test job must use a matrix strategy")
+        if 'python-version: ["3.10", "3.14"]' not in test:
             errors.append(
                 "ci.yml: Python matrix must test 3.10 lower bound and 3.14 boundary"
             )
