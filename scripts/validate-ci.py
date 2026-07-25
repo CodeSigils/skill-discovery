@@ -13,7 +13,6 @@ AGENTS_SYMLINK = ROOT / ".agents" / "skills" / "skill-discovery"
 PAYLOAD_DIR = ROOT / "skills" / "skill-discovery"
 
 SHA_PIN_RE = re.compile(r"^[^@\s]+@[0-9a-f]{40}$")
-EXACT_VERSION_RE = re.compile(r"^[0-9]+(?:\.[0-9]+){2}$")
 
 # NOTE: validate-ci.py verifies that actions are SHA-pinned but does NOT
 # verify the SHA matches the claimed version tag. That check requires a
@@ -22,12 +21,12 @@ EXACT_VERSION_RE = re.compile(r"^[0-9]+(?:\.[0-9]+){2}$")
 # actions, missing steps, broken anchors).
 
 REQUIRED_VALIDATE_COMMANDS = (
-    "python3 scripts/validate-ci.py",
-    "ruff check .github/scripts/ scripts/",
-    "python .github/scripts/test_validators.py",
-    "python scripts/test_validate_skill.py",
-    "python .github/scripts/ci-check.py",
-    "python .github/scripts/validate-docs.py",
+    "uv run python3 scripts/validate-ci.py",
+    "uv run ruff check .github/scripts/ scripts/",
+    "uv run python .github/scripts/test_validators.py",
+    "uv run python scripts/test_validate_skill.py",
+    "uv run python .github/scripts/ci-check.py",
+    "uv run python .github/scripts/validate-docs.py",
 )
 
 
@@ -61,11 +60,6 @@ def has_run_command(body: str, command: str) -> bool:
             body,
         )
     )
-
-
-def has_ruff_install(body: str) -> bool:
-    """Check that ruff is installed from RUFF_VERSION env var."""
-    return "ruff==" in body and "RUFF_VERSION" in body
 
 
 def check_symlink() -> list[str]:
@@ -105,20 +99,6 @@ def validate_workflow(workflow: str) -> list[str]:
     elif not re.search(r"(?m)^\s*paths:\s*\*ci_paths\s*$", pull_request):
         errors.append("ci.yml: pull_request paths must reuse the ci_paths anchor")
 
-    # Ruff version
-    environment = top_level_section_body(active, "env")
-    ruff_version = None
-    if environment is not None:
-        match = re.search(
-            r"""(?m)^\s*RUFF_VERSION:\s*["']?([^"'\s]+)["']?\s*$""", environment
-        )
-        if match:
-            ruff_version = match.group(1)
-    if ruff_version is None or not EXACT_VERSION_RE.fullmatch(ruff_version):
-        errors.append(
-            "ci.yml: workflow-level RUFF_VERSION must be an exact three-part version"
-        )
-
     # Validate job
     validate = section_body(active, "validate")
     if validate is None:
@@ -131,8 +111,8 @@ def validate_workflow(workflow: str) -> list[str]:
         for command in REQUIRED_VALIDATE_COMMANDS:
             if not has_run_command(validate, command):
                 errors.append(f"ci.yml: validation matrix missing run command {command!r}")
-        if not has_ruff_install(validate):
-            errors.append("ci.yml: validation matrix must install Ruff from RUFF_VERSION")
+        if "uv sync" not in validate:
+            errors.append("ci.yml: validation matrix must install deps with uv sync")
         if "matrix:" not in validate:
             errors.append("ci.yml: validate job must use a matrix strategy")
         if 'python-version: ["3.10", "3.14"]' not in validate:

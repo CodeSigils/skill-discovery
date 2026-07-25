@@ -32,6 +32,9 @@ venv/
 env/
 ENV/
 
+# uv
+.uv-cache/
+
 # Local environment and secrets (keep shareable templates)
 .env
 .env.*

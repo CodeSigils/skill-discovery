@@ -1,3 +1,20 @@
+[project]
+name = "skill-discovery"
+version = "0.1.0"
+description = "A methodology for finding and evaluating agent skills"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+  { name = "CodeSigils" },
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.16",
+    "pyyaml>=6.0.3",
+]
+
 [tool.ruff]
 target-version = "py313"
 line-length = 120

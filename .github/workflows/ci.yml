@@ -15,6 +15,7 @@ on:
       - 'SECURITY.md'
       - 'CITATION.cff'
       - 'pyproject.toml'
+      - 'uv.lock'
       - '.agents/skills/skill-discovery'
       - 'skills/**'
       - 'docs/**'
@@ -25,9 +26,6 @@ on:
   pull_request:
     branches: [main]
     paths: *ci_paths
-
-env:
-  RUFF_VERSION: "0.15.16"
 
 jobs:
   validate:
@@ -42,20 +40,23 @@ jobs:
       - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install validation dependencies
-        run: python -m pip install "ruff==$RUFF_VERSION" PyYAML==6.0.3
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked --only-dev
       - name: Validate CI policy
-        run: python3 scripts/validate-ci.py
+        run: uv run python3 scripts/validate-ci.py
       - name: Lint Python with ruff
-        run: ruff check .github/scripts/ scripts/
+        run: uv run ruff check .github/scripts/ scripts/
       - name: Run validator unit tests
-        run: python .github/scripts/test_validators.py
+        run: uv run python .github/scripts/test_validators.py
       - name: Run validate-skill tests
-        run: python scripts/test_validate_skill.py
+        run: uv run python scripts/test_validate_skill.py
       - name: Check portable payload references
-        run: python .github/scripts/ci-check.py
+        run: uv run python .github/scripts/ci-check.py
       - name: Validate documentation and skill payload
-        run: python .github/scripts/validate-docs.py
+        run: uv run python .github/scripts/validate-docs.py
 
   monitor-external-contracts:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
@@ -68,8 +69,13 @@ jobs:
       - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6
         with:
           python-version: '3.13'
+      - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked --only-dev
       - name: Verify and auto-fix external contracts
-        run: python .github/scripts/verify-marketplace-urls.py --fix
+        run: uv run python .github/scripts/verify-marketplace-urls.py --fix
       - name: Commit auto-fixes if any
         run: |
           git config user.name "github-actions[bot]"
@@ -78,6 +84,6 @@ jobs:
           git diff --cached --quiet || git commit -m "chore: auto-fix URL drift detected by contract monitor"
           git push
       - name: Check research expiry and create issues
-        run: python .github/scripts/verify-marketplace-urls.py --check-expiry
+        run: uv run python .github/scripts/verify-marketplace-urls.py --check-expiry
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
