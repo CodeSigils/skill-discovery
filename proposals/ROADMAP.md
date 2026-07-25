@@ -1,6 +1,6 @@
 # ROADMAP
 
-Internal proposals and investigation artifacts. Not shipped, not tracked by git.
+Internal proposals and investigation artifacts. Tracked in git under `proposals/`.
 
 ## Implementation Discipline
 
@@ -138,7 +138,7 @@ All 5 priorities implemented 2026-07-22. See Summary below for details.
 | # | Proposal | Outcome |
 |---|----------|---------|
 | 1 | Skill format reference | Created `references/skill-format.md` (89 lines) |
-| 2 | Extract validation script | Created `scripts/validate-skill.py` (150 lines, 8 tests) |
+| 2 | Extract validation script | Created `scripts/validate-skill.py` (62 lines) + `scripts/_common.py` (108 lines), 8 tests |
 | 3 | ~~Scaffold template~~ | Dropped — agents have built-in creation tools |
 | 4 | ~~Freshness evaluation~~ | Split: format ref + trust-review.md subsection |
 | 5 | Ingestion quality checklist | Folded into trust-review.md (5-line addition) |
@@ -155,7 +155,8 @@ Key decisions:
 All 5 priorities implemented 2026-07-22.
 
   NEW FILE:    references/skill-format.md       ~89 lines
-  NEW FILE:    scripts/validate-skill.py        ~150 lines
+  NEW FILE:    scripts/validate-skill.py        ~62 lines
+  NEW FILE:    scripts/_common.py               ~108 lines (shared validation logic)
   NEW FILE:    scripts/test_validate_skill.py   ~141 lines (8 tests)
   APPEND:      references/trust-review.md       +19 lines (freshness + ingestion)
   UPDATE:      SKILL.md                         +2 lines (new reference)
@@ -224,8 +225,8 @@ All artifacts current and in use. No removals needed.
   docs/hub-marketplace-research.md              expires 2026-10-01
   docs/reference-style-links-as-anti-drift.md   expires 2027-07-15
   docs/evidence-urls.json                       13 URLs
-  .github/scripts/                              4 scripts, all in CI
-  scripts/                                      2 scripts, all in CI
+  .github/scripts/                              4 scripts + 1 test, all in CI
+  scripts/                                      2 scripts + 1 shared module, all in CI
 
 ### P3 — `last_verified` field on URL entries (one-time migration) ✅ COMPLETE
 
@@ -234,7 +235,7 @@ auto-fix fires (P1), the first question is "is this a new drift or
 has it been failing for months?" Without `last_verified`, there's no
 answer.
 
-Fix: add `"last_verified": "2026-07-24"` to each entry in
+Fix: add `"last_verified": "2026-07-25"` to each entry in
 `evidence-urls.json`. One-time ~15 line migration. Zero ongoing cost —
 the field updates itself whenever verify-marketplace-urls.py runs
 successfully.
