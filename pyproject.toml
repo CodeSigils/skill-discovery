@@ -1,0 +1,19 @@
+[tool.ruff]
+target-version = "py313"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "I",    # isort
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+]
+ignore = [
+    "SIM108",  # ternary operator — readability preference
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["_common", "_url_contract", "_manifest", "_expiry"]

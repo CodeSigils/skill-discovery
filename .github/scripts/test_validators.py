@@ -20,7 +20,12 @@ def load_script(name: str):
     return module
 
 
+# Ensure sibling modules (_expiry, _manifest, _url_contract) are importable
+# when verify-marketplace-urls.py runs its from-imports.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
 validate_docs = load_script("validate-docs")
+url_contract = load_script("_url_contract")
 verify_urls = load_script("verify-marketplace-urls")
 ci_check = load_script("ci-check")
 
@@ -100,8 +105,8 @@ class ContractDriftTests(unittest.TestCase):
 
     def test_status_mismatch_detected(self):
         entry = {"expected_statuses": [200], "max_redirects": 5}
-        result = verify_urls.CheckResult(404, 0, "-", "https://example.com")
-        reasons = verify_urls.contract_drift_reasons(entry, result)
+        result = url_contract.CheckResult(404, 0, "-", "https://example.com")
+        reasons = url_contract.contract_drift_reasons(entry, result)
         self.assertIn("status=404", reasons)
 
     def test_json_schema_failure_detected(self):
@@ -110,8 +115,8 @@ class ContractDriftTests(unittest.TestCase):
             "content_type": "json",
             "json_schema": {"type": "object", "required_keys": ["count"]},
         }
-        result = verify_urls.CheckResult(200, 0, "SCHEMA:missing-count", "https://example.com")
-        reasons = verify_urls.contract_drift_reasons(entry, result)
+        result = url_contract.CheckResult(200, 0, "SCHEMA:missing-count", "https://example.com")
+        reasons = url_contract.contract_drift_reasons(entry, result)
         self.assertIn("SCHEMA:missing-count", reasons)
 
     def test_all_matching_entry_is_valid(self):
@@ -120,9 +125,9 @@ class ContractDriftTests(unittest.TestCase):
             "max_redirects": 2,
             "canonical_url": "https://example.com/current",
         }
-        result = verify_urls.CheckResult(200, 1, "-", "https://example.com/current")
-        self.assertTrue(not verify_urls.contract_drift_reasons(entry, result))
-        self.assertEqual(verify_urls.contract_drift_reasons(entry, result), [])
+        result = url_contract.CheckResult(200, 1, "-", "https://example.com/current")
+        self.assertTrue(not url_contract.contract_drift_reasons(entry, result))
+        self.assertEqual(url_contract.contract_drift_reasons(entry, result), [])
 
     def test_multiple_drift_reasons(self):
         entry = {
@@ -130,8 +135,8 @@ class ContractDriftTests(unittest.TestCase):
             "max_redirects": 0,
             "canonical_url": "https://example.com/original",
         }
-        result = verify_urls.CheckResult(500, 3, "-", "https://example.com/other")
-        reasons = verify_urls.contract_drift_reasons(entry, result)
+        result = url_contract.CheckResult(500, 3, "-", "https://example.com/other")
+        reasons = url_contract.contract_drift_reasons(entry, result)
         self.assertEqual(len(reasons), 3)
         self.assertTrue(any("status=500" in r for r in reasons))
         self.assertTrue(any("redirects=3" in r for r in reasons))
@@ -141,12 +146,12 @@ class ContractDriftTests(unittest.TestCase):
 class ContractTests(unittest.TestCase):
     def test_array_schema(self):
         self.assertEqual(
-            verify_urls.validate_json_shape([], {"type": "array"}),
+            url_contract.validate_json_shape([], {"type": "array"}),
             "VALID_SCHEMA",
         )
 
     def test_object_required_keys(self):
-        result = verify_urls.validate_json_shape(
+        result = url_contract.validate_json_shape(
             {"count": 1},
             {"type": "object", "required_keys": ["count", "skills"]},
         )
@@ -168,17 +173,17 @@ class ContractTests(unittest.TestCase):
             "expected_statuses": [401],
             "max_redirects": 0,
         }
-        result = verify_urls.CheckResult(401, 0, "HTTP_401", "https://example.com")
-        self.assertTrue(not verify_urls.contract_drift_reasons(entry, result))
+        result = url_contract.CheckResult(401, 0, "HTTP_401", "https://example.com")
+        self.assertTrue(not url_contract.contract_drift_reasons(entry, result))
 
     def test_redirect_limit_detects_canonical_drift(self):
         entry = {
             "expected_statuses": [200],
             "max_redirects": 0,
         }
-        result = verify_urls.CheckResult(200, 1, "-", "https://example.com/new")
+        result = url_contract.CheckResult(200, 1, "-", "https://example.com/new")
         self.assertEqual(
-            verify_urls.contract_drift_reasons(entry, result),
+            url_contract.contract_drift_reasons(entry, result),
             ["redirects=1"],
         )
 
@@ -187,9 +192,9 @@ class ContractTests(unittest.TestCase):
             "expected_statuses": [200],
             "canonical_url": "https://example.com/current",
         }
-        result = verify_urls.CheckResult(200, 0, "-", "https://example.com/moved")
+        result = url_contract.CheckResult(200, 0, "-", "https://example.com/moved")
         self.assertEqual(
-            verify_urls.contract_drift_reasons(entry, result),
+            url_contract.contract_drift_reasons(entry, result),
             ["final_url=https://example.com/moved"],
         )
 
@@ -202,7 +207,7 @@ class ContractTests(unittest.TestCase):
             "max_redirects": -1,
         }
         with self.assertRaisesRegex(ValueError, "non-negative"):
-            verify_urls.validate_entry(entry)
+            url_contract.validate_entry(entry)
 
 
 if __name__ == "__main__":

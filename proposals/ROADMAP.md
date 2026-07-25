@@ -41,8 +41,8 @@ skill-master is a meta-skill for creating and maintaining agent skills. 238 line
 in SKILL.md plus scripts/, references/, and assets/. Claude Code–leaning but the
 content is largely agent-agnostic.
 
-skill-discovery is a meta-skill for finding and evaluating skills. ~130 lines in
-SKILL.md plus 4 reference files. Agent-agnostic by design.
+skill-discovery is a meta-skill for finding and evaluating skills. ~169 lines in
+SKILL.md plus 5 reference files. Agent-agnostic by design.
 
 They are complementary: CREATE vs FIND. The gaps below are where skill-discovery
 assumes knowledge that skill-master teaches.
@@ -225,7 +225,7 @@ All artifacts current and in use. No removals needed.
   docs/hub-marketplace-research.md              expires 2026-10-01
   docs/reference-style-links-as-anti-drift.md   expires 2027-07-15
   docs/evidence-urls.json                       13 URLs
-  .github/scripts/                              4 scripts + 1 test, all in CI
+  .github/scripts/                              4 scripts + 3 internal modules + 1 test, all in CI
   scripts/                                      2 scripts + 1 shared module, all in CI
 
 ### P3 — `last_verified` field on URL entries (one-time migration) ✅ COMPLETE
@@ -290,7 +290,7 @@ One script, one cron entry, three checks. ~35 lines total.
 Small quality-of-life improvements. Each is independent, low-risk,
 and can ship in any order.
 
-### P1 — Dependabot for GitHub Actions (low effort)
+### P1 — Dependabot for GitHub Actions (low effort) ✅ COMPLETE
 
 `actions/checkout` is SHA-pinned (security best practice) but never
 updated. Dependabot auto-opens PRs when new versions drop — security
@@ -299,6 +299,15 @@ patches, Node.js runtime updates, breaking change warnings.
 File: `.github/dependabot.yml` (~10 lines YAML)
 Config: target `.github/workflows` directory, weekly schedule, limit
 to 3 open PRs to avoid noise.
+
+### P1b — Ruff linter in CI (low effort) ✅ COMPLETE
+
+No Python linting today. Unused imports, unsorted imports, mutable
+defaults, and f-string issues all slip through.
+
+File: `pyproject.toml` — ruff config (target Python 3.13, select E/F/I/UP/B/SIM)
+CI step: `ruff check .github/scripts/ scripts/` in the validate job
+Scope: all Python in `.github/scripts/` and `scripts/`
 
 ### P2 — Issue templates (low effort)
 
