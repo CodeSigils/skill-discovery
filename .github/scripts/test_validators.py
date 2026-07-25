@@ -32,21 +32,17 @@ class DocumentationTests(unittest.TestCase):
         self.assertEqual(frontmatter["description"], "folded value")
 
     def test_skill_name_must_match_directory(self):
-        original_root = validate_docs.ROOT
         with tempfile.TemporaryDirectory() as directory:
-            validate_docs.ROOT = Path(directory)
-            try:
-                path = Path(directory) / "wrong" / "SKILL.md"
-                path.parent.mkdir()
-                path.write_text("---\nname: right\ndescription: useful\n---\n# Test\n", encoding="utf-8")
-                errors = validate_docs.validate_skill(path)
-            finally:
-                validate_docs.ROOT = original_root
+            root = Path(directory)
+            path = root / "wrong" / "SKILL.md"
+            path.parent.mkdir()
+            path.write_text("---\nname: right\ndescription: useful\n---\n# Test\n", encoding="utf-8")
+            errors = validate_docs.validate_skill(path, root)
         self.assertTrue(any("does not match directory" in error for error in errors))
 
     def test_missing_relative_link_is_rejected(self):
         path = validate_docs.ROOT / "README.md"
-        errors = validate_docs.check_relative_links(path, "[missing](does-not-exist.md)")
+        errors = validate_docs.check_relative_links(path, "[missing](does-not-exist.md)", validate_docs.ROOT)
         self.assertTrue(any("missing link target" in error for error in errors))
 
     def test_unlabelled_fence_is_rejected(self):
@@ -125,7 +121,7 @@ class ContractDriftTests(unittest.TestCase):
             "canonical_url": "https://example.com/current",
         }
         result = verify_urls.CheckResult(200, 1, "-", "https://example.com/current")
-        self.assertTrue(verify_urls.result_is_valid(entry, result))
+        self.assertTrue(not verify_urls.contract_drift_reasons(entry, result))
         self.assertEqual(verify_urls.contract_drift_reasons(entry, result), [])
 
     def test_multiple_drift_reasons(self):
@@ -173,7 +169,7 @@ class ContractTests(unittest.TestCase):
             "max_redirects": 0,
         }
         result = verify_urls.CheckResult(401, 0, "HTTP_401", "https://example.com")
-        self.assertTrue(verify_urls.result_is_valid(entry, result))
+        self.assertTrue(not verify_urls.contract_drift_reasons(entry, result))
 
     def test_redirect_limit_detects_canonical_drift(self):
         entry = {

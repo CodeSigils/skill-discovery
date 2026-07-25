@@ -32,7 +32,7 @@ FORBIDDEN_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
 
 
 def iter_skill_markdown_files(root: Path) -> list[Path]:
-    """Yield tracked portable skill markdown files under root."""
+    """Return tracked portable skill markdown files under root."""
     if not root.exists():
         raise FileNotFoundError(f"{root} does not exist")
     return sorted(root.rglob("*.md"))
