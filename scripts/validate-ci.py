@@ -16,7 +16,7 @@ SHA_PIN_RE = re.compile(r"^[^@\s]+@[0-9a-f]{40}$")
 
 # Python version policy — single source of truth for CI version checks
 LINT_PYTHON_VERSION = "3.14"
-TEST_MATRIX_VERSIONS = ("3.10", "3.14")
+TEST_MATRIX_YAML = '["3.10", "3.14"]'
 
 # NOTE: validate-ci.py verifies that actions are SHA-pinned but does NOT
 # verify the SHA matches the claimed version tag. That check requires a
@@ -144,12 +144,8 @@ def validate_workflow(workflow: str) -> list[str]:
             errors.append("ci.yml: test job must install deps with uv sync")
         if "matrix:" not in test:
             errors.append("ci.yml: test job must use a matrix strategy")
-        expected_matrix = "[" + ", ".join(f'"{v}"' for v in TEST_MATRIX_VERSIONS) + "]"
-        if expected_matrix not in test:
-            errors.append(
-                f"ci.yml: Python matrix must test {TEST_MATRIX_VERSIONS[0]} lower bound "
-                f"and {TEST_MATRIX_VERSIONS[-1]} boundary"
-            )
+        if TEST_MATRIX_YAML not in test:
+            errors.append(f"ci.yml: Python matrix must match {TEST_MATRIX_YAML}")
 
     # Monitor job
     monitor = section_body(active, "monitor-external-contracts")
