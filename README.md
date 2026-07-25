@@ -132,17 +132,41 @@ described in Quick Start above.
 
 ```text
 skill-discovery/
+├── CITATION.cff                       # version metadata (used by version-consistency check)
+├── LICENSE
 ├── README.md
 ├── SECURITY.md
-├── docs/                              # dated research and evidence manifest
-├── scripts/                           # standalone validators (validate-skill.py)
-├── skills/skill-discovery/
-│   ├── SKILL.md                       # focused discovery workflow
-│   └── references/                    # loaded only when relevant
+├── pyproject.toml                     # ruff config, Python 3.13 target
 ├── .agents/skills/skill-discovery     # symlink to the canonical skill
+├── docs/
+│   ├── evidence-urls.json             # external contract manifest (13 URLs)
+│   ├── hub-marketplace-research.md    # skill marketplace audit
+│   └── reference-style-links-as-anti-drift.md
+├── proposals/
+│   └── ROADMAP.md                     # phased implementation plan
+├── scripts/
+│   ├── _common.py                     # shared validation utilities
+│   ├── validate-skill.py              # standalone skill validator
+│   └── test_validate_skill.py         # tests for validate-skill
+├── skills/skill-discovery/
+│   ├── SKILL.md                       # the 7-stage discovery workflow
+│   └── references/
+│       ├── catalog-contracts.md       # catalog interfaces and known shapes
+│       ├── examples.md                # example outputs for calibration
+│       ├── platform-locations.md      # per-client skill directories
+│       ├── skill-format.md            # frontmatter spec, description quality
+│       └── trust-review.md            # safety and trust evaluation checklist
 └── .github/
-    ├── scripts/                       # CI-only validators and test suite
-    └── workflows/ci.yml
+    ├── dependabot.yml                 # weekly action version updates
+    ├── workflows/ci.yml               # validate + monitor jobs
+    └── scripts/
+        ├── ci-check.py                # portability gate
+        ├── validate-docs.py           # documentation + payload validator
+        ├── test_validators.py         # tests for CI scripts
+        ├── verify-marketplace-urls.py # CLI entry point for URL monitoring
+        ├── _url_contract.py           # URL fetching, JSON validation, drift detection
+        ├── _expiry.py                 # research expiry + GitHub issue creation
+        └── _manifest.py               # JSON manifest I/O
 ```
 
 The canonical payload is `skills/skill-discovery/`. The `.agents` entry is only

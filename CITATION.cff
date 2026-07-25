@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+title: "skill-discovery"
+message: "A methodology for finding and evaluating agent skills"
+type: software
+authors:
+  - family-names: CodeSigils
+license: MIT
+version: "0.1.0"
+date-released: "2026-07-25"
+repository-code: "https://github.com/CodeSigils/skill-discovery"
+keywords:
+  - agent
+  - skill
+  - methodology
+  - discovery
+  - evaluation
