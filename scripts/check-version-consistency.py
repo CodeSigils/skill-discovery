@@ -13,10 +13,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
+# Version source files — single source of truth
+CITATION_CFF = "CITATION.cff"
+PYPROJECT_TOML = "pyproject.toml"
+
 
 def get_citation_version() -> str | None:
     """Extract version from CITATION.cff."""
-    citation = ROOT / "CITATION.cff"
+    citation = ROOT / CITATION_CFF
     if not citation.exists():
         return None
     text = citation.read_text(encoding="utf-8")
@@ -30,7 +34,7 @@ def get_pyproject_version() -> str | None:
     Uses a line-by-line parser that respects section boundaries —
     avoids matching version fields in unrelated sections like [tool.ruff].
     """
-    pyproject = ROOT / "pyproject.toml"
+    pyproject = ROOT / PYPROJECT_TOML
     if not pyproject.exists():
         return None
     text = pyproject.read_text(encoding="utf-8")
@@ -57,16 +61,16 @@ def main() -> int:
     # Collect all available sources
     sources: dict[str, str] = {}
     if citation_version:
-        sources["CITATION.cff"] = citation_version
+        sources[CITATION_CFF] = citation_version
     if pyproject_version:
-        sources["pyproject.toml"] = pyproject_version
+        sources[PYPROJECT_TOML] = pyproject_version
 
     if len(sources) < 2:
         if not sources:
             print("WARN: no version sources found (CITATION.cff, pyproject.toml)")
-        elif "CITATION.cff" not in sources:
+        elif CITATION_CFF not in sources:
             print("WARN: CITATION.cff missing or has no version field")
-        elif "pyproject.toml" not in sources:
+        elif PYPROJECT_TOML not in sources:
             print("WARN: pyproject.toml missing or has no version field")
         # Still OK if at least one source exists
         return 0

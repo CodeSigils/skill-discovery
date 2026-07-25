@@ -16,6 +16,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 README = ROOT / "README.md"
 
+# Special entries checked by other scripts
+SYMLINK_ENTRY = ".agents/skills/skill-discovery"
+
 
 def extract_tree_files(readme: Path) -> list[str]:
     """Extract file paths from the last ```text tree block in README.md."""
@@ -86,7 +89,7 @@ def main() -> int:
     # Check each listed file exists
     for filepath in tree_files:
         # Skip special entries
-        if filepath == ".agents/skills/skill-discovery":
+        if filepath == SYMLINK_ENTRY:
             continue  # Symlink, checked separately by validate-ci.py
         full_path = ROOT / filepath
         if not full_path.exists():

@@ -50,14 +50,6 @@ def section_body(workflow: str, name: str) -> str | None:
     return match.group("body") if match else None
 
 
-def top_level_section_body(workflow: str, name: str) -> str | None:
-    match = re.search(
-        rf"(?ms)^{re.escape(name)}:\n(?P<body>.*?)(?=^[A-Za-z0-9_-]+:\n|\Z)",
-        workflow,
-    )
-    return match.group("body") if match else None
-
-
 def active_workflow_lines(workflow: str) -> str:
     """Remove comment-only lines before applying policy checks."""
     return "\n".join(
