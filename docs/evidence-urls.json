@@ -7,14 +7,16 @@
       "url": "https://agentskills.io/specification",
       "expected_statuses": [200],
       "max_redirects": 0,
-      "source_section": "README and skill frontmatter"
+      "source_section": "README and skill frontmatter",
+      "last_verified": "2026-07-25"
     },
     {
       "name": "Claude Code skills documentation",
       "url": "https://code.claude.com/docs/en/skills",
       "expected_statuses": [200],
       "max_redirects": 0,
-      "source_section": "references/platform-locations.md"
+      "source_section": "references/platform-locations.md",
+      "last_verified": "2026-07-25"
     },
     {
       "name": "Codex skills documentation",
@@ -22,7 +24,8 @@
       "expected_statuses": [200],
       "max_redirects": 0,
       "canonical_url": "https://learn.chatgpt.com/docs/build-skills",
-      "source_section": "references/platform-locations.md"
+      "source_section": "references/platform-locations.md",
+      "last_verified": "2026-07-25"
     },
     {
       "name": "Cursor skills documentation",
@@ -30,49 +33,56 @@
       "expected_statuses": [200],
       "max_redirects": 0,
       "canonical_url": "https://cursor.com/docs/skills",
-      "source_section": "references/platform-locations.md"
+      "source_section": "references/platform-locations.md",
+      "last_verified": "2026-07-25"
     },
     {
       "name": "Gemini CLI skills documentation",
       "url": "https://geminicli.com/docs/cli/using-agent-skills/",
       "expected_statuses": [200],
       "max_redirects": 0,
-      "source_section": "references/platform-locations.md"
+      "source_section": "references/platform-locations.md",
+      "last_verified": "2026-07-25"
     },
     {
       "name": "GitHub Copilot agent skills documentation",
       "url": "https://docs.github.com/en/copilot/concepts/agents/about-agent-skills",
       "expected_statuses": [200],
       "max_redirects": 0,
-      "source_section": "references/platform-locations.md"
+      "source_section": "references/platform-locations.md",
+      "last_verified": "2026-07-25"
     },
     {
       "name": "GitHub code search documentation",
       "url": "https://docs.github.com/en/rest/search/search#search-code",
       "expected_statuses": [200],
       "max_redirects": 0,
-      "source_section": "references/catalog-contracts.md"
+      "source_section": "references/catalog-contracts.md",
+      "last_verified": "2026-07-25"
     },
     {
       "name": "OpenCode skills documentation",
       "url": "https://opencode.ai/docs/skills",
       "expected_statuses": [200],
       "max_redirects": 0,
-      "source_section": "references/platform-locations.md"
+      "source_section": "references/platform-locations.md",
+      "last_verified": "2026-07-25"
     },
     {
       "name": "skills.sh",
       "url": "https://skills.sh/",
       "expected_statuses": [200],
       "max_redirects": 1,
-      "source_section": "references/catalog-contracts.md"
+      "source_section": "references/catalog-contracts.md",
+      "last_verified": "2026-07-25"
     },
     {
       "name": "skills.sh API documentation",
       "url": "https://www.skills.sh/docs/api",
       "expected_statuses": [200],
       "max_redirects": 0,
-      "source_section": "references/catalog-contracts.md"
+      "source_section": "references/catalog-contracts.md",
+      "last_verified": "2026-07-25"
     },
     {
       "name": "skills.sh authenticated search contract",
@@ -80,7 +90,8 @@
       "expected_statuses": [401],
       "max_redirects": 0,
       "source_section": "references/catalog-contracts.md",
-      "notes": "An anonymous request should be rejected; authenticated response shape is documented by the provider."
+      "notes": "An anonymous request should be rejected; authenticated response shape is documented by the provider.",
+      "last_verified": "2026-07-25"
     },
     {
       "name": "CrossAITools listing API",
@@ -91,7 +102,8 @@
       "json_schema": {
         "type": "array"
       },
-      "source_section": "historical research monitoring"
+      "source_section": "historical research monitoring",
+      "last_verified": "2026-07-25"
     },
     {
       "name": "Mercury Skills listing API",
@@ -103,7 +115,8 @@
         "type": "object",
         "required_keys": ["count", "skills"]
       },
-      "source_section": "historical research monitoring"
+      "source_section": "historical research monitoring",
+      "last_verified": "2026-07-25"
     }
   ]
 }

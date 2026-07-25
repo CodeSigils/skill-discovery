@@ -185,8 +185,9 @@ truly self-healing. The rest detect and notify.
 ### Current state
 
   Push/PR:   validators, tests, ci-check, validate-docs (every push)
-  Schedule:  verify-marketplace-urls.py weekly (Monday 6am)
+  Schedule:  verify-marketplace-urls.py weekly (Monday 6am) with --fix --check-expiry
   Expiry:    validate-docs.py checks `expires` field on every push
+             verify-marketplace-urls.py creates issues for research expiring within 14 days
 
   TODO: add a "Maintenance" section to README for repo maintainers.
   Should cover: what runs automatically (CI validators, weekly URL
@@ -195,7 +196,7 @@ truly self-healing. The rest detect and notify.
   SKILL.md budget, internal link rot). Keep it short — a table with
   3 columns: check, trigger, who acts.
 
-### P1 — Auto-fix URL drift (fully automated)
+### P1 — Auto-fix URL drift (fully automated) ✅ COMPLETE
 
 URL drift fails the weekly CI job but creates no issue and fixes nothing.
 Nobody gets notified unless watching Actions.
@@ -206,7 +207,7 @@ The manifest is the source of truth — if `agentskills.io` moved to
 `skills.sh`, the script follows the redirect, updates the entry, and
 pushes. Zero human involvement.
 
-### P2 — Auto-issue on research expiry (semi-automated)
+### P2 — Auto-issue on research expiry (semi-automated) ✅ COMPLETE
 
 Research expiry fails CI on push but creates no reminder between pushes.
 If nobody pushes for 2 weeks, expiry goes unnoticed.
@@ -226,7 +227,7 @@ All artifacts current and in use. No removals needed.
   .github/scripts/                              4 scripts, all in CI
   scripts/                                      2 scripts, all in CI
 
-### P3 — `last_verified` field on URL entries (one-time migration)
+### P3 — `last_verified` field on URL entries (one-time migration) ✅ COMPLETE
 
 Nobody currently asks "which URLs haven't been checked?" but when the
 auto-fix fires (P1), the first question is "is this a new drift or

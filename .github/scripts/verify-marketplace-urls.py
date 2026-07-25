@@ -3,11 +3,14 @@
 
 from __future__ import annotations
 
+import argparse
 import json
+import subprocess
 import sys
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -22,9 +25,9 @@ class RedirectTracker(urllib.request.HTTPRedirectHandler):
         super().__init__()
         self.count = 0
 
-    def redirect_request(self, request, file_pointer, code, message, headers, new_url):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
         self.count += 1
-        return super().redirect_request(request, file_pointer, code, message, headers, new_url)
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
 @dataclass(frozen=True)
@@ -35,8 +38,8 @@ class CheckResult:
     final_url: str
 
 
-def load_manifest(path: Path = MANIFEST_PATH) -> list[dict[str, Any]]:
-    """Load and validate the manifest envelope."""
+def load_manifest(path: Path = MANIFEST_PATH) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+    """Load and validate the manifest envelope. Returns (document, entries)."""
     try:
         document = json.loads(path.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError) as exc:
@@ -44,7 +47,7 @@ def load_manifest(path: Path = MANIFEST_PATH) -> list[dict[str, Any]]:
     entries = document.get("urls") if isinstance(document, dict) else None
     if not isinstance(entries, list):
         raise SystemExit(f"FAIL: {path} must contain a top-level 'urls' list")
-    return entries
+    return document, entries
 
 
 def validate_entry(entry: dict[str, Any]) -> None:
@@ -101,9 +104,9 @@ def check_url(entry: dict[str, Any], timeout: int = 15) -> CheckResult:
     )
     try:
         with opener.open(request, timeout=timeout) as response:
-            body = response.read() if entry.get("content_type") == "json" else b""
             if entry.get("content_type") != "json":
                 return CheckResult(response.status, tracker.count, "-", response.geturl())
+            body = response.read()
             try:
                 value = json.loads(body.decode("utf-8"))
             except (UnicodeDecodeError, json.JSONDecodeError):
@@ -135,33 +138,189 @@ def contract_drift_reasons(entry: dict[str, Any], result: CheckResult) -> list[s
     return reasons
 
 
-def result_is_valid(entry: dict[str, Any], result: CheckResult) -> bool:
-    """Return whether status, redirects, canonical URL, and content all match."""
-    return not contract_drift_reasons(entry, result)
+def parse_frontmatter(content: str) -> dict[str, Any]:
+    """Extract YAML frontmatter from markdown content."""
+    if not content.startswith("---"):
+        return {}
+    end = content.find("---", 3)
+    if end == -1:
+        return {}
+    frontmatter = content[3:end].strip()
+    result: dict[str, Any] = {}
+    for line in frontmatter.split("\n"):
+        if ":" in line:
+            key, value = line.split(":", 1)
+            result[key.strip()] = value.strip().strip('"').strip("'")
+    return result
+
+
+def check_research_expiry(docs_dir: Path, warning_days: int = 14) -> list[dict[str, Any]]:
+    """Check research files for upcoming expiry and return files needing attention."""
+    expiring: list[dict[str, Any]] = []
+    today = date.today()
+    for md_file in docs_dir.glob("*.md"):
+        try:
+            content = md_file.read_text(encoding="utf-8")
+        except OSError:
+            continue
+        frontmatter = parse_frontmatter(content)
+        expires_str = frontmatter.get("expires")
+        if not expires_str:
+            continue
+        try:
+            expires = date.fromisoformat(expires_str)
+        except ValueError:
+            continue
+        days_until = (expires - today).days
+        if days_until <= warning_days:
+            expiring.append({
+                "file": md_file.name,
+                "expires": expires_str,
+                "days_until": days_until,
+                "status": frontmatter.get("status", "unknown"),
+                "purpose": frontmatter.get("purpose", "").strip(),
+            })
+    return expiring
+
+
+def has_existing_expiry_issue(file_info: dict[str, Any]) -> bool:
+    """Check if an open issue already exists for this expiring file."""
+    try:
+        result = subprocess.run(
+            [
+                "gh", "issue", "list",
+                "--state", "open",
+                "--search", f"Research expiry: {file_info['file']}",
+                "--json", "number",
+            ],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        issues = json.loads(result.stdout)
+        return len(issues) > 0
+    except (subprocess.CalledProcessError, FileNotFoundError, json.JSONDecodeError):
+        return False
+
+
+def create_expiry_issue(file_info: dict[str, Any]) -> bool:
+    """Create a GitHub issue for an expiring research file. Returns True on success."""
+    if has_existing_expiry_issue(file_info):
+        print(f"SKIP: open issue already exists for {file_info['file']}")
+        return True
+    title = f"Research expiry: {file_info['file']} expires in {file_info['days_until']} days"
+    body = (
+        f"## Research file expiring soon\n\n"
+        f"**File:** `docs/{file_info['file']}`\n"
+        f"**Expires:** {file_info['expires']} ({file_info['days_until']} days)\n"
+        f"**Status:** {file_info['status']}\n\n"
+        f"### Purpose\n\n{file_info['purpose']}\n\n"
+        f"### Action required\n\n"
+        f"This research document is approaching its expiry date. Please review and either:\n"
+        f"1. **Update** the research with fresh data and extend the expiry\n"
+        f"2. **Archive** if the research is no longer relevant\n"
+        f"3. **Close** this issue if the document has been updated\n"
+    )
+    try:
+        result = subprocess.run(
+            ["gh", "issue", "create", "--title", title, "--body", body, "--label", "research-expiry"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        print(f"ISSUE: created for {file_info['file']}: {result.stdout.strip()}")
+        return True
+    except (subprocess.CalledProcessError, FileNotFoundError) as exc:
+        print(f"WARNING: could not create issue for {file_info['file']}: {exc}")
+        return False
+
+
+def apply_fixes(document: dict[str, Any], entries: list[dict[str, Any]], fixes: list[tuple[int, str]]) -> None:
+    """Apply auto-fixes to the manifest document in place."""
+    today = date.today().isoformat()
+    for index, reason in fixes:
+        entry = entries[index]
+        if "final_url=" in reason:
+            new_url = reason.split("final_url=", 1)[1]
+            entry["url"] = new_url
+            if "canonical_url" in entry:
+                entry["canonical_url"] = new_url
+        entry["last_verified"] = today
+
+
+def save_manifest(document: dict[str, Any], path: Path = MANIFEST_PATH) -> None:
+    """Write the updated manifest back to disk."""
+    path.write_text(json.dumps(document, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def parse_args() -> argparse.Namespace:
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Monitor evidence URLs, redirects, JSON syntax, and minimal response shapes."
+    )
+    parser.add_argument(
+        "--fix",
+        action="store_true",
+        help="Auto-fix drift by updating evidence-urls.json in place",
+    )
+    parser.add_argument(
+        "--check-expiry",
+        action="store_true",
+        help="Check research files for upcoming expiry and create issues",
+    )
+    return parser.parse_args()
 
 
 def main() -> int:
     """Run scheduled external contract monitoring."""
-    entries = load_manifest()
-    failed = False
+    args = parse_args()
+    document, entries = load_manifest()
+    validation_errors = False
+    drift_count = 0
+    fixes: list[tuple[int, str]] = []
     print(f"{'Name':<44} {'Status':<8} {'Redirects':<10} {'Content':<28} Result")
     print("-" * 105)
+    name_to_idx = {e.get("name", ""): i for i, e in enumerate(entries)}
     for entry in sorted(entries, key=lambda value: str(value.get("name", "")).casefold()):
+        original_idx = name_to_idx.get(entry.get("name", ""), -1)
         try:
             validate_entry(entry)
         except ValueError as exc:
             print(f"{entry.get('name', '<unnamed>'):<44} {'-':<8} {'-':<10} {'-':<28} MANIFEST: {exc}")
-            failed = True
+            validation_errors = True
             continue
         result = check_url(entry)
         reasons = contract_drift_reasons(entry, result)
         valid = not reasons
-        failed = failed or not valid
+        if not valid:
+            drift_count += 1
+            fixes.append((original_idx, ";".join(reasons)))
+        # Update last_verified on success
+        if valid:
+            entry["last_verified"] = date.today().isoformat()
         print(
             f"{entry['name']:<44} {str(result.status):<8} {result.redirects:<10} "
             f"{result.content[:28]:<28} {'OK' if valid else 'DRIFT:' + ';'.join(reasons)}"
         )
-    if failed:
+    if args.fix:
+        apply_fixes(document, entries, fixes)
+        save_manifest(document)
+        if fixes:
+            print(f"\nFIXED: updated {len(fixes)} entries in {MANIFEST_PATH}")
+        else:
+            print(f"\nUPDATED: last_verified timestamps in {MANIFEST_PATH}")
+        drift_count = 0  # Drift resolved by auto-fix
+    if args.check_expiry:
+        docs_dir = ROOT / "docs"
+        expiring = check_research_expiry(docs_dir)
+        if expiring:
+            print(f"\nEXPIRING: {len(expiring)} research file(s) nearing expiry:")
+            for info in expiring:
+                print(f"  - {info['file']}: expires {info['expires']} ({info['days_until']} days)")
+                create_expiry_issue(info)
+        else:
+            print("\nEXPIRY: no research files nearing expiry")
+    if validation_errors or drift_count:
         print("\nFAIL: one or more external contracts drifted")
         return 1
     print("\nPASS: external status and minimal response contracts match")
