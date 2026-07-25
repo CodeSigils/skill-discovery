@@ -22,8 +22,11 @@ SHA_PIN_RE = re.compile(r"^[^@\s]+@[0-9a-f]{40}$")
 
 REQUIRED_VALIDATE_COMMANDS = (
     "uv run python3 scripts/validate-ci.py",
+    "uv run python3 scripts/check-version-consistency.py",
+    "uv run python3 scripts/check-readme-tree.py",
     "uv run ruff check .github/scripts/ scripts/",
     "uv run python .github/scripts/test_validators.py",
+    "uv run python -m pytest .github/scripts/test_integration.py -v",
     "uv run python scripts/test_validate_skill.py",
     "uv run python .github/scripts/ci-check.py",
     "uv run python .github/scripts/validate-docs.py",
@@ -113,6 +116,8 @@ def validate_workflow(workflow: str) -> list[str]:
                 errors.append(f"ci.yml: validation matrix missing run command {command!r}")
         if "uv sync" not in validate:
             errors.append("ci.yml: validation matrix must install deps with uv sync")
+        if "uv audit" not in validate:
+            errors.append("ci.yml: validation matrix must run uv audit for vulnerability checking")
         if "matrix:" not in validate:
             errors.append("ci.yml: validate job must use a matrix strategy")
         if 'python-version: ["3.10", "3.14"]' not in validate:
