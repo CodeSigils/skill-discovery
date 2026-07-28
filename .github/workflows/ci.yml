@@ -47,6 +47,8 @@ jobs:
         run: uv run python3 scripts/check-version-consistency.py
       - name: Check README tree
         run: uv run python3 scripts/check-readme-tree.py
+      - name: Check expired freshness markers
+        run: uv run python3 scripts/check-expiry.py
       - name: Lint Python with ruff
         run: uv run ruff check .github/scripts/ scripts/
       - name: Check portable payload references
