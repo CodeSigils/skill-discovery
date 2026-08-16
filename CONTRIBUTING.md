@@ -42,6 +42,7 @@ uv run ruff check .github/scripts/ scripts/
 uv run python .github/scripts/test_validators.py
 uv run python -m pytest .github/scripts/test_integration.py -v
 uv run python scripts/test_validate_skill.py
+uv run python scripts/validate-evaluation-fixtures.py
 uv run python .github/scripts/validate-docs.py
 ```
 
@@ -56,4 +57,3 @@ Releases are tagged from a clean, merged `main` commit:
 5. Confirm the tag, release, and version metadata agree.
 
 The tag workflow reruns the release checks for every `v*.*.*` tag.
-
