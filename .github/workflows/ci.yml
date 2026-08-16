@@ -21,6 +21,7 @@ on:
       - 'docs/**'
       - 'proposals/**'
       - '.github/workflows/ci.yml'
+      - '.github/workflows/dependabot-auto-merge.yml'
       - '.github/scripts/**'
       - 'scripts/**'
   pull_request:
@@ -87,6 +88,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
       issues: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -100,13 +102,21 @@ jobs:
         run: uv sync --locked --only-dev
       - name: Verify and auto-fix external contracts
         run: uv run python .github/scripts/verify-marketplace-urls.py --fix
-      - name: Commit auto-fixes if any
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/evidence-urls.json
-          git diff --cached --quiet || git commit -m "chore: auto-fix URL drift detected by contract monitor"
-          git push
+      - name: Open PR for auto-fixes if any
+        uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          add-paths: docs/evidence-urls.json
+          commit-message: "chore: auto-fix URL drift detected by contract monitor"
+          title: "chore: auto-fix URL drift detected by contract monitor"
+          body: |
+            The scheduled external-contract monitor detected and refreshed
+            stale verification timestamps in `docs/evidence-urls.json`.
+
+            This automated change is submitted as a pull request so protected
+            `main` remains compliant with signed-commit requirements.
+          branch: automation/external-contract-drift
+          delete-branch: true
       - name: Check research expiry and create issues
         run: uv run python .github/scripts/verify-marketplace-urls.py --check-expiry
         env:
