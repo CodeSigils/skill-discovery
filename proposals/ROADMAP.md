@@ -191,6 +191,8 @@ truly self-healing. The rest detect and notify.
   Schedule:  verify-marketplace-urls.py weekly (Monday 6am) with --fix --check-expiry
   Expiry:    validate-docs.py checks `expires` field on every push
              verify-marketplace-urls.py creates issues for research expiring within 14 days
+  Monitor:   13 sources checked concurrently with bounded retries and response
+             reads; scheduled and manual monitor runs are serialized.
 
   Completed: README now documents the maintainer checks, their triggers, and
   the action required when automation reports a problem.
@@ -205,6 +207,11 @@ Fix: when verify-marketplace-urls.py detects a canonical redirect, update
 reachability failures remain failures; they are never masked by `--fix`.
 The monitor uses bounded retries and response reads, checks independent sources
 concurrently, and serializes scheduled/manual runs to avoid overlap.
+
+The weekly cadence is evidence-based for the current manifest size: it limits
+external traffic while the shipped skill still verifies volatile catalog metadata
+at use time. This is a monitoring signal, not a guarantee that a source remains
+current between checks.
 
 ### P2 — Auto-issue on research expiry (semi-automated) ✅ COMPLETE
 
@@ -276,6 +283,7 @@ One script, one cron entry, three checks. ~35 lines total.
 
   - Tiered cadence (daily/weekly/monthly per URL) — weekly is fine
   - Freshness dashboard — CI output IS the dashboard
+  - Conditional ETag/Last-Modified requests — not justified for 13 weekly sources
   - Content-hash comparison — reachability is sufficient
   - Daily cron — the weekly check + expiry warning covers the gap
   - Standalone template file — agents have built-in creation tools
