@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "purpose": "Offline calibration cases for the skill-discovery report contract; these do not execute candidate skills.",
+  "cases": [
+    {
+      "id": "resume-cv",
+      "task": "Find a resume or CV skill",
+      "result": "inspection_blocked",
+      "catalog_freshness": "unknown",
+      "candidate_revision": "unavailable",
+      "loader_status": "unavailable",
+      "privacy": "synthetic-only",
+      "behavior_validation": "not-run"
+    },
+    {
+      "id": "python-review",
+      "task": "Find a Python code-review skill",
+      "result": "inspection_blocked",
+      "catalog_freshness": "unknown",
+      "candidate_revision": "unavailable",
+      "loader_status": "unavailable",
+      "privacy": "not-applicable",
+      "behavior_validation": "not-run"
+    },
+    {
+      "id": "security-audit",
+      "task": "Find a security-audit skill",
+      "result": "inspection_blocked",
+      "catalog_freshness": "unknown",
+      "candidate_revision": "unavailable",
+      "loader_status": "unavailable",
+      "privacy": "synthetic-only",
+      "behavior_validation": "not-run"
+    },
+    {
+      "id": "technical-writing",
+      "task": "Find a technical-writing skill",
+      "result": "inspection_blocked",
+      "catalog_freshness": "unknown",
+      "candidate_revision": "unavailable",
+      "loader_status": "unavailable",
+      "privacy": "not-applicable",
+      "behavior_validation": "not-run"
+    }
+  ]
+}
