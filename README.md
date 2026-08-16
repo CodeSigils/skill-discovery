@@ -97,10 +97,11 @@ skills:
     - /path/to/skill-discovery/skills
 ```
 
-The repository is not currently indexed in the Hermes hub, so no hub-install
-command is advertised. Clone plus `external_dirs` is the verified Hermes path
-until registration. Review the skill before enabling it; catalog registration is
-a later distribution step, not a prerequisite for local use.
+Clone plus `external_dirs` is the verified Hermes installation path. If you need
+hub distribution, check Hermes' current catalog documentation and search results
+at use time rather than relying on a cached registration status. Review the skill
+before enabling it; catalog registration is a later distribution step, not a
+prerequisite for local use.
 
 ## Skill payload — what ships to the user
 
@@ -144,7 +145,7 @@ skill-discovery/
 │   ├── hub-marketplace-research.md    # skill marketplace audit
 │   └── reference-style-links-as-anti-drift.md
 ├── proposals/
-│   └── ROADMAP.md                     # phased implementation plan
+│   └── ROADMAP.md                     # implementation history and deferred proposals
 ├── scripts/
 │   ├── _common.py                     # shared validation utilities
 │   ├── validate-skill.py              # standalone skill validator
@@ -203,6 +204,14 @@ outages do not make ordinary documentation changes flaky.
 The repository is directly installable by compatible GitHub skill installers.
 Catalog indexing is separate from local installability and may change
 independently; use the verified local installation paths above.
+
+### Maintainer maintenance
+
+| Check | Trigger | Action |
+|---|---|---|
+| Payload, documentation, and dependency validation | Every push and pull request | CI reports failures that must be fixed before merge. |
+| External contract reachability and URL drift | Weekly schedule or manual dispatch | CI refreshes the evidence manifest through bounded checks and opens a PR when changes need review. |
+| Research expiry and reference accuracy | Weekly schedule or manual review | A maintainer reviews expiring research and updates dated references or the affected guidance. |
 
 ## Security
 
