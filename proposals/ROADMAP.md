@@ -276,8 +276,8 @@ candidate execution was added.
 The four-search evaluation is now preserved as a small, network-free JSON
 fixture. `scripts/validate-evaluation-fixtures.py` checks the report contract's
 freshness, revision, loader, privacy, behavior, and result-status fields on every
-push and pull request. It calibrates expected reporting and does not claim to
-test an agent's runtime behavior or execute candidate content.
+push, pull request, and release tag. It calibrates expected reporting and does
+not claim to test an agent's runtime behavior or execute candidate content.
 
 ### P4 — Weekly repo health cron (detect-only)
 
