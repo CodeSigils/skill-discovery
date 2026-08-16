@@ -195,16 +195,16 @@ truly self-healing. The rest detect and notify.
   Completed: README now documents the maintainer checks, their triggers, and
   the action required when automation reports a problem.
 
-### P1 — Auto-fix URL drift (fully automated) ✅ COMPLETE
+### P1 — Auto-fix URL drift (guarded automation) ✅ COMPLETE
 
 URL drift fails the weekly CI job but creates no issue and fixes nothing.
 Nobody gets notified unless watching Actions.
 
-Fix: when verify-marketplace-urls.py detects a redirect or status change,
-update `evidence-urls.json` in place and commit. ~20 lines of Python.
-The manifest is the source of truth — if `agentskills.io` moved to
-`skills.sh`, the script follows the redirect, updates the entry, and
-pushes. Zero human involvement.
+Fix: when verify-marketplace-urls.py detects a canonical redirect, update
+`evidence-urls.json` in place and submit a PR. Status, schema, size, and
+reachability failures remain failures; they are never masked by `--fix`.
+The monitor uses bounded retries and response reads, checks independent sources
+concurrently, and serializes scheduled/manual runs to avoid overlap.
 
 ### P2 — Auto-issue on research expiry (semi-automated) ✅ COMPLETE
 
@@ -226,17 +226,16 @@ All artifacts current and in use. No removals needed.
   .github/scripts/                              4 scripts + 3 internal modules + 1 test, all in CI
   scripts/                                      2 scripts + 1 shared module, all in CI
 
-### P3 — `last_verified` field on URL entries (one-time migration) ✅ COMPLETE
+### P3 — `last_verified` field on URL entries (ongoing audit trail) ✅ COMPLETE
 
 Nobody currently asks "which URLs haven't been checked?" but when the
 auto-fix fires (P1), the first question is "is this a new drift or
 has it been failing for months?" Without `last_verified`, there's no
 answer.
 
-Fix: add `"last_verified": "2026-07-25"` to each entry in
-`evidence-urls.json`. One-time ~15 line migration. Zero ongoing cost —
-the field updates itself whenever verify-marketplace-urls.py runs
-successfully.
+Fix: add `"last_verified"` to each entry in `evidence-urls.json`. The field
+updates whenever the monitor confirms a valid contract, preserving a compact
+audit trail for the documented evidence sources.
 
 ### P4 — Weekly repo health cron (detect-only)
 

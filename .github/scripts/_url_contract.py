@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -29,6 +30,12 @@ class CheckResult:
     final_url: str
 
 
+MAX_RESPONSE_BYTES = 2 * 1024 * 1024
+MAX_ALLOWED_RESPONSE_BYTES = 16 * 1024 * 1024
+MAX_ATTEMPTS = 3
+RETRYABLE_STATUS_CODES = {408, 429, 500, 502, 503, 504}
+
+
 def validate_entry(entry: dict[str, Any]) -> None:
     """Validate one manifest entry before network access."""
     for field in ("name", "url", "expected_statuses", "source_section"):
@@ -42,6 +49,13 @@ def validate_entry(entry: dict[str, Any]) -> None:
     max_redirects = entry.get("max_redirects")
     if max_redirects is not None and (not isinstance(max_redirects, int) or max_redirects < 0):
         raise ValueError("max_redirects must be a non-negative integer")
+    max_response_bytes = entry.get("max_response_bytes", MAX_RESPONSE_BYTES)
+    if (
+        not isinstance(max_response_bytes, int)
+        or max_response_bytes <= 0
+        or max_response_bytes > MAX_ALLOWED_RESPONSE_BYTES
+    ):
+        raise ValueError(f"max_response_bytes must be between 1 and {MAX_ALLOWED_RESPONSE_BYTES}")
     canonical_url = entry.get("canonical_url")
     if canonical_url is not None and not isinstance(canonical_url, str):
         raise ValueError("canonical_url must be a string")
@@ -73,7 +87,7 @@ def validate_json_shape(value: Any, schema: dict[str, Any] | None) -> str:
 
 
 def check_url(entry: dict[str, Any], timeout: int = 15) -> CheckResult:
-    """Fetch one URL and validate JSON when requested."""
+    """Fetch one URL with bounded retries and response handling."""
     tracker = RedirectTracker()
     opener = urllib.request.build_opener(tracker)
     request = urllib.request.Request(
@@ -81,25 +95,36 @@ def check_url(entry: dict[str, Any], timeout: int = 15) -> CheckResult:
         method="GET",
         headers={"User-Agent": "skill-discovery-contract-monitor/2"},
     )
-    try:
-        with opener.open(request, timeout=timeout) as response:
-            if entry.get("content_type") != "json":
-                return CheckResult(response.status, tracker.count, "-", response.geturl())
-            body = response.read()
-            try:
-                value = json.loads(body.decode("utf-8"))
-            except (UnicodeDecodeError, json.JSONDecodeError):
-                return CheckResult(response.status, tracker.count, "INVALID_JSON", response.geturl())
-            return CheckResult(
-                response.status,
-                tracker.count,
-                validate_json_shape(value, entry.get("json_schema")),
-                response.geturl(),
-            )
-    except urllib.error.HTTPError as exc:
-        return CheckResult(exc.code, tracker.count, f"HTTP_{exc.code}", exc.geturl())
-    except (urllib.error.URLError, TimeoutError, ValueError) as exc:
-        return CheckResult("ERROR", tracker.count, str(exc), entry["url"])
+    for attempt in range(MAX_ATTEMPTS):
+        try:
+            with opener.open(request, timeout=timeout) as response:
+                if entry.get("content_type") != "json":
+                    return CheckResult(response.status, tracker.count, "-", response.geturl())
+                max_response_bytes = entry.get("max_response_bytes", MAX_RESPONSE_BYTES)
+                body = response.read(max_response_bytes + 1)
+                if len(body) > max_response_bytes:
+                    return CheckResult(response.status, tracker.count, "RESPONSE_TOO_LARGE", response.geturl())
+                try:
+                    value = json.loads(body.decode("utf-8"))
+                except (UnicodeDecodeError, json.JSONDecodeError):
+                    return CheckResult(response.status, tracker.count, "INVALID_JSON", response.geturl())
+                return CheckResult(
+                    response.status,
+                    tracker.count,
+                    validate_json_shape(value, entry.get("json_schema")),
+                    response.geturl(),
+                )
+        except urllib.error.HTTPError as exc:
+            if exc.code in RETRYABLE_STATUS_CODES and attempt < MAX_ATTEMPTS - 1:
+                time.sleep(0.25 * (attempt + 1))
+                continue
+            return CheckResult(exc.code, tracker.count, f"HTTP_{exc.code}", exc.geturl())
+        except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+            if attempt < MAX_ATTEMPTS - 1:
+                time.sleep(0.25 * (attempt + 1))
+                continue
+            return CheckResult("ERROR", tracker.count, str(exc), entry["url"])
+    raise AssertionError("unreachable")
 
 
 def contract_drift_reasons(entry: dict[str, Any], result: CheckResult) -> list[str]:

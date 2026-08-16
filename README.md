@@ -197,7 +197,10 @@ must not be copied into recommendations without re-verification.
 
 CI performs payload and documentation checks on pushes and pull requests.
 External URL monitoring runs on a schedule or manually so transient third-party
-outages do not make ordinary documentation changes flaky.
+outages do not make ordinary documentation changes flaky. The monitor uses
+bounded retries and response sizes, checks independent sources concurrently,
+and opens a reviewable PR only for safe canonical-URL corrections or refreshed
+verification evidence.
 
 ### Catalog status
 

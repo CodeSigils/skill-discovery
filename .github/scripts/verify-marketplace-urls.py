@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date
 
 from _expiry import check_research_expiry, create_expiry_issue
@@ -14,6 +15,23 @@ from _url_contract import (
     contract_drift_reasons,
     validate_entry,
 )
+
+
+def can_auto_fix(entry: dict[str, object], result, reasons: list[str]) -> bool:
+    """Allow only a canonical URL correction with an otherwise valid response."""
+    return (
+        len(reasons) == 1
+        and reasons[0].startswith("final_url=")
+        and result.status in entry["expected_statuses"]
+        and result.redirects <= entry.get("max_redirects", result.redirects)
+        and result.content in {"-", "VALID_JSON", "VALID_SCHEMA"}
+    )
+
+
+def check_indexed(item):
+    """Check one manifest entry for threaded execution."""
+    index, entry = item
+    return index, entry, check_url(entry)
 
 
 def parse_args() -> argparse.Namespace:
@@ -43,21 +61,28 @@ def main() -> int:
     fixes: list[tuple[int, str]] = []
     print(f"{'Name':<44} {'Status':<8} {'Redirects':<10} {'Content':<28} Result")
     print("-" * 105)
-    name_to_idx = {e.get("name", ""): i for i, e in enumerate(entries)}
-    for entry in sorted(entries, key=lambda value: str(value.get("name", "")).casefold()):
-        original_idx = name_to_idx.get(entry.get("name", ""), -1)
+    checked: list[tuple[int, dict, object]] = []
+    valid_entries = []
+    for index, entry in enumerate(entries):
         try:
             validate_entry(entry)
         except ValueError as exc:
             print(f"{entry.get('name', '<unnamed>'):<44} {'-':<8} {'-':<10} {'-':<28} MANIFEST: {exc}")
             validation_errors = True
             continue
-        result = check_url(entry)
+        valid_entries.append((index, entry))
+    if valid_entries:
+        workers = min(8, len(valid_entries))
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            ordered_entries = sorted(valid_entries, key=lambda item: str(item[1].get("name", "")).casefold())
+            checked = list(executor.map(check_indexed, ordered_entries))
+    for original_idx, entry, result in checked:
         reasons = contract_drift_reasons(entry, result)
         valid = not reasons
         if not valid:
             drift_count += 1
-            fixes.append((original_idx, ";".join(reasons)))
+            if args.fix and can_auto_fix(entry, result, reasons):
+                fixes.append((original_idx, reasons[0]))
         # Update last_verified on success
         if valid:
             entry["last_verified"] = date.today().isoformat()
@@ -72,7 +97,7 @@ def main() -> int:
             print(f"\nFIXED: updated {len(fixes)} entries in evidence-urls.json")
         else:
             print("\nUPDATED: last_verified timestamps in evidence-urls.json")
-        drift_count = 0  # Drift resolved by auto-fix
+        drift_count -= len(fixes)
     if args.check_expiry:
         docs_dir = ROOT / "docs"
         expiring = check_research_expiry(docs_dir)
