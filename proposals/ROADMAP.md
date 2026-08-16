@@ -1,6 +1,8 @@
-# ROADMAP
+# Roadmap and implementation record
 
-Internal proposals and investigation artifacts. Tracked in git under `proposals/`.
+Internal proposals and investigation artifacts. Completed phases are retained
+as implementation history; items without a completion marker are deferred
+proposals rather than committed plans. Tracked in git under `proposals/`.
 
 ## Implementation Discipline
 
@@ -190,12 +192,8 @@ truly self-healing. The rest detect and notify.
   Expiry:    validate-docs.py checks `expires` field on every push
              verify-marketplace-urls.py creates issues for research expiring within 14 days
 
-  TODO: add a "Maintenance" section to README for repo maintainers.
-  Should cover: what runs automatically (CI validators, weekly URL
-  check), what creates issues but needs human action (research expiry),
-  and what requires manual intervention (reference file changes,
-  SKILL.md budget, internal link rot). Keep it short — a table with
-  3 columns: check, trigger, who acts.
+  Completed: README now documents the maintainer checks, their triggers, and
+  the action required when automation reports a problem.
 
 ### P1 — Auto-fix URL drift (fully automated) ✅ COMPLETE
 
