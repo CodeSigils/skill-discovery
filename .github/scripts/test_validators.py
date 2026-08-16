@@ -142,6 +142,31 @@ class ContractDriftTests(unittest.TestCase):
         self.assertTrue(any("redirects=3" in r for r in reasons))
         self.assertTrue(any("final_url=" in r for r in reasons))
 
+    def test_only_canonical_url_drift_is_auto_fixable(self):
+        entry = {
+            "expected_statuses": [200],
+            "max_redirects": 0,
+            "content_type": "json",
+        }
+        result = url_contract.CheckResult(200, 0, "VALID_SCHEMA", "https://example.com/current")
+        self.assertTrue(verify_urls.can_auto_fix(entry, result, ["final_url=https://example.com/current"]))
+
+    def test_status_drift_is_not_auto_fixable(self):
+        entry = {"expected_statuses": [200], "max_redirects": 0}
+        result = url_contract.CheckResult(404, 0, "HTTP_404", "https://example.com")
+        self.assertFalse(verify_urls.can_auto_fix(entry, result, ["status=404"]))
+
+    def test_combined_drift_is_not_auto_fixable(self):
+        entry = {"expected_statuses": [200], "max_redirects": 0}
+        result = url_contract.CheckResult(200, 1, "-", "https://example.com/current")
+        self.assertFalse(
+            verify_urls.can_auto_fix(
+                entry,
+                result,
+                ["redirects=1", "final_url=https://example.com/current"],
+            )
+        )
+
 
 class ContractTests(unittest.TestCase):
     def test_array_schema(self):
@@ -207,6 +232,17 @@ class ContractTests(unittest.TestCase):
             "max_redirects": -1,
         }
         with self.assertRaisesRegex(ValueError, "non-negative"):
+            url_contract.validate_entry(entry)
+
+    def test_manifest_rejects_unbounded_response_limit(self):
+        entry = {
+            "name": "test",
+            "url": "https://example.com",
+            "expected_statuses": [200],
+            "source_section": "test",
+            "max_response_bytes": 17 * 1024 * 1024,
+        }
+        with self.assertRaisesRegex(ValueError, "max_response_bytes"):
             url_contract.validate_entry(entry)
 
 

@@ -114,6 +114,9 @@ details live in supporting references and are re-verified at use time.
 `docs/evidence-urls.json` records the network checks run by scheduled CI. The
 validator distinguishes status, JSON syntax, and minimal response shape. It does
 not treat URL reachability as proof that a marketplace claim is accurate.
+Checks use bounded retries and response reads; only an otherwise-valid canonical
+redirect may be auto-corrected. Status, schema, size, and reachability drift
+remains a failure for human review.
 
 When updating this document:
 
