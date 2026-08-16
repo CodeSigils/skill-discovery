@@ -65,6 +65,10 @@ continue to another source instead of assuming no skill exists.
 Never repeat catalog sizes, marketplace rankings, install counts, authentication
 rules, or endpoints from memory. Verify them at query time.
 
+Repository CI monitors the evidence sources documented here. During discovery,
+still verify each catalog's current generation timestamp, version, or update
+metadata at use time; CI results do not replace runtime freshness checks.
+
 ### 4. Search external sources
 
 Widen the search in this order:
