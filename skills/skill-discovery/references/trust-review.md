@@ -9,6 +9,8 @@ Complete this review before recommending installation or execution.
   marketplace snapshot.
 - Check maintenance activity and whether ownership recently changed.
 - Confirm the license permits the intended use and redistribution.
+- Record the exact reviewed commit or tag and repository update date; keep this
+  candidate-revision evidence separate from catalog freshness.
 
 ## Complete payload
 
@@ -43,6 +45,30 @@ When a candidate skill wraps external documentation, also check:
 - Prefer pinned, auditable dependencies and deterministic commands.
 - Check whether the skill assumes a platform, shell, filesystem layout, or tool
   that the user does not have.
+
+## Compatibility gate
+
+- Validate required `name` and `description` frontmatter and client constraints.
+- Confirm the expected project, user, or admin location for the named client.
+- Verify every relative reference, script, asset, template, and nested file
+  exists at the reviewed revision.
+- Mark platform-specific fields, hooks, or integration instructions as
+  extensions rather than silently treating them as portable.
+
+## Personal-data candidates
+
+Resume, CV, job-application, identity, and similar skills can handle sensitive
+personal data. Inspect and, if explicitly authorized, validate them only with
+synthetic or redacted fixtures. Do not upload, retain, or publish real PII as
+part of discovery; state the restriction in the recommendation.
+
+## Optional behavioral validation
+
+Static inspection is the default. With explicit authorization, a smoke test may
+run in an isolated temporary directory using synthetic inputs only, with
+network, credentials, unrelated files, and candidate scripts disabled unless
+the user separately authorizes them. Compare output against expected facts and
+report `not run`, `partial`, or `pass`. A static result is not runtime proof.
 
 ## External evidence
 

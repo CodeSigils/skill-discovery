@@ -244,6 +244,20 @@ Fix: add `"last_verified"` to each entry in `evidence-urls.json`. The field
 updates whenever the monitor confirms a valid contract, preserving a compact
 audit trail for the documented evidence sources.
 
+### Post-test discovery hardening (2026-08-16) ✅ COMPLETE
+
+A resume-skill discovery exercise exposed five workflow gaps. The shipped skill
+now searches local roots with bounded, frontmatter-aware shortlisting; reports
+catalog/index freshness separately from each candidate repository revision;
+applies an explicit frontmatter/location/reference compatibility gate; keeps
+static inspection as the default with an opt-in isolated synthetic smoke test;
+and adds privacy guidance for resume/CV and other personal-data candidates.
+
+External-source failures (for example, an unavailable or timed-out authenticated
+code search) remain explicitly reported as unavailable rather than being
+misrepresented as empty results. These changes improve decision quality without
+adding automatic installation, execution, network access, or real-data handling.
+
 ### P4 — Weekly repo health cron (detect-only)
 
 Three checks that push CI can't catch — internal link rot, reference
