@@ -39,6 +39,11 @@ When a candidate skill wraps external documentation, also check:
   alter unrelated files, or tell the reviewing agent to ignore higher-priority
   instructions.
 
+Summarize capability risk using explicit labels: `read-only`, filesystem
+`writes`, `network`, `credentials`, `subprocesses`, and `external messages`.
+Mark each as present, absent, or unknown rather than collapsing them into a
+single safety adjective.
+
 ## Dependencies and reproducibility
 
 - Identify runtime packages and version constraints.
@@ -54,6 +59,14 @@ When a candidate skill wraps external documentation, also check:
   exists at the reviewed revision.
 - Mark platform-specific fields, hooks, or integration instructions as
   extensions rather than silently treating them as portable.
+- Verify the named client's documented loader or local discovery listing when
+  possible. Report `verified`, `structural only`, or `unavailable`; valid
+  frontmatter alone is not proof that a client loads the skill.
+
+If the canonical repository, reviewed revision, or required payload files cannot
+be reached, classify the candidate as `inspection blocked`. Do not recommend
+installation from marketplace metadata alone; record the failed source and the
+retry or alternate-source option.
 
 ## Personal-data candidates
 

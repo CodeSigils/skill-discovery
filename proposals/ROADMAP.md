@@ -258,6 +258,19 @@ code search) remain explicitly reported as unavailable rather than being
 misrepresented as empty results. These changes improve decision quality without
 adding automatic installation, execution, network access, or real-data handling.
 
+### Evaluation follow-up (2026-08-16) ✅ COMPLETE
+
+Four representative searches exposed a second set of decision-quality gaps. The
+workflow now records `catalog freshness: unknown` when a source provides no
+generation metadata; caps and ranks external shortlists; treats unavailable
+canonical payloads as `inspection blocked` rather than recommendable matches;
+reports capability risk by permission type; and records client-loader status as
+`verified`, `structural only`, or `unavailable`.
+
+The evaluation also confirmed that marketplace metadata can guide discovery but
+cannot substitute for revision-pinned payload inspection. No installation or
+candidate execution was added.
+
 ### P4 — Weekly repo health cron (detect-only)
 
 Three checks that push CI can't catch — internal link rot, reference

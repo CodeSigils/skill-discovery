@@ -38,14 +38,20 @@ for the limited fields, or ask before adding a dependency.
 
 ```text
 Need: format Markdown tables without changing fenced code
-Searched: local skills, client catalog, skills.sh CLI, authenticated GitHub search
-Freshness: local index generated 2026-07-14
+Searched: local skills, client catalog, skills.sh CLI, authenticated GitHub search;
+  4 candidates returned, shortlist capped at 3; GitHub search unavailable
+Catalog freshness: client index generated 2026-07-14; skills.sh unknown at query time
+Candidate revision: owner/repo@formatter at commit <sha>; updated <date>; MIT; not stale
 
 Recommendation: owner/repo@formatter
 Why it fits: explicitly preserves fences and validates GFM table structure
 Trust review: read SKILL.md and two scripts at commit <sha>; no network access;
   writes only the selected Markdown files; dependency versions disclosed
 Compatibility: available from the client's project skill directory
+Compatibility gate: valid frontmatter; references present; loader verified
+Capability risk: read-only present; writes present for selected Markdown files;
+  network, credentials, subprocesses, and external messages absent
+Behavior validation: not run; static inspection only
 Tradeoffs: requires Node.js <supported-version>
 
 Not performed: no installation or execution without approval.
