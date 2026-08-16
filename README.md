@@ -198,9 +198,9 @@ outages do not make ordinary documentation changes flaky.
 
 ### Catalog status
 
-The repository is directly installable by compatible GitHub skill installers,
-but it is not yet indexed by skills.sh or the Hermes hub. "Installable" and
-"discoverable in a catalog" are intentionally reported as separate states.
+The repository is directly installable by compatible GitHub skill installers.
+Catalog indexing is separate from local installability and may change
+independently; use the verified local installation paths above.
 
 ## Security
 
