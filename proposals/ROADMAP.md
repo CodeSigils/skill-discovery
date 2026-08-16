@@ -349,6 +349,25 @@ File: `pyproject.toml` — ruff config (target Python 3.13, select E/F/I/UP/B/SI
 CI step: `ruff check .github/scripts/ scripts/` in the validate job
 Scope: all Python in `.github/scripts/` and `scripts/`
 
+### Tooling review (2026-08-16) ✅ COMPLETE
+
+Markdownlint and pre-commit hooks were reviewed after the repository grew its
+evaluation and release checks. Neither is adopted at this stage. The existing
+documentation validator checks fences, relative links, frontmatter, expiry, and
+the shipped payload; adding Node-based Markdownlint would add a separate style
+policy and toolchain. Mandatory pre-commit hooks would add setup and
+platform friction for a solo-maintained repository while CI remains the
+authoritative gate. Reconsider if contributor volume or formatting defects grow.
+
+### Scope freeze review (2026-08-16) ✅ COMPLETE
+
+The repository is sufficiently hardened for its current solo-maintained,
+single-skill scope. Keep the trust-review guidance, payload/documentation CI,
+dependency auditing, release validation, and offline calibration fixtures. Defer
+the weekly repo-health cron, registry API integrations, additional security
+scanners, and new evaluation machinery until real usage produces a concrete
+failure pattern or contributor volume justifies the maintenance cost.
+
 ### P2 — Issue templates (low effort)
 
 No templates today. Freeform issues lose structure — repro steps,
@@ -360,27 +379,18 @@ Config: structured fields for bug (steps, expected, actual, env) and
 feature (what, why, alternatives). No config bot — just markdown
 templates that render as issue forms.
 
-### P3 — Markdownlint in CI (medium effort)
+### P3 — Markdownlint in CI (deferred; reviewed 2026-08-16)
 
-No markdown linting today. Trailing whitespace, inconsistent heading
-levels, bare URLs, and missing blank lines around headers all slip
-through.
+Deferred. `validate-docs.py` already checks the Markdown properties that affect
+repository integrity. A second style linter would add Node/npm maintenance
+without a demonstrated defect pattern. Revisit if formatting regressions become
+recurring review findings.
 
-File: `.markdownlint.json` (~15 lines config)
-CI step: add `markdownlint` to the validate job (npm install + run).
-Scope: only lint `README.md` and `docs/` — skip `skills/` (agent
-content, not human-authored).
+### P4 — Pre-commit hooks (deferred; reviewed 2026-08-16)
 
-### P4 — Pre-commit hooks (medium effort)
-
-Validators only run in CI. Broken formatting and trailing whitespace
-get committed and pushed before anyone notices.
-
-File: `.pre-commit-config.yaml` (~10 lines)
-Hooks: markdownlint, trailing-whitespace, end-of-file-fixer,
-check-yaml, check-added-large-files.
-README: add setup instruction (`pip install pre-commit && pre-commit
-install`).
+Deferred. CI is the authoritative validation gate; local hooks would be optional
+convenience rather than a repository requirement. Do not add a hook configuration
+until contributor volume or repeated local-only failures justify the setup burden.
 
 ### P5 — Skill registry API research with manual fallback (discussion)
 
@@ -425,7 +435,10 @@ Add as Phase 2 or Phase 3 item based on how the project evolves.
   - PR templates — overhead for solo work
   - Stale issue bot — low issue volume
   - CodeQL / security scanning — ~300 lines of scripts, not warranted
-  - Release automation — no versions to publish
+  - Additional release automation — tag validation and release metadata checks
+    already exist; packaging automation is not needed
+  - New evaluation harnesses — offline calibration is sufficient until usage
+    exposes a reproducible behavior gap
 
 
 ## Unified "What we're NOT doing" — All Phases
@@ -434,4 +447,4 @@ Cross-phase exclusions (no duplicates):
 
   Phase 1: standalone template, prohibitions reference
   Phase 2: tiered cadence, freshness dashboard, content-hash, daily cron
-  Phase 3: CODEOWNERS, PR templates, stale bot, CodeQL, release automation
+  Phase 3: CODEOWNERS, PR templates, stale bot, CodeQL, additional release automation
