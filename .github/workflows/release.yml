@@ -61,3 +61,5 @@ jobs:
         run: uv run python scripts/test_validate_skill.py
       - name: Validate documentation and skill payload
         run: uv run python .github/scripts/validate-docs.py
+      - name: Validate offline discovery evaluation fixtures
+        run: uv run python scripts/validate-evaluation-fixtures.py

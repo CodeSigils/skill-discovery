@@ -174,7 +174,7 @@ skill-discovery/
 └── .github/
     ├── dependabot.yml                 # weekly action version updates
     ├── workflows/ci.yml               # validate + monitor jobs
-    ├── workflows/release.yml          # tag validation workflow
+    ├── workflows/release.yml          # tag validation workflow (including fixtures)
     └── scripts/
         ├── ci-check.py                # portability gate
         ├── validate-docs.py           # documentation + payload validator
