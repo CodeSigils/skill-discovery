@@ -1,0 +1,63 @@
+name: release
+
+permissions:
+  contents: read
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  validate-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6
+        with:
+          python-version: '3.14'
+      - uses: astral-sh/setup-uv@ae62891fec2bb8e7d6c99fc78c9fec3a63790f8d # v10.0.0
+        with:
+          enable-cache: true
+      - name: Install dependencies
+        run: uv sync --locked --only-dev
+      - name: Verify tag matches project metadata
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          uv run python - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          tag = os.environ["RELEASE_TAG"]
+          if not re.fullmatch(r"v\d+\.\d+\.\d+", tag):
+              raise SystemExit(f"invalid release tag: {tag}")
+          expected = tag[1:]
+          citation = Path("CITATION.cff").read_text(encoding="utf-8")
+          pyproject = Path("pyproject.toml").read_text(encoding="utf-8")
+          citation_version = re.search(r'^version:\s*["\']?([^"\'\s]+)', citation, re.MULTILINE)
+          pyproject_version = re.search(r'^version\s*=\s*["\']([^"\']+)', pyproject, re.MULTILINE)
+          actual = {citation_version.group(1), pyproject_version.group(1)}
+          if actual != {expected}:
+              raise SystemExit(f"tag {expected} does not match metadata {sorted(actual)}")
+          print(f"PASS: {tag} matches project metadata")
+          PY
+      - name: Validate CI policy
+        run: uv run python scripts/validate-ci.py
+      - name: Check version consistency
+        run: uv run python scripts/check-version-consistency.py
+      - name: Check README tree
+        run: uv run python scripts/check-readme-tree.py
+      - name: Lint Python with ruff
+        run: uv run ruff check .github/scripts/ scripts/
+      - name: Run validator tests
+        run: uv run python .github/scripts/test_validators.py
+      - name: Run integration tests
+        run: uv run python -m pytest .github/scripts/test_integration.py -v
+      - name: Run validate-skill tests
+        run: uv run python scripts/test_validate_skill.py
+      - name: Validate documentation and skill payload
+        run: uv run python .github/scripts/validate-docs.py

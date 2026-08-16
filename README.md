@@ -133,6 +133,7 @@ described in Quick Start above.
 ```text
 skill-discovery/
 ├── CITATION.cff                       # version metadata (used by version-consistency check)
+├── CONTRIBUTING.md                    # contribution, commit, and release policy
 ├── LICENSE
 ├── README.md
 ├── SECURITY.md
@@ -159,6 +160,7 @@ skill-discovery/
 └── .github/
     ├── dependabot.yml                 # weekly action version updates
     ├── workflows/ci.yml               # validate + monitor jobs
+    ├── workflows/release.yml          # tag validation workflow
     └── scripts/
         ├── ci-check.py                # portability gate
         ├── validate-docs.py           # documentation + payload validator
