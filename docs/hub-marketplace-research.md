@@ -118,6 +118,12 @@ Checks use bounded retries and response reads; only an otherwise-valid canonical
 redirect may be auto-corrected. Status, schema, size, and reachability drift
 remains a failure for human review.
 
+The current monitor checks the 13 manifest sources concurrently once per week.
+That cadence limits external traffic while the shipped workflow performs use-time
+freshness checks for volatile catalogs. `last_verified` records the monitor's
+observation date; it does not certify that a provider remains current between
+observations.
+
 When updating this document:
 
 1. record the observation date and method;
