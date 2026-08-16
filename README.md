@@ -45,14 +45,17 @@ The workflow guides the agent to:
    release update is flagged, not silently trusted.
 4. **Search externally** — query agentskills.io, GitHub topic search, and
    marketplace APIs. Each source is tried with documented fallbacks; no single
-   outage blocks the workflow.
+   outage blocks the workflow. Keep each source to a ranked shortlist of about
+   five serious candidates and record unavailable inspection separately.
 5. **Inspect candidates** — for each serious match, read the full payload:
    `SKILL.md`, any scripts or templates, dependency declarations, license,
    provenance, and maintenance activity.
 6. **Check compatibility and safety** — validate frontmatter, expected client
-   location, and every referenced file. Static inspection is the default. With
-   explicit authorization only, use an isolated synthetic smoke test; resume
-   and CV skills must never receive real personal data during discovery.
+   location, every referenced file, and the named client's loader status.
+   Label capability risks such as writes, network, credentials, and subprocesses.
+   Static inspection is the default. With explicit authorization only, use an
+   isolated synthetic smoke test; resume and CV skills must never receive real
+   personal data during discovery.
 7. **Evaluate fit** — classify each candidate:
    - **Direct fit** — meets all stated constraints.
    - **Conditional fit** — works if a minor modification is made (e.g., wrap

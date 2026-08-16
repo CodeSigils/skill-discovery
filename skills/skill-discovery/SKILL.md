@@ -68,6 +68,10 @@ version, or update metadata when available. State the observed date in the final
 recommendation. Treat measurements older than two weeks as potentially stale;
 continue to another source instead of assuming no skill exists.
 
+If a source exposes no generation or update metadata, record
+`catalog freshness: unknown` alongside the query timestamp. Do not infer
+freshness from install counts, search ordering, or a successful response.
+
 Never repeat catalog sizes, marketplace rankings, install counts, authentication
 rules, or endpoints from memory. Verify them at query time.
 
@@ -105,6 +109,12 @@ requests. Do not bulk-download or execute candidate content. Parallelize
 independent checks only when doing so preserves each source's status, freshness,
 and failure details.
 
+Cap each external source to a small shortlist (normally no more than five
+serious candidates). Rank by task and constraint match first, then use
+maintenance, license, and provenance as tie-breakers. Preserve the source's
+full result count and status in notes without reproducing a long undifferentiated
+result list in the recommendation.
+
 ### 5. Inspect complete candidates
 
 Search-result metadata is not enough. For each serious candidate:
@@ -116,7 +126,10 @@ Search-result metadata is not enough. For each serious candidate:
 5. check provenance, maintenance activity, license, and duplication/fork status;
 6. check available security-audit results, while treating badges as supporting
    evidence rather than a substitute for inspection;
-7. confirm the skill location and frontmatter work with the user's current client.
+7. confirm the skill location and frontmatter work with the user's current client;
+8. verify the named client's loader or discovery behavior when documentation or
+   a local listing makes that possible, and label loader verification as
+   `verified`, `structural only`, or `unavailable`.
 
 Apply a compatibility gate before recommending a candidate: require valid
 `name` and `description` frontmatter, confirm the expected skill location for
@@ -150,6 +163,7 @@ Classify each inspected candidate:
 | Direct fit | Explicitly covers the requested task and passes trust review. | Recommend first. |
 | Conditional fit | Covers the task but has a disclosed compatibility, safety, freshness, or dependency cost. | Offer with the condition. |
 | Partial fit | Covers only part of the workflow. | Offer only if the uncovered work is clear. |
+| Inspection blocked | A plausible match cannot be fully inspected because its canonical source, revision, or required files are unavailable. | Do not recommend installation; report the blocking source failure and offer a retry or alternate source. |
 | Reject | Off-domain, opaque, unsafe, abandoned without a viable fork, or incompatible. | Do not recommend. State the reason briefly. |
 
 Popularity is not a trust signal. Install counts can favor older packages and may
@@ -170,7 +184,8 @@ Recommendation: <skill name and source>
 Why it fits: <task-specific evidence>
 Trust review: <provenance, inspected files, dependencies, permissions, audits>
 Compatibility: <client and location>
-Compatibility gate: <frontmatter, location, references, and client extensions>
+Compatibility gate: <frontmatter, location, references, client extensions, loader status>
+Capability risk: <read-only, writes, network, credentials, subprocesses, external messages>
 Behavior validation: <not run, partial, or pass; fixture and sandbox details>
 Tradeoffs: <known gaps or risks>
 
