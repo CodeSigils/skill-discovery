@@ -58,6 +58,7 @@ runtime instructions.
 - [x] Credible credential exposure stops lower-priority review and prompts rotation guidance.
 - [x] Filename and pattern checks are described as heuristic, not proof of a clean repository.
 - [x] Reports and recommendations exclude sensitive values.
-- [x] CI checks the payload for common live-token and private-key patterns.
+- [x] CI checks the payload for prohibited agent-specific references and validates
+      the shipped structure; this is not a comprehensive secret scanner.
 - [x] The shipped payload contains no destructive reset, forced-push, or secret-dumping commands.
 - [x] External evidence manifests verify reachability without storing credentials.

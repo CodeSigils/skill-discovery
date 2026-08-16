@@ -10,8 +10,8 @@ When making any implementation change (new feature, bugfix, refactor, CI
 change), always check whether README, docs, or references need updating.
 Specifically:
 
-  1. README "What it does in practice" — does the change affect the
-     7-stage workflow? If yes, update the relevant step.
+     1. README "What it does in practice" — does the change affect the
+     8-stage workflow? If yes, update the relevant step.
 
   2. README "Skill payload" — does the change affect validation output,
      the example, or the checklist? If yes, keep them in sync.
@@ -270,6 +270,14 @@ reports capability risk by permission type; and records client-loader status as
 The evaluation also confirmed that marketplace metadata can guide discovery but
 cannot substitute for revision-pinned payload inspection. No installation or
 candidate execution was added.
+
+### Offline evaluation fixtures (2026-08-16) ✅ COMPLETE
+
+The four-search evaluation is now preserved as a small, network-free JSON
+fixture. `scripts/validate-evaluation-fixtures.py` checks the report contract's
+freshness, revision, loader, privacy, behavior, and result-status fields on every
+push and pull request. It calibrates expected reporting and does not claim to
+test an agent's runtime behavior or execute candidate content.
 
 ### P4 — Weekly repo health cron (detect-only)
 

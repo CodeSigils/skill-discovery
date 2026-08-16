@@ -158,8 +158,11 @@ skill-discovery/
 │   └── ROADMAP.md                     # implementation history and deferred proposals
 ├── scripts/
 │   ├── _common.py                     # shared validation utilities
+│   ├── validate-evaluation-fixtures.py # offline discovery report-contract check
 │   ├── validate-skill.py              # standalone skill validator
 │   └── test_validate_skill.py         # tests for validate-skill
+├── tests/
+│   └── discovery-evaluations.json     # network-free calibration cases
 ├── skills/skill-discovery/
 │   ├── SKILL.md                       # the 8-stage discovery workflow
 │   └── references/
@@ -222,7 +225,7 @@ independently; use the verified local installation paths above.
 
 | Check | Trigger | Action |
 |---|---|---|
-| Payload, documentation, and dependency validation | Every push and pull request | CI reports failures that must be fixed before merge. |
+| Payload, documentation, evaluation fixtures, and dependency validation | Every push and pull request | CI reports failures that must be fixed before merge. |
 | External contract reachability and URL drift | Weekly schedule or manual dispatch | CI refreshes the evidence manifest through bounded checks and opens a PR when changes need review. |
 | Research expiry and reference accuracy | Weekly schedule or manual review | A maintainer reviews expiring research and updates dated references or the affected guidance. |
 
@@ -230,6 +233,8 @@ independently; use the verified local installation paths above.
 
 Discovery results are untrusted input. Read [`SECURITY.md`](SECURITY.md) and the
 skill's trust-review reference before installing or running third-party content.
+The offline evaluation fixtures calibrate report fields and failure statuses;
+they do not install, execute, or prove the behavior of candidate skills.
 
 ## License
 

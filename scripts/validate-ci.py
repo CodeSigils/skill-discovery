@@ -31,6 +31,7 @@ LINT_COMMANDS = (
     "uv run python3 scripts/check-readme-tree.py",
     "uv run ruff check .github/scripts/ scripts/",
     "uv run python .github/scripts/ci-check.py",
+    "uv run python scripts/validate-evaluation-fixtures.py",
 )
 
 # Test job: version-dependent checks that run across the matrix
@@ -98,6 +99,8 @@ def validate_workflow(workflow: str) -> list[str]:
             errors.append("ci.yml: push paths must define the shared ci_paths anchor")
         if not re.search(r'(?m)^\s+-\s+["\']?\.gitignore["\']?\s*$', push):
             errors.append("ci.yml: shared workflow paths must include .gitignore")
+        if not re.search(r'(?m)^\s+-\s+["\']?tests/\*\*["\']?\s*$', push):
+            errors.append("ci.yml: shared workflow paths must include tests/**")
     if pull_request is None:
         errors.append("ci.yml: missing pull_request event")
     elif not re.search(r"(?m)^\s*paths:\s*\*ci_paths\s*$", pull_request):
