@@ -53,6 +53,8 @@ you need placement or discovery details for a named client.
 When searching files, prefer a frontmatter-aware parser over line-oriented grep:
 YAML descriptions may be folded across multiple lines.
 
+Use fast local search tools such as `rg` when available, with portable fallbacks.
+
 ### 3. Check catalog freshness
 
 Before relying on a local or remote index, inspect its generation timestamp,
@@ -62,6 +64,10 @@ continue to another source instead of assuming no skill exists.
 
 Never repeat catalog sizes, marketplace rankings, install counts, authentication
 rules, or endpoints from memory. Verify them at query time.
+
+Repository CI monitors the evidence sources documented here. During discovery,
+still verify each catalog's current generation timestamp, version, or update
+metadata at use time; CI results do not replace runtime freshness checks.
 
 ### 4. Search external sources
 
@@ -81,6 +87,11 @@ query patterns, authentication requirements, and fallbacks.
 Record each source searched, the query, the timestamp, and whether the source was
 unavailable, unauthenticated, stale, empty, or successful. Do not silently skip a
 stage because tooling or network access is missing.
+
+For remote sources, use documented provider interfaces and bounded, read-only
+requests. Do not bulk-download or execute candidate content. Parallelize
+independent checks only when doing so preserves each source's status, freshness,
+and failure details.
 
 ### 5. Inspect complete candidates
 
