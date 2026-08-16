@@ -61,5 +61,3 @@ runtime instructions.
 - [x] CI checks the payload for common live-token and private-key patterns.
 - [x] The shipped payload contains no destructive reset, forced-push, or secret-dumping commands.
 - [x] External evidence manifests verify reachability without storing credentials.
-
-Last reviewed: 2026-07-25.
