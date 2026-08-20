@@ -48,7 +48,7 @@ or rotation without reproducing the value.
 Always-on safety rules live in
 [`skills/skill-discovery/SKILL.md`](skills/skill-discovery/SKILL.md).
 Detailed trust evaluation guidance is in
-[`references/trust-review.md`](references/trust-review.md).
+[`references/trust-review.md`](skills/skill-discovery/references/trust-review.md).
 `SECURITY.md` summarizes the trust boundary; it does not replace those
 runtime instructions.
 
