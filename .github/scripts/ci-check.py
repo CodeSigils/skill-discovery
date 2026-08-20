@@ -36,7 +36,10 @@ def iter_skill_markdown_files(root: Path) -> list[Path]:
     """Return tracked portable skill markdown files under root."""
     if not root.exists():
         raise FileNotFoundError(f"{root} does not exist")
-    return sorted(root.rglob("*.md"))
+    return sorted(
+        p for p in root.rglob("*.md")
+        if ".git" not in p.parts and "node_modules" not in p.parts
+    )
 
 
 def scan_file(path: Path) -> list[tuple[Path, int, str, str]]:

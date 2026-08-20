@@ -6,10 +6,6 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 3
 
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 3
-    # Dependabot can update uv.lock when pyproject.toml changes
-    # It uses pip ecosystem for pyproject.toml [project] deps
+  # NOTE: "pip" ecosystem only watches [project.dependencies], not
+  # [dependency-groups]. Dev deps (ruff, pyyaml, pytest) are updated
+  # manually or by running `uv lock --upgrade`.

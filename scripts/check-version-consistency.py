@@ -41,7 +41,7 @@ def get_pyproject_version() -> str | None:
         elif stripped.startswith("["):
             in_project = False
         elif in_project:
-            m = re.match(r'^version\s*=\s*["\']([^"\']+)["\']', line)
+            m = re.match(r'^version\s*=\s*["\']([^"\']+)["\']', line.lstrip())
             if m:
                 return m.group(1)
     return None

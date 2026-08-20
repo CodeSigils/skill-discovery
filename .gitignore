@@ -32,8 +32,7 @@ venv/
 env/
 ENV/
 
-# uv
-.uv-cache/
+# uv (global cache lives in ~/.cache/uv/)
 
 # Local environment and secrets (keep shareable templates)
 .env
