@@ -92,6 +92,15 @@ def check_relative_links(path: Path, content: str, root: Path) -> list[str]:
     return errors
 
 
+def find_markdown_files(root: Path) -> list[Path]:
+    """Collect all markdown files, skipping .git and node_modules."""
+    return sorted(
+        p
+        for p in root.rglob("*.md")
+        if ".git" not in p.parts and "node_modules" not in p.parts
+    )
+
+
 def validate_skill(skill_md: Path, root: Path) -> list[str]:
     """Validate Agent Skills frontmatter, size, references, and fences.
 

@@ -1,17 +1,12 @@
 #!/usr/bin/env python3
-"""Check that version numbers are consistent across project metadata files.
-
-Verifies CITATION.cff and pyproject.toml contain the same version.
-Optionally checks SKILL.md frontmatter if a version field is added later.
-"""
+"""Check version consistency across pyproject.toml and CITATION.cff."""
 
 from __future__ import annotations
 
 import re
 import sys
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+from _common import ROOT
 
 # Version source files — single source of truth
 CITATION_CFF = "CITATION.cff"

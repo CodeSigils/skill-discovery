@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
-"""Validate that files listed in README's repository tree actually exist.
-
-Extracts the file tree from README.md (between ```text markers), parses
-the file paths with directory context, and verifies each one exists on disk.
-Does NOT check for completeness — the tree is curated, not exhaustive.
-Uses the LAST ```text block (the full repo tree), not the skills payload tree.
-"""
+"""Check README file tree is in sync with actual repository layout."""
 
 from __future__ import annotations
 
@@ -13,7 +7,8 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+from _common import ROOT
+
 README = ROOT / "README.md"
 
 # Special entries checked by other scripts
