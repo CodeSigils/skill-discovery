@@ -368,16 +368,15 @@ the weekly repo-health cron, registry API integrations, additional security
 scanners, and new evaluation machinery until real usage produces a concrete
 failure pattern or contributor volume justifies the maintenance cost.
 
-### P2 — Issue templates (low effort)
+### P2 — Issue templates (low effort) ✅ COMPLETE
 
 No templates today. Freeform issues lose structure — repro steps,
 environment info, feature rationale all get skipped.
 
-Files: `.github/ISSUE_TEMPLATE/bug_report.md` + `feature_request.md`
-(~20 lines YAML total)
-Config: structured fields for bug (steps, expected, actual, env) and
-feature (what, why, alternatives). No config bot — just markdown
-templates that render as issue forms.
+Changes completed:
+- Created `.github/ISSUE_TEMPLATE/bug_report.yml` — structured bug report with description, repro steps, expected behavior, version, environment dropdown
+- Created `.github/ISSUE_TEMPLATE/feature_request.yml` — structured feature request with problem, proposed solution, alternatives considered
+- Created `.github/ISSUE_TEMPLATE/config.yml` — disables blank issues, links to documentation
 
 ### P6 — Script code deduplication (medium effort) ✅ COMPLETE
 
