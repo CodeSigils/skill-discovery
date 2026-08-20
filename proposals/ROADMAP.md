@@ -379,6 +379,19 @@ Config: structured fields for bug (steps, expected, actual, env) and
 feature (what, why, alternatives). No config bot — just markdown
 templates that render as issue forms.
 
+### P6 — Script code deduplication (medium effort) ✅ COMPLETE
+
+Multiple scripts redefine `ROOT = Path(__file__).resolve().parents[1]`
+locally (7 copies across 7 files) instead of importing from `_common.py`.
+`cron-health.py` reimplemented link-checking logic that already existed in
+`_common.check_relative_links()`. Most scripts didn't import shared utilities.
+
+Changes completed:
+- Updated 6 scripts to import ROOT from _common
+- Refactored cron-health.py to reuse _common.check_relative_links() and find_markdown_files()
+- Added find_markdown_files() to _common.py
+- Standardized imports across all scripts
+
 ### P3 — Markdownlint in CI (deferred; reviewed 2026-08-16)
 
 Deferred. `validate-docs.py` already checks the Markdown properties that affect

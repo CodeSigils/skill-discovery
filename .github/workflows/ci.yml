@@ -1,8 +1,5 @@
 name: validate
 
-permissions:
-  contents: read
-
 on:
   workflow_dispatch:
   schedule:
@@ -31,10 +28,18 @@ on:
     branches: [main]
     paths: *ci_paths
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
 jobs:
   lint:
     if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
@@ -65,6 +70,7 @@ jobs:
   test:
     if: github.event_name != 'schedule'
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -90,6 +96,7 @@ jobs:
 
   monitor-external-contracts:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    timeout-minutes: 10
     concurrency:
       group: external-contract-monitor
       cancel-in-progress: false
@@ -131,3 +138,5 @@ jobs:
         run: uv run python .github/scripts/verify-marketplace-urls.py --check-expiry
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Weekly repo health checks
+        run: uv run python scripts/cron-health.py

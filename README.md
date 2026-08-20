@@ -228,6 +228,7 @@ independently; use the verified local installation paths above.
 | Payload, documentation, evaluation fixtures, and dependency validation | Every push and pull request | CI reports failures that must be fixed before merge. |
 | External contract reachability and URL drift | Weekly schedule or manual dispatch | CI refreshes the evidence manifest through bounded checks and opens a PR when changes need review. |
 | Research expiry and reference accuracy | Weekly schedule or manual review | A maintainer reviews expiring research and updates dated references or the affected guidance. |
+| Internal link rot, reference integrity, SKILL.md budget | Weekly schedule or manual dispatch | Detect-only checks warn when markdown links break, reference files go missing, or the skill payload exceeds budget. |
 
 ## Security
 

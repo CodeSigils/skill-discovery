@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Validate offline discovery-evaluation fixtures without network access."""
+"""Validate evaluation fixtures are well-formed."""
 
 from __future__ import annotations
 
 import json
 import sys
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+from _common import ROOT
+
 FIXTURE = ROOT / "tests" / "discovery-evaluations.json"
 RESULTS = {"direct_fit", "conditional_fit", "partial_fit", "inspection_blocked", "reject"}
 FRESHNESS = {"known", "stale", "unknown"}

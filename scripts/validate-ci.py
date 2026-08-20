@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Validate CI routing contracts that keep checks deterministic and complete."""
+"""Validate CI configuration files."""
 
 from __future__ import annotations
 
 import re
 import sys
-from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+from _common import ROOT
+
 WORKFLOW = ROOT / ".github" / "workflows" / "ci.yml"
 AGENTS_SYMLINK = ROOT / ".agents" / "skills" / "skill-discovery"
 PAYLOAD_DIR = ROOT / "skills" / "skill-discovery"
