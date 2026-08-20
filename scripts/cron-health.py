@@ -63,7 +63,7 @@ def check_skill_budget() -> list[str]:
     warnings: list[str] = []
     for skill_md in sorted(ROOT.glob("skills/*/SKILL.md")):
         rel = skill_md.relative_to(ROOT)
-        lines = skill_md.read_text(encoding="utf-8", errors="replace").count("\n") + 1
+        lines = len(skill_md.read_text(encoding="utf-8", errors="replace").splitlines())
         if lines > BUDGET_WARN_LINES:
             warnings.append(f"{rel}: {lines} lines (budget {BUDGET_WARN_LINES})")
     return warnings

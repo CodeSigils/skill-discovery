@@ -61,7 +61,7 @@ def validate(document: object) -> list[str]:
         for field, allowed in checks:
             value = case.get(field)
             if value not in allowed:
-                errors.append(f"{label}: {field} must be one of {sorted(allowed)}")
+                errors.append(f"{label}: {field} must be one of {', '.join(sorted(allowed))}")
         if case.get("result") == "inspection_blocked":
             if case.get("candidate_revision") != "unavailable":
                 errors.append(f"{label}: blocked candidates require unavailable revision")
