@@ -225,8 +225,8 @@ creator when available rather than inventing platform-specific metadata.
   inspection and safety checklist.
 - [`references/skill-format.md`](references/skill-format.md): frontmatter spec,
   description quality criteria, folder purposes, and client extensions.
-- [`references/examples.md`](references/examples.md): portable local-search and
-  recommendation examples.
+- [`references/examples.md`](references/examples.md): portable code snippets for
+  searching skill catalogs and locating skill files.
 
 Load only the reference needed for the current stage. Re-verify volatile external
 contracts against provider documentation whenever possible.
