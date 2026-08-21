@@ -13,10 +13,9 @@ from __future__ import annotations
 import re
 import sys
 
-from _common import ROOT, find_markdown_files
+from _common import ROOT, SKILL_REF_RE, find_markdown_files
 
 RELATIVE_LINK_RE = re.compile(r"\[.*?\]\(((?!https?://|mailto:|#)[^)]+)\)")
-SKILL_REF_RE = re.compile(r"\]\((references/[^)\s]+\.md)\)")
 
 
 def check_link_rot() -> list[str]:

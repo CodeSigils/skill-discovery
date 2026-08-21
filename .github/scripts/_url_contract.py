@@ -124,7 +124,7 @@ def check_url(entry: dict[str, Any], timeout: int = 15) -> CheckResult:
                 time.sleep(0.25 * (attempt + 1))
                 continue
             return CheckResult("ERROR", tracker.count, str(exc), entry["url"])
-    raise AssertionError("unreachable")
+    raise RuntimeError("unreachable — for loop always returns")
 
 
 def contract_drift_reasons(entry: dict[str, Any], result: CheckResult) -> list[str]:

@@ -71,16 +71,15 @@ def main() -> int:
         return 0
 
     # Check consistency
-    versions = set(sources.values())
-    if len(versions) > 1:
+    citation_ver = sources.get(CITATION_CFF)
+    pyproject_ver = sources.get(PYPROJECT_TOML)
+    if citation_ver != pyproject_ver:
         for source, ver in sorted(sources.items()):
             errors.append(f"version-mismatch: {source} has version {ver!r}")
-        # Show what they should be
-        most_common = max(versions, key=lambda v: sum(1 for sv in sources.values() if sv == v))
-        errors.append(f"version-mismatch: expected all sources to use {most_common!r}")
+        expected = citation_ver or pyproject_ver
+        errors.append(f"version-mismatch: expected all sources to use {expected!r}")
     else:
-        ver = versions.pop()
-        print(f"PASS: all version sources agree on {ver!r}")
+        print(f"PASS: all version sources agree on {citation_ver!r}")
 
     if errors:
         for error in errors:
