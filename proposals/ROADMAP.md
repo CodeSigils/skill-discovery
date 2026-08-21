@@ -273,8 +273,8 @@ All artifacts current and in use. No removals needed.
   docs/hub-marketplace-research.md              expires 2026-10-01
   docs/reference-style-links-as-anti-drift.md   expires 2027-07-15
   docs/evidence-urls.json                       13 URLs
-  .github/scripts/                              4 scripts + 3 internal modules + 1 test, all in CI
-  scripts/                                      2 scripts + 1 shared module, all in CI
+  .github/scripts/                              5 scripts + 3 internal modules + 2 tests, all in CI
+  scripts/                                      8 scripts + 1 shared module, all in CI
 
 ### P3 — `last_verified` field on URL entries (ongoing audit trail) ✅ COMPLETE
 
@@ -388,7 +388,7 @@ to 3 open PRs to avoid noise.
 No Python linting today. Unused imports, unsorted imports, mutable
 defaults, and f-string issues all slip through.
 
-File: `pyproject.toml` — ruff config (target Python 3.13, select E/F/I/UP/B/SIM)
+File: `pyproject.toml` — ruff config (target Python 3.10+, select E/F/I/UP/B/SIM)
 CI step: `ruff check .github/scripts/ scripts/` in the validate job
 Scope: all Python in `.github/scripts/` and `scripts/`
 
