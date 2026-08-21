@@ -50,10 +50,10 @@ admin, and extension locations. Read
 [`references/platform-locations.md`](references/platform-locations.md) only when
 you need placement or discovery details for a named client.
 
-When searching files, prefer a frontmatter-aware parser over line-oriented grep:
-YAML descriptions may be folded across multiple lines.
-
-Use fast local search tools such as `rg` when available, with portable fallbacks.
+Use fast local search tools such as `rg` for discovery (finding candidate files),
+with portable fallbacks. When parsing YAML frontmatter, prefer a frontmatter-aware
+parser over line-oriented grep: YAML descriptions may be folded across multiple
+lines.
 
 Keep local discovery bounded and useful: search the applicable project, user,
 admin, and extension roots; rank matches by name/description relevance; and
@@ -171,7 +171,9 @@ include automated activity. Prefer verified task fit and transparent behavior.
 
 ### 8. Report before acting
 
-Return:
+Return the following report. Fields marked with `(from Step N)` map to the
+corresponding workflow step — refer back to that step for details on what
+to check.
 
 ```text
 Need: <task and constraints>
@@ -184,9 +186,9 @@ Recommendation: <skill name and source>
 Why it fits: <task-specific evidence>
 Trust review: <provenance, inspected files, dependencies, permissions, audits>
 Compatibility: <client and location>
-Compatibility gate: <frontmatter, location, references, client extensions, loader status>
-Capability risk: <read-only, writes, network, credentials, subprocesses, external messages>
-Behavior validation: <not run, partial, or pass; fixture and sandbox details>
+Compatibility gate: <frontmatter, location, references, client extensions, loader status> (from Step 5)
+Capability risk: <read-only, writes, network, credentials, subprocesses, external messages> (from Step 5)
+Behavior validation: <not run, partial, or pass; fixture and sandbox details> (from Step 6)
 Tradeoffs: <known gaps or risks>
 
 Alternatives:
@@ -205,9 +207,9 @@ Then offer one of these next actions without performing it:
 ## Installation and creation boundary
 
 Before installation, show the exact source, target location, files, and command or
-operation. Ask for confirmation if the user has not already explicitly requested
-that installation. Re-inspect the fetched payload if it differs from the reviewed
-revision.
+operation. Ask for explicit confirmation: a request to find or evaluate a skill is
+not authorization to install it. Re-inspect the fetched payload if it differs from
+the reviewed revision.
 
 Before creating a replacement skill, confirm scope, target client, target path,
 and whether scripts or external dependencies are allowed. Use the client's skill
