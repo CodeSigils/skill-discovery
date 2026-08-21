@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -13,6 +14,25 @@ README = ROOT / "README.md"
 
 # Special entries checked by other scripts
 SYMLINK_ENTRY = ".agents/skills/skill-discovery"
+
+# Directories to exclude from reverse drift check
+EXCLUDE_DIRS = {".git", "node_modules", ".omo", "__pycache__", ".ruff_cache"}
+EXCLUDE_FILES = {".gitignore", "uv.lock", "CITATION.cff"}
+
+
+def git_tracked_files() -> set[str]:
+    """Return set of tracked files using git ls-files (excludes ignored)."""
+    try:
+        result = subprocess.run(
+            ["git", "ls-files"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        return {line.strip() for line in result.stdout.splitlines() if line.strip()}
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return set()
 
 
 def extract_tree_files(readme: Path) -> list[str]:
@@ -83,19 +103,32 @@ def main() -> int:
 
     # Check each listed file exists
     for filepath in tree_files:
-        # Skip special entries
         if filepath == SYMLINK_ENTRY:
-            continue  # Symlink, checked separately by validate-ci.py
+            continue
         full_path = ROOT / filepath
         if not full_path.exists():
             errors.append(f"stale-tree-entry: {filepath} is in README tree but does not exist on disk")
+
+    # Reverse check: tracked files not in README tree (stale drift)
+    tracked = git_tracked_files()
+    tree_set = set(tree_files)
+    unlisted = sorted(
+        f for f in tracked
+        if f not in tree_set
+        and not any(part in EXCLUDE_DIRS for part in Path(f).parts)
+        and Path(f).name not in EXCLUDE_FILES
+        and not f.startswith(".github/")
+        and not f.startswith(".agents/")
+    )
+    for filepath in unlisted:
+        errors.append(f"unlisted-file: {filepath} exists on disk but is not in README tree")
 
     if errors:
         for error in errors:
             print(error, file=sys.stderr)
         return 1
 
-    print(f"PASS: all {len(tree_files)} files in README tree exist on disk")
+    print(f"PASS: all {len(tree_files)} files in README tree exist on disk, no unlisted files")
     return 0
 
 

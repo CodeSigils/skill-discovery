@@ -484,6 +484,62 @@ sufficient.
 **Status:** Discussion deferred. Revisit when roadmap is next reviewed.
 Add as Phase 2 or Phase 3 item based on how the project evolves.
 
+### P7 — Codebase hardening from python-project-workflow patterns (2026-08-21)
+
+Borrow 7 patterns from `python-project-workflow` that improve safety, consistency,
+and testability. Plus 1 new stale-drift detection check. All changes are additive
+— no existing behavior modified.
+
+**Source:** Pattern comparison against `python-project-workflow` (CodeSigils),
+2026-08-21.
+
+#### P7.1 — `read_text_checked(path)` in `_common.py` (~30min)
+
+Safe file reading with symlink rejection, proper error handling for
+FileNotFoundError, UnicodeDecodeError, and OSError. Replaces bare `.read_text()`
+across scripts.
+
+#### P7.2 — `fail(message, hint=...)` helper in `_common.py` (~20min)
+
+Standardized error output with optional hints. Replaces scattered `print + sys.exit`
+pattern across scripts.
+
+#### P7.3 — `contains_markdown_phrase(text, phrase)` in `_common.py` (~10min)
+
+Whitespace-normalized phrase matching for doc validation. Makes checks resilient
+to formatting changes (extra spaces, line breaks).
+
+#### P7.4 — Unsafe probe detection in `validate_skill()` (~30min)
+
+Check skill content for dangerous git operations: `git log %B`, `cat .env`,
+`git reset --hard`, `git push --force`. Catches supply-chain attack patterns
+before installation.
+
+#### P7.5 — Reference file size budgets (~20min)
+
+Min/max size checks for `references/*.md` files. Flags empty references or
+oversized files that suggest content drift.
+
+#### P7.6 — `git ls-files` in `check-readme-tree.py` (~30min)
+
+Use `git ls-files` for accurate tracked-file listing instead of filesystem glob.
+Add reverse check: detect files on disk that aren't in the README tree (stale
+drift detection).
+
+#### P7.7 — `--self-test` mode for `validate-ci.py` (~1hr)
+
+Regression testing: load validate-ci as module, inject regressions (commented-out
+command, path filter removal, mutable SHA pin), assert rejection. Ensures CI
+validator catches policy drift.
+
+#### P7.8 — Stale drift detection in `check-readme-tree.py` (~20min)
+
+Reverse of existing tree check: files tracked by git that aren't listed in the
+README tree. Catches documentation drift where new files are added but README
+isn't updated.
+
+**Status:** Implemented 2026-08-21. All items complete.
+
 ### What we're NOT doing (Phase 3)
 
   - CODEOWNERS — solo project, no reviewers to assign

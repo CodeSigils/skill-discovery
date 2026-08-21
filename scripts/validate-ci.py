@@ -185,5 +185,66 @@ def main() -> int:
     return 0
 
 
+def self_test() -> int:
+    """Regression test: inject known regressions and assert detection."""
+    if not WORKFLOW.exists():
+        print("FAIL: workflow not found for self-test", file=sys.stderr)
+        return 1
+
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    passed = 0
+    failed = 0
+
+    tests = [
+        (
+            "commented-out lint command",
+            workflow.replace(
+                "uv run python3 scripts/validate-ci.py",
+                "# uv run python3 scripts/validate-ci.py",
+            ),
+            "lint job missing run command",
+        ),
+        (
+            "removed push paths anchor",
+            workflow.replace("paths: &ci_paths", "paths:"),
+            "push paths must define the shared ci_paths anchor",
+        ),
+        (
+            "mutable action tag instead of SHA",
+            workflow.replace("actions/checkout@", "actions/checkout@v7"),
+            "action reference must use a full commit SHA",
+        ),
+        (
+            "removed test matrix",
+            workflow.replace("matrix:", "strategy:", 2),
+            "test job must use a matrix strategy",
+        ),
+        (
+            "wrong lint Python version",
+            workflow.replace(f"python-version: '{LINT_PYTHON_VERSION}'", "python-version: '3.12'"),
+            f"lint job must pin Python {LINT_PYTHON_VERSION}",
+        ),
+    ]
+
+    for name, mutated, expected_fragment in tests:
+        errors = validate_workflow(mutated)
+        if any(expected_fragment in e for e in errors):
+            print(f"  PASS: {name}")
+            passed += 1
+        else:
+            print(f"  FAIL: {name} — expected {expected_fragment!r}", file=sys.stderr)
+            failed += 1
+
+    print(f"\nself-test: {passed} passed, {failed} failed")
+    return 1 if failed else 0
+
+
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--self-test", action="store_true", help="Run regression tests")
+    args = parser.parse_args()
+    if args.self_test:
+        raise SystemExit(self_test())
     raise SystemExit(main())
