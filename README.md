@@ -148,7 +148,7 @@ skill-discovery/
 ├── LICENSE
 ├── README.md
 ├── SECURITY.md
-├── pyproject.toml                     # ruff config, Python 3.13 target
+├── pyproject.toml                     # ruff config, Python 3.10+ target
 ├── .agents/skills/skill-discovery     # symlink to the canonical skill
 ├── docs/
 │   ├── evidence-urls.json             # external contract manifest (13 URLs)
@@ -158,9 +158,14 @@ skill-discovery/
 │   └── ROADMAP.md                     # implementation history and deferred proposals
 ├── scripts/
 │   ├── _common.py                     # shared validation utilities
+│   ├── check-expiry.py                # research expiry scanner
+│   ├── check-readme-tree.py           # README layout vs disk check
+│   ├── check-version-consistency.py   # CITATION.cff ↔ pyproject.toml version
+│   ├── cron-health.py                 # weekly link rot, reference integrity, budget
+│   ├── test_validate_skill.py         # tests for validate-skill
+│   ├── validate-ci.py                 # CI workflow structural validator
 │   ├── validate-evaluation-fixtures.py # offline discovery report-contract check
-│   ├── validate-skill.py              # standalone skill validator
-│   └── test_validate_skill.py         # tests for validate-skill
+│   └── validate-skill.py              # standalone skill validator
 ├── tests/
 │   └── discovery-evaluations.json     # network-free calibration cases
 ├── skills/skill-discovery/
@@ -172,13 +177,20 @@ skill-discovery/
 │       ├── skill-format.md            # frontmatter spec, description quality
 │       └── trust-review.md            # safety, privacy, and trust checklist
 └── .github/
+    ├── ISSUE_TEMPLATE/
+    │   ├── bug_report.yml             # structured bug report form
+    │   ├── config.yml                 # disables blank issues
+    │   └── feature_request.yml        # structured feature request form
     ├── dependabot.yml                 # weekly action version updates
-    ├── workflows/ci.yml               # validate + monitor jobs
-    ├── workflows/release.yml          # tag validation workflow (including fixtures)
+    ├── workflows/
+    │   ├── ci.yml                     # validate + monitor jobs
+    │   ├── dependabot-auto-merge.yml  # auto-merge minor/patch dependabot PRs
+    │   └── release.yml                # tag validation workflow (including fixtures)
     └── scripts/
         ├── ci-check.py                # portability gate
         ├── validate-docs.py           # documentation + payload validator
         ├── test_validators.py         # tests for CI scripts
+        ├── test_integration.py        # integration tests for CI scripts
         ├── verify-marketplace-urls.py # CLI entry point for URL monitoring
         ├── _url_contract.py           # URL fetching, JSON validation, drift detection
         ├── _expiry.py                 # research expiry + GitHub issue creation

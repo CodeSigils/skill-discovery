@@ -9,8 +9,7 @@ review. Read [SECURITY.md](SECURITY.md) before reporting security issues.
 - Batch related tiny documentation edits when practical; do not mix unrelated
   maintenance work into the same pull request.
 - Required CI checks must pass before merge.
-- `main` requires one independent approving review. Authors cannot approve
-  their own pull requests.
+- CI status checks must pass and `main` protection rules are enforced.
 - Preserve the shipped boundary: only `skills/skill-discovery/` is runtime
   payload; repository infrastructure belongs outside it.
 
