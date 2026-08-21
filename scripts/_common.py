@@ -131,18 +131,6 @@ def fail(message: str, hint: str | None = None) -> None:
         print(f"  HINT: {hint}", file=sys.stderr)
 
 
-def contains_markdown_phrase(text: str, phrase: str) -> bool:
-    """Check if *phrase* exists in *text* with whitespace normalization.
-
-    Collapses runs of whitespace (spaces, tabs, newlines) to single spaces
-    before matching, so formatting changes don't cause false negatives.
-    """
-    import re as _re
-    normalized = _re.sub(r"\s+", " ", text)
-    phrase_normalized = _re.sub(r"\s+", " ", phrase)
-    return phrase_normalized in normalized
-
-
 # ── unsafe probe detection ────────────────────────────────────────────────
 
 UNSAFE_PROBE_PATTERNS: list[tuple[str, str]] = [
