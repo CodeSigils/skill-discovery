@@ -97,7 +97,7 @@ def find_markdown_files(root: Path) -> list[Path]:
     return sorted(
         p
         for p in root.rglob("*.md")
-        if ".git" not in p.parts and "node_modules" not in p.parts
+        if ".git" not in p.parts and "node_modules" not in p.parts and ".omo" not in p.parts
     )
 
 

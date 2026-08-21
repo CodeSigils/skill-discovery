@@ -1,7 +1,7 @@
 ---
 status: historical-reference
 date: 2026-07-01
-updated: 2026-07-15
+updated: 2026-08-21
 expires: 2026-10-01
 purpose: >
   Preserve the evidence and lessons from the original marketplace survey while
@@ -105,6 +105,16 @@ counts forward:
 5. Marketplace metadata is not a substitute for reading the complete candidate
    payload.
 6. Installation and skill creation require separate user authorization.
+7. **Skill marketplaces are discovery boundaries, not installation bundles.**
+   Skills require evaluation before installation. Security badges are supporting
+   evidence, not proof. Install counts track popularity, not quality.
+   (sources: QASkills.sh 2026-07-15, selftune 2026-03-08)
+
+8. **Critical supply-chain attack vectors exist in skill marketplaces:**
+   install count inflation via unauthenticated GET, non-deterministic security
+   scanning, silent skill override (same name, different payload), and blind
+   bulk updates. These validate cautious read-by-default installation posture.
+   (source: Orca Security 2026-05-05)
 
 Those conclusions are implemented in the shipped methodology. Volatile source
 details live in supporting references and are re-verified at use time.
@@ -143,3 +153,4 @@ When updating this document:
 | 2026-07-15 | skills.sh contract checked | Documented v1 API requires authentication; legacy endpoint removed from guidance |
 | 2026-07-15 | Client documentation checked | Codex, Cursor, and Copilot placement claims corrected |
 | 2026-07-15 | Repository discovery checked | Direct installer recognizes repository; catalogs do not yet index it |
+| 2026-08-21 | Added supply-chain risk findings from Orca Security research; validated SKILL.md tension analysis | PASS |
