@@ -156,7 +156,6 @@ def load_advisory_baseline(path: Path | None = None) -> list[str]:
 def save_advisory_baseline(warnings: list[str], path: Path | None = None) -> None:
     """Save current warnings as the new baseline."""
     import json
-    from datetime import date
 
     path = path or ADVISORY_BASELINE_PATH
     data = {

@@ -570,6 +570,28 @@ cron-health.py --update-baseline      # snapshot current warnings as new baselin
 
 **Status:** Implemented 2026-08-21.
 
+### v0.1.2 Release (2026-08-21) ✅ COMPLETE
+
+Patch release capturing 12 PRs (#18–#30) of CI hardening, codebase
+improvements, and documentation fixes since v0.1.1.
+
+**Changes since v0.1.1:**
+- CI: fix PR-creation step, bump actions to Node 24-compatible versions
+- P2: GitHub issue templates (bug report + feature request)
+- P4: weekly repo health checks (link rot, reference integrity, budget)
+- P6: script deduplication (consolidate ROOT into `_common`)
+- P7: codebase hardening from python-project-workflow patterns
+- P8: review cleanup (dead code, regex consolidation, unreachable, simplification)
+- P9: advisory baseline (suppress known warnings, report only new)
+- Documentation: drift fixes, SKILL.md tension resolution, examples.md correction
+- Polish: docstrings, type annotations, advisory baseline tests, pyproject metadata
+
+**Trigger criteria (for future releases):** A release is warranted when
+SKILL.md behavior changes, CI pipeline changes, or ≥5 non-trivial PRs
+accumulate since the last tag.
+
+**Status:** Released 2026-08-21.
+
 ### What we're NOT doing (Phase 3)
 
   - CODEOWNERS — solo project, no reviewers to assign
