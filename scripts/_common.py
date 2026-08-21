@@ -50,7 +50,7 @@ def parse_expiry_date(value: Any) -> date | None:
 
 
 def check_fences(content: str, label: str) -> list[str]:
-    """Require matched fences and a language tag on opening fences."""
+    """Require matched code fences and a language tag on opening fences."""
     errors: list[str] = []
     opening: tuple[int, str] | None = None
     for line_number, line in enumerate(content.splitlines(), start=1):
@@ -131,6 +131,57 @@ def fail(message: str, hint: str | None = None) -> None:
         print(f"  HINT: {hint}", file=sys.stderr)
 
 
+# ── advisory baseline ─────────────────────────────────────────────────────
+
+ADVISORY_BASELINE_PATH = ROOT / "advisory-baseline.json"
+
+
+def load_advisory_baseline(path: Path | None = None) -> list[str]:
+    """Load the advisory baseline file and return known warning strings.
+
+    Returns an empty list if the file doesn't exist or is empty.
+    """
+    import json
+
+    path = path or ADVISORY_BASELINE_PATH
+    if not path.exists():
+        return []
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return []
+    return data.get("warnings", []) if isinstance(data, dict) else []
+
+
+def save_advisory_baseline(warnings: list[str], path: Path | None = None) -> None:
+    """Save current warnings as the new baseline."""
+    import json
+    from datetime import date
+
+    path = path or ADVISORY_BASELINE_PATH
+    data = {
+        "reviewed": date.today().isoformat(),
+        "warnings": sorted(warnings),
+    }
+    path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+
+def diff_advisories(
+    current: list[str], baseline: list[str]
+) -> tuple[list[str], list[str]]:
+    """Diff current warnings against baseline.
+
+    Returns (new, resolved) where:
+    - new: warnings in current but not in baseline (NEW issues)
+    - resolved: warnings in baseline but not in current (RESOLVED issues)
+    """
+    current_set = set(current)
+    baseline_set = set(baseline)
+    new = sorted(current_set - baseline_set)
+    resolved = sorted(baseline_set - current_set)
+    return new, resolved
+
+
 # ── unsafe probe detection ────────────────────────────────────────────────
 
 UNSAFE_PROBE_PATTERNS: list[tuple[str, str]] = [
@@ -161,7 +212,7 @@ REF_MAX_BYTES = 50_000
 
 
 def check_reference_sizes(skill_md: Path, root: Path) -> list[str]:
-    """Verify referenced files are within size budgets."""
+    """Verify referenced files are within size budgets (50B–50KB)."""
     errors: list[str] = []
     label = str(skill_md.relative_to(root))
     content = skill_md.read_text(encoding="utf-8")
