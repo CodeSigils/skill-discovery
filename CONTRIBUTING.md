@@ -29,6 +29,21 @@ The `What:` and `Why:` lines should describe the concrete change and its
 motivation. Release notes are generated from the commit history; this project
 does not maintain a separate changelog.
 
+## Script directories
+
+The repository has two script directories with different scopes:
+
+- **`scripts/`** — Standalone CLI tools that auto-detect the repo root via
+  `_common.ROOT`. Safe to run from any working directory. Contains validation,
+  health checks, and the skill validator.
+- **`.github/scripts/`** — CI-specific helpers. May assume the repo root is the
+  working directory and use hardcoded paths. Contains URL contract verification,
+  marketplace URL checks, and CI-specific validators.
+
+When adding new scripts, prefer `scripts/` for anything a contributor might run
+locally. Use `.github/scripts/` only for logic that depends on CI context (GitHub
+API tokens, workflow-specific paths, PR creation).
+
 ## Validation
 
 Run the relevant checks before opening a pull request:
