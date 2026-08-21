@@ -17,7 +17,7 @@ SYMLINK_ENTRY = ".agents/skills/skill-discovery"
 
 # Directories to exclude from reverse drift check
 EXCLUDE_DIRS = {".git", "node_modules", ".omo", "__pycache__", ".ruff_cache"}
-EXCLUDE_FILES = {".gitignore", "uv.lock", "CITATION.cff"}
+EXCLUDE_FILES = {".gitignore", "uv.lock", "CITATION.cff", "advisory-baseline.json"}
 
 
 def git_tracked_files() -> set[str]:

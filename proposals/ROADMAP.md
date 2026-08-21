@@ -165,15 +165,9 @@ from known noise.
 - Format validation — `validate-ci.py` covers structure
 
 
-## Recommendation: Advisory Baseline
+## Advisory Baseline ✅ IMPLEMENTED (P9)
 
-**Priority:** Medium. Not blocking any user-facing feature.
-**Effort:** ~2-3 hours.
-**Value:** Reduces weekly CI noise by filtering known warnings.
-**Files affected:** `scripts/cron-health.py`, new `advisory-baseline.json`.
-
-Add as a future improvement when the weekly cron starts producing noise.
-Not urgent — current weekly cron is functional and all warnings are valid.
+Implemented 2026-08-21. See P9 section for details.
 
 
 ## Improvement Ideas ✅ COMPLETE
@@ -552,6 +546,29 @@ Code review identified 5 cleanup items. All fixed in PR #28.
 5. **Auto:** Remove redundant `import re as _re` inside deleted function
 
 Net: -14 lines. All 35 tests pass, ruff clean, LSP clean.
+
+### P9 — Advisory baseline (2026-08-21) ✅ COMPLETE
+
+Weekly health checks (`cron-health.py`) now diff current warnings against a
+baseline snapshot. Only NEW warnings are reported; known warnings are
+suppressed. Resolved warnings (in baseline but no longer produced) are
+flagged for baseline update.
+
+**Pattern source:** [awesome-agent-trust](https://github.com/CodeSigils/awesome-agent-trust)
+advisory-baseline.json pattern, adapted for flat warning strings.
+
+**Files affected:**
+- `scripts/_common.py` — `load_advisory_baseline()`, `save_advisory_baseline()`, `diff_advisories()`
+- `scripts/cron-health.py` — baseline diff in `main()`, `--update-baseline` flag
+- `advisory-baseline.json` — new file, snapshots current warnings
+
+**Usage:**
+```bash
+cron-health.py                        # run all checks, report vs baseline
+cron-health.py --update-baseline      # snapshot current warnings as new baseline
+```
+
+**Status:** Implemented 2026-08-21.
 
 ### What we're NOT doing (Phase 3)
 
