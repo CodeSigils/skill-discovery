@@ -128,9 +128,52 @@ assumes knowledge that skill-master teaches.
 4. CATALOG CONTRACT DOCUMENTATION — catalog-contracts.md documents skills.sh
    API, GitHub search patterns, authenticated fallbacks.
 
-5. STRUCTURED RECOMMENDATION FORMAT — The 7-field report template
+   5. STRUCTURED RECOMMENDATION FORMAT — The 7-field report template
    (Need/Searched/Recommendation/Why/Trust/Compatibility/Tradeoffs) is
    production-ready.
+
+
+### awesome-agent-trust: URL validation patterns
+
+Source: [CodeSigils/awesome-agent-trust](https://github.com/CodeSigils/awesome-agent-trust)
+
+awesome-agent-trust is an awesome-style curated list of 150+ AI agent
+trust/identity projects with CI-driven URL validation. Not a skill project —
+a curated list with validation infrastructure.
+
+skill-discovery shares the same CI challenge: weekly link rot detection that
+reports ALL warnings every cycle, making it hard to distinguish new issues
+from known noise.
+
+#### Borrow-worthy patterns
+
+1. ADVISORY BASELINE — `advisory-baseline.json` snapshots known soft warnings.
+   Weekly CI diffs current vs baseline and reports only NEW advisories.
+   Currently our `cron-health.py` re-reports all soft warnings every week.
+   Adding a baseline would reduce noise from "14 known + 2 new" to just
+   "2 NEW". ~2-3 hours to implement.
+
+2. EXCEPTION REGISTRY — `repo-exceptions.json` with `review_after` dates.
+   Evidence-backed waivers for known broken links. Expired exceptions are
+   rejected by the validator. Useful for documenting known issues that need
+   periodic re-evaluation. ~1-2 hours to implement.
+
+#### Patterns already covered in skill-discovery
+
+- Two-tier severity (pass/fail) — already in `cron-health.py`
+- Concurrent validation — already using `ThreadPoolExecutor`
+- Format validation — `validate-ci.py` covers structure
+
+
+## Recommendation: Advisory Baseline
+
+**Priority:** Medium. Not blocking any user-facing feature.
+**Effort:** ~2-3 hours.
+**Value:** Reduces weekly CI noise by filtering known warnings.
+**Files affected:** `scripts/cron-health.py`, new `advisory-baseline.json`.
+
+Add as a future improvement when the weekly cron starts producing noise.
+Not urgent — current weekly cron is functional and all warnings are valid.
 
 
 ## Improvement Ideas ✅ COMPLETE
