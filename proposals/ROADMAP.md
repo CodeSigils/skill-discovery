@@ -504,10 +504,10 @@ across scripts.
 Standardized error output with optional hints. Replaces scattered `print + sys.exit`
 pattern across scripts.
 
-#### P7.3 — `contains_markdown_phrase(text, phrase)` in `_common.py` (~10min)
+#### ~~P7.3 — `contains_markdown_phrase(text, phrase)`~~ REMOVED (dead code)
 
-Whitespace-normalized phrase matching for doc validation. Makes checks resilient
-to formatting changes (extra spaces, line breaks).
+Was whitespace-normalized phrase matching for doc validation. Removed in PR #28
+(code review cleanup) — never called by any script. See P8 below.
 
 #### P7.4 — Unsafe probe detection in `validate_skill()` (~30min)
 
@@ -539,6 +539,19 @@ README tree. Catches documentation drift where new files are added but README
 isn't updated.
 
 **Status:** Implemented 2026-08-21. All items complete.
+P7.3 removed 2026-08-21 (dead code, PR #28).
+
+### P8 — Review cleanup (2026-08-21) ✅ COMPLETE
+
+Code review identified 5 cleanup items. All fixed in PR #28.
+
+1. **Remove dead code:** `contains_markdown_phrase()` from `_common.py` (never called)
+2. **Consolidate regex:** `SKILL_REF_RE` — import from `_common` in `cron-health.py` instead of duplicating
+3. **Fix unreachable:** `AssertionError` (misspelled) → `RuntimeError` in `_url_contract.py:127`
+4. **Simplify version check:** Replace `most_common()` logic with direct `if v1 != v2` in `check-version-consistency.py`
+5. **Auto:** Remove redundant `import re as _re` inside deleted function
+
+Net: -14 lines. All 35 tests pass, ruff clean, LSP clean.
 
 ### What we're NOT doing (Phase 3)
 
