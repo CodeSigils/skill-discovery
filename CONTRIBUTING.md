@@ -73,3 +73,7 @@ Releases are tagged from a clean, merged `main` commit:
 5. Confirm the tag, release, and version metadata agree.
 
 The tag workflow reruns the release checks for every `v*.*.*` tag.
+
+**When to release:** A new release is warranted when SKILL.md behavior
+changes, CI pipeline changes, or ≥5 non-trivial PRs accumulate since
+the last tag. Incremental script-only fixes do not require a release.
