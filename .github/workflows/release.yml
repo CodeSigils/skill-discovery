@@ -1,7 +1,7 @@
 name: release
 
 permissions:
-  contents: read
+  contents: write
 
 on:
   push:
@@ -63,3 +63,8 @@ jobs:
         run: uv run python .github/scripts/validate-docs.py
       - name: Validate offline discovery evaluation fixtures
         run: uv run python scripts/validate-evaluation-fixtures.py
+
+      - name: Create GitHub release with generated notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --verify-tag --generate-notes --title "$GITHUB_REF_NAME"
