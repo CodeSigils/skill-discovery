@@ -69,7 +69,8 @@ Releases are tagged from a clean, merged `main` commit:
 1. Confirm `pyproject.toml` and `CITATION.cff` contain the intended version.
 2. Run the validation commands above and confirm `main` is clean and current.
 3. Create an annotated `vX.Y.Z` tag on the merged commit and push the tag.
-4. Create a normal GitHub release with notes summarizing the relevant commits.
+4. Create the GitHub release; the repository generates categorized notes from
+   merged pull requests and contributors.
 5. Confirm the tag, release, and version metadata agree.
 
 The tag workflow reruns the release checks for every `v*.*.*` tag.

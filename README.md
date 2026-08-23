@@ -183,6 +183,7 @@ skill-discovery/
     │   ├── config.yml                 # disables blank issues
     │   └── feature_request.yml        # structured feature request form
     ├── dependabot.yml                 # weekly action version updates
+    ├── release.yml                    # generated release-note categories
     ├── workflows/
     │   ├── ci.yml                     # validate + monitor jobs
     │   ├── dependabot-auto-merge.yml  # auto-merge minor/patch dependabot PRs
