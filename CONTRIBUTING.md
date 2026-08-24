@@ -1,51 +1,32 @@
 # Contributing
 
-Contributions are welcome. Keep changes focused, evidence-based, and easy to
-review. Read [SECURITY.md](SECURITY.md) before reporting security issues.
+This page is the maintainer entry point. It follows the Diátaxis model:
 
-## Pull requests
+- **Tutorial** — make and validate a first change.
+- **How-to** — run focused checks and update evidence safely.
+- **Reference** — repository boundaries, scripts, and release rules.
+- **Explanation** — why the shipped payload is separate from maintenance infrastructure.
 
-- Use a focused branch and pull request for each logical change.
-- Batch related tiny documentation edits when practical; do not mix unrelated
-  maintenance work into the same pull request.
-- Required CI checks must pass before merge.
-- CI status checks must pass and `main` protection rules are enforced.
-- Preserve the shipped boundary: only `skills/skill-discovery/` is runtime
-  payload; repository infrastructure belongs outside it.
+Read [SECURITY.md](SECURITY.md) before reporting a security issue.
 
-## Commit messages
+## Tutorial: first contribution
 
-Use a short imperative subject followed by a body for non-trivial changes:
+1. Create a focused branch from current `main`.
+2. Change the smallest relevant file set. The shipped runtime boundary is only
+   `skills/skill-discovery/`; tooling and research stay outside it.
+3. Update README, references, dated evidence, and
+   [`proposals/ROADMAP.md`](proposals/ROADMAP.md) when behavior or maintenance
+   policy changes.
+4. Run the validation commands below.
+5. Open a focused pull request with evidence for behavior, documentation, and
+   changed external contracts.
 
-```text
-docs: clarify catalog status
+Batch related documentation edits together, but keep unrelated maintenance out
+of the same pull request.
 
-What: Replace a time-sensitive indexing claim with durable guidance.
-Why: Catalog availability changes independently of local installability.
-```
+## How-to: validate a change
 
-The `What:` and `Why:` lines should describe the concrete change and its
-motivation. Release notes are generated from the commit history; this project
-does not maintain a separate changelog.
-
-## Script directories
-
-The repository has two script directories with different scopes:
-
-- **`scripts/`** — Standalone CLI tools that auto-detect the repo root via
-  `_common.ROOT`. Safe to run from any working directory. Contains validation,
-  health checks, and the skill validator.
-- **`.github/scripts/`** — CI-specific helpers. May assume the repo root is the
-  working directory and use hardcoded paths. Contains URL contract verification,
-  marketplace URL checks, and CI-specific validators.
-
-When adding new scripts, prefer `scripts/` for anything a contributor might run
-locally. Use `.github/scripts/` only for logic that depends on CI context (GitHub
-API tokens, workflow-specific paths, PR creation).
-
-## Validation
-
-Run the relevant checks before opening a pull request:
+Run the full local gate from the repository root:
 
 ```bash
 uv sync --locked --only-dev
@@ -62,19 +43,78 @@ uv run python scripts/validate-evaluation-fixtures.py
 uv run python .github/scripts/validate-docs.py
 ```
 
-## Release process
+For a payload-only edit, run:
 
-Releases are tagged from a clean, merged `main` commit:
+```bash
+uv run python scripts/validate-skill.py skills/skill-discovery
+uv run python .github/scripts/validate-docs.py
+```
 
-1. Confirm `pyproject.toml` and `CITATION.cff` contain the intended version.
-2. Run the validation commands above and confirm `main` is clean and current.
-3. Create an annotated `vX.Y.Z` tag on the merged commit and push the tag.
-4. Create the GitHub release; the repository generates categorized notes from
-   merged pull requests and contributors.
-5. Confirm the tag, release, and version metadata agree.
+If network access is unavailable, report which checks were not run. Do not make
+an external contract appear verified based on an old result.
 
-The tag workflow reruns the release checks for every `v*.*.*` tag.
+## How-to: update external evidence
 
-**When to release:** A new release is warranted when SKILL.md behavior
-changes, CI pipeline changes, or ≥5 non-trivial PRs accumulate since
-the last tag. Incremental script-only fixes do not require a release.
+1. Read the provider's current documentation before changing a URL, endpoint,
+   authentication rule, response shape, or CLI command.
+2. Update `docs/evidence-urls.json` with the observed status and verification
+   date; keep durable guidance in the relevant reference file.
+3. Run the URL verifier and documentation checks.
+4. If the scheduled monitor opens a drift PR, review the diff for semantic
+   changes. A timestamp refresh alone is not evidence that a contract is still
+   correct.
+
+Never copy credentials, private URLs, or candidate secrets into evidence files,
+issues, or reports.
+
+## Reference: repository conventions
+
+### Pull requests and commits
+
+- Keep each branch and pull request focused.
+- Use a short imperative commit subject and add `What:` and `Why:` lines for
+  non-trivial changes.
+- Required CI checks must pass before merge.
+- Release notes are generated from commit history; this repository does not keep
+  a separate changelog.
+
+Example:
+
+```text
+docs: clarify catalog bootstrap boundary
+
+What: Document that npx --yes requires explicit approval.
+Why: Discovery is read-only by default and package bootstrapping executes code.
+```
+
+### Script directories
+
+- `scripts/` contains contributor-facing tools. They auto-detect the repository
+  root through `_common.ROOT` and should work from any working directory.
+- `.github/scripts/` contains CI-specific helpers that may rely on GitHub
+  context or repository-root execution.
+
+Prefer `scripts/` for reusable local checks. Use `.github/scripts/` only when a
+check depends on CI, GitHub APIs, or workflow-specific behavior.
+
+### Release reference
+
+Release from a clean, merged `main` commit:
+
+1. Align the version in `pyproject.toml` and `CITATION.cff`.
+2. Run the full validation gate and confirm the worktree is clean.
+3. Create and push an annotated `vX.Y.Z` tag.
+4. Create the GitHub release and review generated notes.
+5. Confirm tag, release, and version metadata agree.
+
+Release when shipped `SKILL.md` behavior, CI policy, or a meaningful group of
+changes warrants a user-visible update. Isolated script fixes normally do not
+need a release.
+
+## Explanation: why the boundary matters
+
+The skill payload is intentionally small and portable. Keeping validators,
+research snapshots, CI workflows, and roadmap decisions outside
+`skills/skill-discovery/` prevents maintenance dependencies from becoming
+runtime requirements. Dated research records volatile facts; the skill itself
+must verify those facts again at use time.

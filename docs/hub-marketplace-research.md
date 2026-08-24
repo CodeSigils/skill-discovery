@@ -47,12 +47,17 @@ Vercel OIDC authentication, and documents rate limits.
 
 Current contract source: <https://www.skills.sh/docs/api>
 
-For local interactive use, prefer the provider CLI:
+For local interactive use, prefer an already-installed provider CLI:
 
 ```bash
-npx --yes skills find '<query>'
-npx --yes skills add <owner/repository> --list
+npx skills find '<query>'
+npx skills add <owner/repository> --list
 ```
+
+These commands must not be treated as permission to bootstrap a package runner.
+If the CLI is missing, use the documented read-only API or another fallback;
+running `npx --yes` downloads and executes external code and requires explicit
+approval.
 
 ### GitHub code search
 

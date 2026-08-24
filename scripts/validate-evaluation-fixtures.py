@@ -37,6 +37,7 @@ def validate(document: object) -> list[str]:
     if not isinstance(cases, list) or not cases:
         return errors + ["cases must be a non-empty list"]
     ids: set[str] = set()
+    results_seen: set[str] = set()
     for index, case in enumerate(cases):
         label = f"cases[{index}]"
         if not isinstance(case, dict):
@@ -62,11 +63,26 @@ def validate(document: object) -> list[str]:
             value = case.get(field)
             if value not in allowed:
                 errors.append(f"{label}: {field} must be one of {', '.join(sorted(allowed))}")
+        result = case.get("result")
+        if isinstance(result, str):
+            results_seen.add(result)
         if case.get("result") == "inspection_blocked":
             if case.get("candidate_revision") != "unavailable":
                 errors.append(f"{label}: blocked candidates require unavailable revision")
             if case.get("loader_status") != "unavailable":
                 errors.append(f"{label}: blocked candidates require unavailable loader")
+            if case.get("behavior_validation") != "not-run":
+                errors.append(f"{label}: blocked candidates cannot have behavior validation")
+        elif case.get("candidate_revision") == "unavailable":
+            errors.append(f"{label}: inspected candidates require a reviewed revision")
+        if result == "direct_fit" and case.get("loader_status") == "unavailable":
+            errors.append(f"{label}: direct fits require loader evidence")
+    missing_results = RESULTS - results_seen
+    if missing_results:
+        errors.append(
+            "fixture set must cover every result class; missing "
+            + ", ".join(sorted(missing_results))
+        )
     return errors
 
 

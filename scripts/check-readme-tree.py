@@ -30,7 +30,11 @@ def git_tracked_files() -> set[str]:
             text=True,
             check=True,
         )
-        return {line.strip() for line in result.stdout.splitlines() if line.strip()}
+        return {
+            line.strip()
+            for line in result.stdout.splitlines()
+            if line.strip() and (ROOT / line.strip()).exists()
+        }
     except (subprocess.CalledProcessError, FileNotFoundError):
         return set()
 

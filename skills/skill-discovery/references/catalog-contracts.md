@@ -5,12 +5,18 @@ documentation when a query depends on exact authentication or response fields.
 
 ## skills.sh
 
-For interactive/local discovery, use the official installer CLI:
+For interactive/local discovery, use an already-installed official CLI when one
+is available. The commands below are examples, not permission to bootstrap a
+package runner:
 
 ```bash
-npx --yes skills find '<query>'
-npx --yes skills add <owner/repository> --list
+npx skills find '<query>'
+npx skills add <owner/repository> --list
 ```
+
+If `skills` is not already installed, prefer the read-only API below or another
+documented fallback. Running `npx --yes` downloads and executes external code
+and requires explicit user approval before discovery begins.
 
 Programmatic search uses the documented v1 endpoint:
 

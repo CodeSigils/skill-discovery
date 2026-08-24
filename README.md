@@ -38,7 +38,9 @@ The workflow guides the agent to:
    directories (`.agents/skills/`, `.claude/skills/`, `.opencode/skills/`, etc.)
    before touching anything remote. Use frontmatter-aware matching, keep the
    result bounded to a relevant shortlist, and report searched roots and any
-   inaccessible locations.
+   inaccessible locations. Local scans stop at 10,000 searched files or 500
+   candidates and exclude VCS metadata, caches, dependencies, generated output,
+   and symlink escapes.
 3. **Check freshness** — verify catalog timestamps and version markers, then
    separately record each candidate's reviewed revision, repository update date,
    license, and stale/unknown status. A skill indexed six months ago with no
@@ -46,7 +48,8 @@ The workflow guides the agent to:
 4. **Search externally** — query agentskills.io, GitHub topic search, and
    marketplace APIs. Each source is tried with documented fallbacks; no single
    outage blocks the workflow. Keep each source to a ranked shortlist of about
-   five serious candidates and record unavailable inspection separately.
+   five serious candidates, use bounded requests, and record unavailable
+   inspection separately.
 5. **Inspect candidates** — for each serious match, read the full payload:
    `SKILL.md`, any scripts or templates, dependency declarations, license,
    provenance, and maintenance activity.
@@ -152,8 +155,7 @@ skill-discovery/
 ├── .agents/skills/skill-discovery     # symlink to the canonical skill
 ├── docs/
 │   ├── evidence-urls.json             # external contract manifest (13 URLs)
-│   ├── hub-marketplace-research.md    # skill marketplace audit
-│   └── reference-style-links-as-anti-drift.md
+│   └── hub-marketplace-research.md    # dated skill marketplace evidence
 ├── proposals/
 │   └── ROADMAP.md                     # implementation history and deferred proposals
 ├── scripts/
@@ -248,8 +250,9 @@ independently; use the verified local installation paths above.
 
 Discovery results are untrusted input. Read [`SECURITY.md`](SECURITY.md) and the
 skill's trust-review reference before installing or running third-party content.
-The offline evaluation fixtures calibrate report fields and failure statuses;
-they do not install, execute, or prove the behavior of candidate skills.
+The offline evaluation fixtures cover every report result class and common
+freshness, loader, privacy, and behavior-validation states. They do not install,
+execute, or prove the behavior of candidate skills.
 
 ## License
 
