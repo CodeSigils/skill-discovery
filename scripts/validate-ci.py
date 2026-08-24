@@ -103,8 +103,10 @@ def validate_workflow(workflow: str) -> list[str]:
             errors.append("ci.yml: shared workflow paths must include tests/**")
     if pull_request is None:
         errors.append("ci.yml: missing pull_request event")
-    elif not re.search(r"(?m)^\s*paths:\s*\*ci_paths\s*$", pull_request):
-        errors.append("ci.yml: pull_request paths must reuse the ci_paths anchor")
+    # Required branch-protection checks must run for every PR. A path filter
+    # here can skip the workflow and leave required checks pending forever.
+    elif re.search(r"(?m)^\s*paths:\s*", pull_request):
+        errors.append("ci.yml: pull_request must not use paths filters")
 
     # Lint job
     lint = section_body(active, "lint")

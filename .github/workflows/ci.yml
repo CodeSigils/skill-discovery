@@ -26,7 +26,6 @@ on:
       - 'tests/**'
   pull_request:
     branches: [main]
-    paths: *ci_paths
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -120,7 +119,6 @@ jobs:
       - name: Open PR for auto-fixes if any
         id: create-pr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
-        continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           add-paths: docs/evidence-urls.json
@@ -130,8 +128,8 @@ jobs:
             The scheduled external-contract monitor detected and refreshed
             stale verification timestamps in `docs/evidence-urls.json`.
 
-            This automated change is submitted as a pull request so protected
-            `main` remains compliant with signed-commit requirements.
+            This automated change is submitted as a pull request so required
+            checks and review remain in the normal protected-branch workflow.
           branch: automation/external-contract-drift
           delete-branch: true
       - name: Check research expiry and create issues
