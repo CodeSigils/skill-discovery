@@ -1,613 +1,117 @@
 # Roadmap and implementation record
 
-Internal proposals and investigation artifacts. Completed phases are retained
-as implementation history; items without a completion marker are deferred
-proposals rather than committed plans. Tracked in git under `proposals/`.
+This file contains active maintenance decisions and a compact implementation
+record. It is not a changelog; release notes come from commit history. Remove
+completed detail when it no longer explains a current constraint.
 
-## Implementation Discipline
+## Maintenance discipline
 
-When making any implementation change (new feature, bugfix, refactor, CI
-change), always check whether README, docs, or references need updating.
-Specifically:
+When behavior, CI, or repository structure changes:
 
-     1. README "What it does in practice" — does the change affect the
-     8-stage workflow? If yes, update the relevant step.
+1. Update the affected README workflow, payload, validation, or layout section.
+2. Update the relevant shipped reference when the agent needs new guidance.
+3. Update dated evidence only after checking the provider's current contract.
+4. Record the decision here in one concise dated entry.
+5. Run the documented validation gate in `CONTRIBUTING.md`.
 
-  2. README "Skill payload" — does the change affect validation output,
-     the example, or the checklist? If yes, keep them in sync.
+The shipped runtime boundary is `skills/skill-discovery/`. Repository tooling,
+research, CI, and roadmap files remain outside the payload.
 
-  3. README "Evidence and validation" — does the change add/remove a
-     validator, CI step, or evidence source? Update the three subsections.
+## Active deferred decisions
 
-  4. README "Repository layout" — does the change add/remove files?
-     Update the file list.
+### Markdown style linter
 
-  5. References — does the change add knowledge the agent should use
-     during workflow steps? Add it to the appropriate reference file
-     and update SKILL.md's "Supporting references" if needed.
+Deferred. The documentation validator already checks fences, relative links,
+frontmatter, expiry, and payload integrity. Reconsider if formatting defects
+become a recurring review problem; do not add a second style policy without a
+demonstrated failure pattern.
 
-  6. ROADMAP — document what was done and when (Phase 1 summary pattern).
+### Pre-commit hooks
 
-Do not treat docs as a separate task. They are part of the implementation.
-A change that ships code but leaves docs stale is incomplete.
+Deferred. CI is the authoritative gate and local hooks would add setup friction
+for the solo-maintained project. Reconsider if contributor volume or repeated
+local-only failures justify the maintenance cost.
 
-## Projects For Investigation (historical)
+### Runtime execution harness for third-party skills
 
-Research that led to Phase 1 decisions. Preserved for context.
+Not planned. Discovery remains static by default. Behavior checks require
+explicit authorization, synthetic fixtures, isolation, and no credentials or
+network. The repository maintains offline report-contract fixtures instead of
+executing untrusted skills.
 
-### skill-master meta-skill: what it does better
+### Registry integrations
 
-Source: [skill-master SKILL.md](https://raw.githubusercontent.com/NeverSight/skills_feed/refs/heads/main/data/skills-md/itechmeat/llm-code/skill-master/SKILL.md) (NeverSight/skills_feed, author: itechmeat, v1.2.3)
+Not planned. Provider APIs and marketplace rankings are volatile and add
+external maintenance burden. Use documented, read-only provider interfaces at
+query time; keep current contracts in the shipped catalog reference and dated
+observations in `docs/hub-marketplace-research.md`.
 
-skill-master is a meta-skill for creating and maintaining agent skills. 238 lines
-in SKILL.md plus scripts/, references/, and assets/. Claude Code–leaning but the
-content is largely agent-agnostic.
+## Current implementation state
 
-skill-discovery is a meta-skill for finding and evaluating skills. ~169 lines in
-SKILL.md plus 5 reference files. Agent-agnostic by design.
+### Validation and CI
 
-They are complementary: CREATE vs FIND. The gaps below are where skill-discovery
-assumes knowledge that skill-master teaches.
+- CI validates payload, documentation, links, version consistency, workflows,
+  evaluation fixtures, and dependencies on push and pull request.
+- Scheduled monitoring checks external evidence reachability and expiry.
+- Weekly repository health checks cover link integrity, reference integrity,
+  payload budget, and advisory-baseline drift.
+- GitHub Actions are SHA-pinned and Dependabot monitors workflow actions.
 
-#### Gaps in skill-discovery that skill-master fills
+### Discovery methodology
 
-1. SKILL.MD SPEC LITERACY
-   skill-master spells out the full frontmatter schema: required fields, optional
-   fields, validation rules, name constraints (1-64 chars, lowercase, no --,
-   must match folder). skill-discovery assumes the agent already knows the spec.
-   An agent discovering a skill cannot verify frontmatter conformance without
-   loading another skill or reading the spec externally.
+- Local-first, bounded discovery with explicit inaccessible-root reporting.
+- Documented provider fallbacks with freshness and status per source.
+- Revision-pinned candidate inspection with compatibility and capability gates.
+- Candidate inspection budgets: 32 files, 100 KiB per file, 1 MiB total, depth 3.
+- Remote request budget: 15 seconds per request and two minutes per search.
+- No installation, copying, creation, or execution without explicit approval.
+- No secrets, private URLs, personal data, or credentials copied into reports.
+- Report contract requires per-source and per-candidate evidence rows.
 
-2. DESCRIPTION QUALITY FORMULA
-   skill-master provides:
-     [Product] [core function]. Covers [2-3 topics]. Keywords: [terms].
-   With constraints (80-150 chars, no marketing, no filler) and good/bad
-   examples. skill-discovery has nothing equivalent. Its workflow says "search
-   name, description, tags" but does not teach what a good description looks
-   like — relevant when evaluating whether a candidate description is
-   trustworthy signal or noise.
+### Evaluation
 
-3. SCAFFOLDING AND VALIDATION TOOLS
-   skill-master ships 4 scripts:
-     init_skill.py           — scaffold new skill
-     quick_validate_skill.py — validate structure + frontmatter
-     package_skill.py        — package for distribution
-     init_copilot_asset.py   — Copilot-specific scaffolding
-   skill-discovery has CI validators for its own repo (ci-check.py,
-   validate-docs.py, verify-marketplace-urls.py) but no user-facing tools
-   for validating a discovered or created skill.
+`tests/discovery-evaluations.json` is a network-free calibration set covering
+direct, conditional, partial, blocked, and rejected outcomes, plus freshness,
+loader, privacy, and behavior-validation states. The validator checks schema,
+coverage, and consistency. These fixtures do not execute candidate content.
 
-4. TEMPLATE AND SCAFFOLD PATTERNS
-   skill-master has assets/skill-templates.md with starter SKILL.md templates.
-   skill-discovery has no templates. Step 7 of the workflow says "offer to
-   create a minimal new skill" but provides no scaffold to create from.
+## Implementation record
 
-5. FOLDER PURPOSE MATRIX
-   skill-master has a clear table distinguishing:
-     references/ — documentation for agents to READ
-     examples/   — sample outputs showing expected format
-     assets/     — static resources to COPY/USE
-     scripts/    — executable code to RUN
-   skill-discovery's repo structure follows this pattern but never teaches it.
+### 2026-08-24 — Methodology hardening
 
-6. DOCUMENTATION INGESTION WORKFLOW
-   skill-master has a 4-phase workflow for building skills from external docs
-   (scaffold, build queue, ingest loop, finalize). skill-discovery has nothing
-   for this. When discovery finds a skill built from docs, there is no pattern
-   for evaluating whether the ingestion was done well.
+- Made package-runner bootstrapping explicitly opt-in.
+- Added local, remote, and candidate inspection budgets.
+- Reworked the report template for per-source and per-candidate evidence.
+- Added redaction requirements and robust catalog-shape examples.
+- Expanded evaluation fixtures to cover all decision classes.
+- Rewrote maintainer guidance using Diátaxis-oriented sections.
 
-7. VERSION TRACKING PATTERNS
-   skill-master distinguishes skill version from product version, shows
-   release_date field, and provides a standardized README.md links section
-   format. skill-discovery's freshness check says to "inspect generation
-   timestamp" but does not address how skills version themselves or how to
-   tell if a skill tracks an outdated product version.
+### 2026-08-21 — Repository hardening and v0.1.2
 
-8. PROHIBITION LIST
-   skill-master has explicit DO NOT rules:
-     - No large verbatim chunks from vendor docs
-     - No non-English content
-     - No secrets/paths/assumptions
-     - SKILL.md under 500 lines
-     - No skipped name validation
-   skill-discovery has "boundaries" but no skill-authoring prohibitions.
-   Relevant when evaluating whether a candidate skill was well-made.
+- Added workflow action pinning, Dependabot, Ruff, issue templates, URL drift
+  monitoring, research expiry checks, repository health checks, and advisory
+  baselines.
+- Consolidated shared validation utilities and added payload safety checks,
+  reference-size budgets, CI policy self-tests, and README stale-drift checks.
+- Released `v0.1.2` after aligning version metadata and release validation.
 
-#### What skill-discovery does better (keep these)
+### 2026-08-16 — Discovery and evaluation baseline
 
-1. SECURITY AND TRUST FRAMEWORK — trust-review.md is thorough: provenance,
-   complete payload inspection, capability enumeration, dependency analysis,
-   external evidence evaluation. skill-master has zero security review.
+- Added local-first discovery, freshness separation, compatibility gates,
+  privacy guidance, loader states, bounded shortlists, and inspection-blocked
+  outcomes.
+- Added the initial offline evaluation fixture contract.
 
-2. PLATFORM COVERAGE — 6 clients mapped (Codex, Claude Code, Cursor,
-   OpenCode, Gemini CLI, GitHub Copilot) with project + user locations.
+### 2026-07-22 — Skill format and validation baseline
 
-3. AGENT-AGNOSTIC DESIGN — No platform-specific frontmatter fields promoted
-   as primary.
+- Added the skill-format and trust-review references.
+- Added the standalone payload validator and unit tests.
+- Kept scaffolding and authoring templates out of this discovery payload.
 
-4. CATALOG CONTRACT DOCUMENTATION — catalog-contracts.md documents skills.sh
-   API, GitHub search patterns, authenticated fallbacks.
+## Scope exclusions
 
-   5. STRUCTURED RECOMMENDATION FORMAT — The 7-field report template
-   (Need/Searched/Recommendation/Why/Trust/Compatibility/Tradeoffs) is
-   production-ready.
-
-
-### awesome-agent-trust: URL validation patterns
-
-Source: [CodeSigils/awesome-agent-trust](https://github.com/CodeSigils/awesome-agent-trust)
-
-awesome-agent-trust is an awesome-style curated list of 150+ AI agent
-trust/identity projects with CI-driven URL validation. Not a skill project —
-a curated list with validation infrastructure.
-
-skill-discovery shares the same CI challenge: weekly link rot detection that
-reports ALL warnings every cycle, making it hard to distinguish new issues
-from known noise.
-
-#### Borrow-worthy patterns
-
-1. ADVISORY BASELINE — `advisory-baseline.json` snapshots known soft warnings.
-   Weekly CI diffs current vs baseline and reports only NEW advisories.
-   Currently our `cron-health.py` re-reports all soft warnings every week.
-   Adding a baseline would reduce noise from "14 known + 2 new" to just
-   "2 NEW". ~2-3 hours to implement.
-
-2. EXCEPTION REGISTRY — `repo-exceptions.json` with `review_after` dates.
-   Evidence-backed waivers for known broken links. Expired exceptions are
-   rejected by the validator. Useful for documenting known issues that need
-   periodic re-evaluation. ~1-2 hours to implement.
-
-#### Patterns already covered in skill-discovery
-
-- Two-tier severity (pass/fail) — already in `cron-health.py`
-- Concurrent validation — already using `ThreadPoolExecutor`
-- Format validation — `validate-ci.py` covers structure
-
-
-## Advisory Baseline ✅ IMPLEMENTED (P9)
-
-Implemented 2026-08-21. See P9 section for details.
-
-
-## Improvement Ideas ✅ COMPLETE
-
-All 5 priorities implemented 2026-07-22. See Summary below for details.
-
-| # | Proposal | Outcome |
-|---|----------|---------|
-| 1 | Skill format reference | Created `references/skill-format.md` (89 lines) |
-| 2 | Extract validation script | Created `scripts/validate-skill.py` (62 lines) + `scripts/_common.py` (108 lines), 8 tests |
-| 3 | ~~Scaffold template~~ | Dropped — agents have built-in creation tools |
-| 4 | ~~Freshness evaluation~~ | Split: format ref + trust-review.md subsection |
-| 5 | Ingestion quality checklist | Folded into trust-review.md (5-line addition) |
-
-Key decisions:
-- No standalone template file (agents handle creation)
-- No prohibitions reference (not needed for discovery)
-- Description quality folded into format reference (Priority 1)
-- Freshness and ingestion checks added to trust-review.md
-
-
-## Summary — Phase 1: Skill Format & Validation ✅ COMPLETE
-
-All 5 priorities implemented 2026-07-22.
-
-  NEW FILE:    references/skill-format.md       ~89 lines
-  NEW FILE:    scripts/validate-skill.py        ~62 lines
-  NEW FILE:    scripts/_common.py               ~108 lines (shared validation logic)
-  NEW FILE:    scripts/test_validate_skill.py   ~141 lines (8 tests)
-  APPEND:      references/trust-review.md       +19 lines (freshness + ingestion)
-  UPDATE:      SKILL.md                         +2 lines (new reference)
-  UPDATE:      .github/workflows/ci.yml         +2 steps (test + validate-skill)
-  ─────────────────────────────────────────────
-  Total: ~400 lines of new/changed content
-
-  2 of 8 gaps are real (spec literacy, validation access) → done
-  3 are folded into existing files (folder purposes, freshness, ingestion) → done
-  2 are not real gaps (templates, prohibitions) → confirmed not needed
-  1 is already solved (description quality) → folded into Priority 1
-
-Additional work beyond ROADMAP:
-  - README rewritten: practical example, payload section, scripts layout
-  - ci-check.py regex bug fixed (double-escape in hermes path)
-  - 10 new tests added to test_validators.py (PortabilityTests + ContractDriftTests)
-  - .gitignore enriched with Python caches/artifacts
-  - README restructured: understand → act → verify flow, no duplicates
-
-
-## Phase 2: Automated Freshness
-
-The goal: jobs that detect staleness AND fix it without human review.
-Reality check — most maintenance requires judgment. Only one item is
-truly self-healing. The rest detect and notify.
-
-### Current state
-
-  Push/PR:   validators, tests, ci-check, validate-docs (every push)
-  Schedule:  verify-marketplace-urls.py weekly (Monday 6am) with --fix --check-expiry
-  Expiry:    validate-docs.py checks `expires` field on every push
-             verify-marketplace-urls.py creates issues for research expiring within 14 days
-  Monitor:   13 sources checked concurrently with bounded retries and response
-             reads; scheduled and manual monitor runs are serialized.
-
-  Completed: README now documents the maintainer checks, their triggers, and
-  the action required when automation reports a problem.
-
-### P1 — Auto-fix URL drift (guarded automation) ✅ COMPLETE
-
-URL drift fails the weekly CI job but creates no issue and fixes nothing.
-Nobody gets notified unless watching Actions.
-
-Fix: when verify-marketplace-urls.py detects a canonical redirect, update
-`evidence-urls.json` in place and submit a PR. Status, schema, size, and
-reachability failures remain failures; they are never masked by `--fix`.
-The monitor uses bounded retries and response reads, checks independent sources
-concurrently, and serializes scheduled/manual runs to avoid overlap.
-
-The weekly cadence is evidence-based for the current manifest size: it limits
-external traffic while the shipped skill still verifies volatile catalog metadata
-at use time. This is a monitoring signal, not a guarantee that a source remains
-current between checks.
-
-### P2 — Auto-issue on research expiry (semi-automated) ✅ COMPLETE
-
-Research expiry fails CI on push but creates no reminder between pushes.
-If nobody pushes for 2 weeks, expiry goes unnoticed.
-
-Fix: add a check in verify-marketplace-urls.py (already runs weekly)
-that reads `expires` from research frontmatter and creates an issue
-if within 14 days. ~10 lines of Python. Human reviews the issue —
-can't auto-research, that requires judgment.
-
-### Artifact audit (2026-07-24)
-
-All artifacts current and in use. No removals needed.
-
-  docs/hub-marketplace-research.md              expires 2026-10-01
-  docs/reference-style-links-as-anti-drift.md   expires 2027-07-15
-  docs/evidence-urls.json                       13 URLs
-  .github/scripts/                              5 scripts + 3 internal modules + 2 tests, all in CI
-  scripts/                                      8 scripts + 1 shared module, all in CI
-
-### P3 — `last_verified` field on URL entries (ongoing audit trail) ✅ COMPLETE
-
-Nobody currently asks "which URLs haven't been checked?" but when the
-auto-fix fires (P1), the first question is "is this a new drift or
-has it been failing for months?" Without `last_verified`, there's no
-answer.
-
-Fix: add `"last_verified"` to each entry in `evidence-urls.json`. The field
-updates whenever the monitor confirms a valid contract, preserving a compact
-audit trail for the documented evidence sources.
-
-### Post-test discovery hardening (2026-08-16) ✅ COMPLETE
-
-A resume-skill discovery exercise exposed five workflow gaps. The shipped skill
-now searches local roots with bounded, frontmatter-aware shortlisting; reports
-catalog/index freshness separately from each candidate repository revision;
-applies an explicit frontmatter/location/reference compatibility gate; keeps
-static inspection as the default with an opt-in isolated synthetic smoke test;
-and adds privacy guidance for resume/CV and other personal-data candidates.
-
-External-source failures (for example, an unavailable or timed-out authenticated
-code search) remain explicitly reported as unavailable rather than being
-misrepresented as empty results. These changes improve decision quality without
-adding automatic installation, execution, network access, or real-data handling.
-
-### Evaluation follow-up (2026-08-16) ✅ COMPLETE
-
-Four representative searches exposed a second set of decision-quality gaps. The
-workflow now records `catalog freshness: unknown` when a source provides no
-generation metadata; caps and ranks external shortlists; treats unavailable
-canonical payloads as `inspection blocked` rather than recommendable matches;
-reports capability risk by permission type; and records client-loader status as
-`verified`, `structural only`, or `unavailable`.
-
-The evaluation also confirmed that marketplace metadata can guide discovery but
-cannot substitute for revision-pinned payload inspection. No installation or
-candidate execution was added.
-
-### Offline evaluation fixtures (2026-08-16) ✅ COMPLETE
-
-The four-search evaluation is now preserved as a small, network-free JSON
-fixture. `scripts/validate-evaluation-fixtures.py` checks the report contract's
-freshness, revision, loader, privacy, behavior, and result-status fields on every
-push, pull request, and release tag. It calibrates expected reporting and does
-not claim to test an agent's runtime behavior or execute candidate content.
-
-### P4 — Weekly repo health cron (detect-only)
-
-Three checks that push CI can't catch — internal link rot, reference
-file integrity, and SKILL.md budget creep. All live in one script
-(`scripts/cron-health.py`) that runs weekly alongside the existing
-URL monitor.
-
-These are **detect-only** — the fixes require human judgment (knowing
-where a moved file went, deciding what to cut from SKILL.md, etc.).
-
-**Check 1: Internal link rot** (~20 lines Python)
-README and docs link to other repo files (e.g., `skills/skill-discovery/SKILL.md`,
-`references/skill-format.md`). These break silently when files move or get renamed.
-Scan all markdown files for relative links, verify each resolves.
-
-**Check 2: Reference file integrity** (~10 lines Python)
-SKILL.md references 5 files in `references/`. If one gets deleted or renamed,
-the agent breaks at runtime. Parse SKILL.md for `references/*.md` paths,
-verify each exists.
-
-  Design note: use `--check reference-integrity` flag so CI reports which
-  specific check failed, not just "something broke". ~5 extra lines.
-
-**Check 3: SKILL.md budget monitor** (~5 lines Python)
-The 500-line limit is enforced on push, but gradual bloat goes unnoticed
-between pushes. Check line count, warn if >350.
-
-CI integration: add to the weekly schedule job in `.github/workflows/ci.yml`.
-One script, one cron entry, three checks. ~35 lines total.
-
-  Related: update README "Repository layout" with a warning that reference
-  files (`references/*.md`) are load-bearing — renaming or deleting them
-  breaks the agent at runtime. The weekly cron catches this in CI, but
-  a human-readable warning prevents the mistake in the first place.
-
-### What we're NOT doing
-
-  - Tiered cadence (daily/weekly/monthly per URL) — weekly is fine
-  - Freshness dashboard — CI output IS the dashboard
-  - Conditional ETag/Last-Modified requests — not justified for 13 weekly sources
-  - Content-hash comparison — reachability is sufficient
-  - Daily cron — the weekly check + expiry warning covers the gap
-  - Standalone template file — agents have built-in creation tools
-  - Prohibitions reference — not needed for discovery workflow
-
-
-## Phase 3: Developer Experience & Hygiene
-
-Small quality-of-life improvements. Each is independent, low-risk,
-and can ship in any order.
-
-### P1 — Dependabot for GitHub Actions (low effort) ✅ COMPLETE
-
-`actions/checkout` is SHA-pinned (security best practice) but never
-updated. Dependabot auto-opens PRs when new versions drop — security
-patches, Node.js runtime updates, breaking change warnings.
-
-File: `.github/dependabot.yml` (~10 lines YAML)
-Config: target `.github/workflows` directory, weekly schedule, limit
-to 3 open PRs to avoid noise.
-
-### P1b — Ruff linter in CI (low effort) ✅ COMPLETE
-
-No Python linting today. Unused imports, unsorted imports, mutable
-defaults, and f-string issues all slip through.
-
-File: `pyproject.toml` — ruff config (target Python 3.10+, select E/F/I/UP/B/SIM)
-CI step: `ruff check .github/scripts/ scripts/` in the validate job
-Scope: all Python in `.github/scripts/` and `scripts/`
-
-### Tooling review (2026-08-16) ✅ COMPLETE
-
-Markdownlint and pre-commit hooks were reviewed after the repository grew its
-evaluation and release checks. Neither is adopted at this stage. The existing
-documentation validator checks fences, relative links, frontmatter, expiry, and
-the shipped payload; adding Node-based Markdownlint would add a separate style
-policy and toolchain. Mandatory pre-commit hooks would add setup and
-platform friction for a solo-maintained repository while CI remains the
-authoritative gate. Reconsider if contributor volume or formatting defects grow.
-
-### Scope freeze review (2026-08-16) ✅ COMPLETE
-
-The repository is sufficiently hardened for its current solo-maintained,
-single-skill scope. Keep the trust-review guidance, payload/documentation CI,
-dependency auditing, release validation, and offline calibration fixtures. Defer
-the weekly repo-health cron, registry API integrations, additional security
-scanners, and new evaluation machinery until real usage produces a concrete
-failure pattern or contributor volume justifies the maintenance cost.
-
-### P2 — Issue templates (low effort) ✅ COMPLETE
-
-No templates today. Freeform issues lose structure — repro steps,
-environment info, feature rationale all get skipped.
-
-Changes completed:
-- Created `.github/ISSUE_TEMPLATE/bug_report.yml` — structured bug report with description, repro steps, expected behavior, version, environment dropdown
-- Created `.github/ISSUE_TEMPLATE/feature_request.yml` — structured feature request with problem, proposed solution, alternatives considered
-- Created `.github/ISSUE_TEMPLATE/config.yml` — disables blank issues, links to documentation
-
-### P6 — Script code deduplication (medium effort) ✅ COMPLETE
-
-Multiple scripts redefine `ROOT = Path(__file__).resolve().parents[1]`
-locally (7 copies across 7 files) instead of importing from `_common.py`.
-`cron-health.py` reimplemented link-checking logic that already existed in
-`_common.check_relative_links()`. Most scripts didn't import shared utilities.
-
-Changes completed:
-- Updated 6 scripts to import ROOT from _common
-- Refactored cron-health.py to reuse _common.check_relative_links() and find_markdown_files()
-- Added find_markdown_files() to _common.py
-- Standardized imports across all scripts
-
-### P3 — Markdownlint in CI (deferred; reviewed 2026-08-16)
-
-Deferred. `validate-docs.py` already checks the Markdown properties that affect
-repository integrity. A second style linter would add Node/npm maintenance
-without a demonstrated defect pattern. Revisit if formatting regressions become
-recurring review findings.
-
-### P4 — Pre-commit hooks (deferred; reviewed 2026-08-16)
-
-Deferred. CI is the authoritative validation gate; local hooks would be optional
-convenience rather than a repository requirement. Do not add a hook configuration
-until contributor volume or repeated local-only failures justify the setup burden.
-
-### P5 — Skill registry API research with manual fallback (discussion)
-
-Use skill registry APIs as the primary research source for marketplace
-scanning. Manual research is the fallback when APIs aren't available or
-sufficient.
-
-**Primary: Registry APIs (no auth required)**
-  - OpenAgentSkill (openagentskill.com) — trust scores, audits, task→skill
-    resolution, quality scores. Most comprehensive read-only API.
-  - SkillsHub (skillshub.wtf) — 10k+ skills, natural language resolver
-    via `/api/v1/skills/resolve?task=...`.
-  - Mercury Skills (skills.mercuryagent.sh) — clean JSON, simple metadata.
-
-**Fallback: Manual research**
-  - Use when APIs are down, change, or don't cover a skill category
-  - Use when API data conflicts with our own assessment
-  - Use for skills not yet indexed by registries
-
-**Needs auth or blocked (skip for now):**
-  - skills.sh — Vercel OIDC API key required.
-  - CrossAITools — Cloudflare blocks automated access.
-
-**Use cases:**
-  - Detect new skills that match our workflow patterns
-  - Validate our recommendations against external trust/audit data
-  - Refresh `docs/hub-marketplace-research.md` with live data
-
-**Tradeoffs:**
-  + Pro: automated, catches new skills faster than manual
-  + Pro: registry trust scores augment our own assessment
-  - Con: external API dependency (what if they go down or change)
-  - Con: their trust/audit data may conflict with our own assessment
-  - Con: scope creep — monitoring URLs + APIs grows maintenance burden
-
-**Status:** Discussion deferred. Revisit when roadmap is next reviewed.
-Add as Phase 2 or Phase 3 item based on how the project evolves.
-
-### P7 — Codebase hardening from python-project-workflow patterns (2026-08-21)
-
-Borrow 7 patterns from `python-project-workflow` that improve safety, consistency,
-and testability. Plus 1 new stale-drift detection check. All changes are additive
-— no existing behavior modified.
-
-**Source:** Pattern comparison against `python-project-workflow` (CodeSigils),
-2026-08-21.
-
-#### P7.1 — `read_text_checked(path)` in `_common.py` (~30min)
-
-Safe file reading with symlink rejection, proper error handling for
-FileNotFoundError, UnicodeDecodeError, and OSError. Replaces bare `.read_text()`
-across scripts.
-
-#### P7.2 — `fail(message, hint=...)` helper in `_common.py` (~20min)
-
-Standardized error output with optional hints. Replaces scattered `print + sys.exit`
-pattern across scripts.
-
-#### ~~P7.3 — `contains_markdown_phrase(text, phrase)`~~ REMOVED (dead code)
-
-Was whitespace-normalized phrase matching for doc validation. Removed in PR #28
-(code review cleanup) — never called by any script. See P8 below.
-
-#### P7.4 — Unsafe probe detection in `validate_skill()` (~30min)
-
-Check skill content for dangerous git operations: `git log %B`, `cat .env`,
-`git reset --hard`, `git push --force`. Catches supply-chain attack patterns
-before installation.
-
-#### P7.5 — Reference file size budgets (~20min)
-
-Min/max size checks for `references/*.md` files. Flags empty references or
-oversized files that suggest content drift.
-
-#### P7.6 — `git ls-files` in `check-readme-tree.py` (~30min)
-
-Use `git ls-files` for accurate tracked-file listing instead of filesystem glob.
-Add reverse check: detect files on disk that aren't in the README tree (stale
-drift detection).
-
-#### P7.7 — `--self-test` mode for `validate-ci.py` (~1hr)
-
-Regression testing: load validate-ci as module, inject regressions (commented-out
-command, path filter removal, mutable SHA pin), assert rejection. Ensures CI
-validator catches policy drift.
-
-#### P7.8 — Stale drift detection in `check-readme-tree.py` (~20min)
-
-Reverse of existing tree check: files tracked by git that aren't listed in the
-README tree. Catches documentation drift where new files are added but README
-isn't updated.
-
-**Status:** Implemented 2026-08-21. All items complete.
-P7.3 removed 2026-08-21 (dead code, PR #28).
-
-### P8 — Review cleanup (2026-08-21) ✅ COMPLETE
-
-Code review identified 5 cleanup items. All fixed in PR #28.
-
-1. **Remove dead code:** `contains_markdown_phrase()` from `_common.py` (never called)
-2. **Consolidate regex:** `SKILL_REF_RE` — import from `_common` in `cron-health.py` instead of duplicating
-3. **Fix unreachable:** `AssertionError` (misspelled) → `RuntimeError` in `_url_contract.py:127`
-4. **Simplify version check:** Replace `most_common()` logic with direct `if v1 != v2` in `check-version-consistency.py`
-5. **Auto:** Remove redundant `import re as _re` inside deleted function
-
-Net: -14 lines. All 35 tests pass, ruff clean, LSP clean.
-
-### P9 — Advisory baseline (2026-08-21) ✅ COMPLETE
-
-Weekly health checks (`cron-health.py`) now diff current warnings against a
-baseline snapshot. Only NEW warnings are reported; known warnings are
-suppressed. Resolved warnings (in baseline but no longer produced) are
-flagged for baseline update.
-
-**Pattern source:** [awesome-agent-trust](https://github.com/CodeSigils/awesome-agent-trust)
-advisory-baseline.json pattern, adapted for flat warning strings.
-
-**Files affected:**
-- `scripts/_common.py` — `load_advisory_baseline()`, `save_advisory_baseline()`, `diff_advisories()`
-- `scripts/cron-health.py` — baseline diff in `main()`, `--update-baseline` flag
-- `advisory-baseline.json` — new file, snapshots current warnings
-
-**Usage:**
-```bash
-cron-health.py                        # run all checks, report vs baseline
-cron-health.py --update-baseline      # snapshot current warnings as new baseline
-```
-
-**Status:** Implemented 2026-08-21.
-
-### v0.1.2 Release (2026-08-21) ✅ COMPLETE
-
-Patch release capturing 12 PRs (#18–#30) of CI hardening, codebase
-improvements, and documentation fixes since v0.1.1.
-
-**Changes since v0.1.1:**
-- CI: fix PR-creation step, bump actions to Node 24-compatible versions
-- P2: GitHub issue templates (bug report + feature request)
-- P4: weekly repo health checks (link rot, reference integrity, budget)
-- P6: script deduplication (consolidate ROOT into `_common`)
-- P7: codebase hardening from python-project-workflow patterns
-- P8: review cleanup (dead code, regex consolidation, unreachable, simplification)
-- P9: advisory baseline (suppress known warnings, report only new)
-- Documentation: drift fixes, SKILL.md tension resolution, examples.md correction
-- Polish: docstrings, type annotations, advisory baseline tests, pyproject metadata
-
-**Trigger criteria (for future releases):** A release is warranted when
-SKILL.md behavior changes, CI pipeline changes, or ≥5 non-trivial PRs
-accumulate since the last tag.
-
-**Status:** Released 2026-08-21.
-
-### What we're NOT doing (Phase 3)
-
-  - CODEOWNERS — solo project, no reviewers to assign
-  - PR templates — overhead for solo work
-  - Stale issue bot — low issue volume
-  - CodeQL / security scanning — ~300 lines of scripts, not warranted
-  - Additional release automation — tag validation and release metadata checks
-    already exist; packaging automation is not needed
-  - New evaluation harnesses — offline calibration is sufficient until usage
-    exposes a reproducible behavior gap
-
-
-## Unified "What we're NOT doing" — All Phases
-
-Cross-phase exclusions (no duplicates):
-
-  Phase 1: standalone template, prohibitions reference
-  Phase 2: tiered cadence, freshness dashboard, content-hash, daily cron
-  Phase 3: CODEOWNERS, PR templates, stale bot, CodeQL, additional release automation
+The project does not currently need CODEOWNERS, PR templates, stale-issue bots,
+CodeQL, extra release automation, a changelog file, a registry aggregation
+service, or automatic execution of discovered skills. Reconsider exclusions only
+when usage produces a concrete, repeatable failure or the contributor model
+changes.

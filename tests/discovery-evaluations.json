@@ -3,37 +3,47 @@
   "purpose": "Offline calibration cases for the skill-discovery report contract; these do not execute candidate skills.",
   "cases": [
     {
-      "id": "resume-cv",
-      "task": "Find a resume or CV skill",
-      "result": "inspection_blocked",
-      "catalog_freshness": "unknown",
-      "candidate_revision": "unavailable",
-      "loader_status": "unavailable",
+      "id": "docker-compose-direct",
+      "task": "Find an offline Docker Compose development skill",
+      "result": "direct_fit",
+      "catalog_freshness": "known",
+      "candidate_revision": "owner/repo@abc123",
+      "loader_status": "verified",
       "privacy": "synthetic-only",
-      "behavior_validation": "not-run"
+      "behavior_validation": "pass"
     },
     {
       "id": "python-review",
       "task": "Find a Python code-review skill",
-      "result": "inspection_blocked",
-      "catalog_freshness": "unknown",
-      "candidate_revision": "unavailable",
-      "loader_status": "unavailable",
+      "result": "conditional_fit",
+      "catalog_freshness": "stale",
+      "candidate_revision": "owner/repo@def456",
+      "loader_status": "structural_only",
       "privacy": "not-applicable",
-      "behavior_validation": "not-run"
+      "behavior_validation": "partial"
     },
     {
-      "id": "security-audit",
-      "task": "Find a security-audit skill",
-      "result": "inspection_blocked",
-      "catalog_freshness": "unknown",
-      "candidate_revision": "unavailable",
-      "loader_status": "unavailable",
+      "id": "resume-cv",
+      "task": "Find a resume or CV skill",
+      "result": "partial_fit",
+      "catalog_freshness": "known",
+      "candidate_revision": "owner/repo@123abc",
+      "loader_status": "verified",
       "privacy": "synthetic-only",
       "behavior_validation": "not-run"
     },
     {
-      "id": "technical-writing",
+      "id": "security-audit-reject",
+      "task": "Find a security-audit skill with no network access",
+      "result": "reject",
+      "catalog_freshness": "known",
+      "candidate_revision": "owner/repo@789fed",
+      "loader_status": "verified",
+      "privacy": "not-applicable",
+      "behavior_validation": "not-run"
+    },
+    {
+      "id": "technical-writing-blocked",
       "task": "Find a technical-writing skill",
       "result": "inspection_blocked",
       "catalog_freshness": "unknown",

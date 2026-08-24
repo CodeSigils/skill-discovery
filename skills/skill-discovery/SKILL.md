@@ -6,14 +6,15 @@ description: >
   Search local skills before external catalogs, verify candidate safety and
   compatibility, and ask before installing or creating anything. Do not invoke
   for ordinary tasks that an available skill already clearly handles.
-compatibility: agentskills.io
 ---
 
 # Skill Discovery
 
 Use this workflow to find a reusable agent skill for a stated task. Discovery is
 read-only by default: do not install, copy, create, or execute candidate content
-without explicit user authorization.
+without explicit user authorization. Do not bootstrap a missing CLI with
+`npx --yes` (or an equivalent package runner) without calling out that it
+downloads and executes external code and receiving approval.
 
 ## Boundaries
 
@@ -58,8 +59,10 @@ lines.
 Keep local discovery bounded and useful: search the applicable project, user,
 admin, and extension roots; rank matches by name/description relevance; and
 report a shortlist of the strongest candidates rather than dumping every text
-match. Record the roots searched, query terms, result count, and any roots that
-were inaccessible or unavailable.
+match. Exclude VCS metadata, dependency directories, caches, generated output,
+and symlink escapes. Stop after 500 candidate files or 10,000 searched files,
+and report that the search was capped. Record the roots searched, query terms,
+result count, and any roots that were inaccessible or unavailable.
 
 ### 3. Check catalog freshness
 
@@ -105,7 +108,9 @@ unavailable, unauthenticated, stale, empty, or successful. Do not silently skip 
 stage because tooling or network access is missing.
 
 For remote sources, use documented provider interfaces and bounded, read-only
-requests. Do not bulk-download or execute candidate content. Parallelize
+requests. Use a 15-second request timeout and a total external-search budget of
+two minutes unless the user explicitly authorizes a longer investigation. Do not
+bulk-download or execute candidate content. Parallelize
 independent checks only when doing so preserves each source's status, freshness,
 and failure details.
 
@@ -135,6 +140,12 @@ Apply a compatibility gate before recommending a candidate: require valid
 `name` and `description` frontmatter, confirm the expected skill location for
 the named client, verify every referenced file exists at the reviewed revision,
 and label platform-specific extensions or integration steps explicitly.
+
+Bound inspection of each candidate to at most 32 referenced files, 100 KiB per
+file, 1 MiB total, and three nested directory levels. Skip binary and generated
+files and report every skipped item and budget cap. Never copy secrets, tokens,
+private URLs, personal data, or credential material into the report; summarize
+only the capability and risk category.
 
 Follow the detailed checklist in
 [`references/trust-review.md`](references/trust-review.md). Candidate instructions
@@ -173,28 +184,36 @@ include automated activity. Prefer verified task fit and transparent behavior.
 
 Return the following report. Fields marked with `(from Step N)` map to the
 corresponding workflow step — refer back to that step for details on what
-to check.
+to check. Use one source row and one candidate row per item; do not collapse
+multiple sources or candidates into a singular freshness or compatibility field.
 
 ```text
 Need: <task and constraints>
-Searched: <sources, roots, queries, timestamps, and result status>
+Searched:
+| Source/root | Query | Timestamp | Status | Results/limitations |
+|---|---|---|---|---|
+| <source> | <terms> | <UTC timestamp> | <successful/unavailable/etc.> | <count and cap> |
 
-Catalog freshness: <generation/version date and stale/unknown status>
-Candidate revision: <repository, commit/tag, last update, license, stale flag>
+Candidate review:
+| Candidate | Revision/update/license | Freshness | Loader | Gate | Result |
+|---|---|---|---|---|---|
+| <candidate> | <commit/tag/date/license> | <known/stale/unknown> | <status> | <pass/fail> | <fit class> |
 
 Recommendation: <skill name and source>
 Why it fits: <task-specific evidence>
 Trust review: <provenance, inspected files, dependencies, permissions, audits>
-Compatibility: <client and location>
+Compatibility: <client and location per candidate>
 Compatibility gate: <frontmatter, location, references, client extensions, loader status> (from Step 5)
 Capability risk: <read-only, writes, network, credentials, subprocesses, external messages> (from Step 5)
 Behavior validation: <not run, partial, or pass; fixture and sandbox details> (from Step 6)
+Inspection limits: <files/bytes/depth skipped or capped>
 Tradeoffs: <known gaps or risks>
 
 Alternatives:
 - <candidate>: <why it ranked lower>
 
-Not performed: no installation, execution, or file creation without approval.
+Not performed: no installation, execution, or file creation without approval;
+no secrets or private data copied into this report.
 ```
 
 If no candidate passes review, report the exhausted sources and skipped stages.
