@@ -77,6 +77,14 @@ coverage, and consistency. These fixtures do not execute candidate content.
 
 ## Implementation record
 
+### 2026-08-24 — v0.1.3 release
+
+- Released `v0.1.3` with the post-v0.1.2 CI gate hardening, evidence refresh,
+  documentation consolidation, and discovery-methodology improvements.
+- Confirmed project metadata, citation metadata, and `uv.lock` agree on the
+  release version.
+- Release validation passed and GitHub generated the release notes.
+
 ### 2026-08-24 — Methodology hardening
 
 - Made package-runner bootstrapping explicitly opt-in.
