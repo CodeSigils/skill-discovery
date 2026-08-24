@@ -10,7 +10,7 @@
       ],
       "max_redirects": 0,
       "source_section": "README and skill frontmatter",
-      "last_verified": "2026-08-17"
+      "last_verified": "2026-08-24"
     },
     {
       "name": "Claude Code skills documentation",
@@ -20,7 +20,7 @@
       ],
       "max_redirects": 0,
       "source_section": "references/platform-locations.md",
-      "last_verified": "2026-08-17"
+      "last_verified": "2026-08-24"
     },
     {
       "name": "Codex skills documentation",
@@ -31,7 +31,7 @@
       "max_redirects": 0,
       "canonical_url": "https://learn.chatgpt.com/docs/build-skills",
       "source_section": "references/platform-locations.md",
-      "last_verified": "2026-08-17"
+      "last_verified": "2026-08-24"
     },
     {
       "name": "Cursor skills documentation",
@@ -42,7 +42,7 @@
       "max_redirects": 0,
       "canonical_url": "https://cursor.com/docs/skills",
       "source_section": "references/platform-locations.md",
-      "last_verified": "2026-08-17"
+      "last_verified": "2026-08-24"
     },
     {
       "name": "Gemini CLI skills documentation",
@@ -52,7 +52,7 @@
       ],
       "max_redirects": 0,
       "source_section": "references/platform-locations.md",
-      "last_verified": "2026-08-17"
+      "last_verified": "2026-08-24"
     },
     {
       "name": "GitHub Copilot agent skills documentation",
@@ -62,7 +62,7 @@
       ],
       "max_redirects": 0,
       "source_section": "references/platform-locations.md",
-      "last_verified": "2026-08-17"
+      "last_verified": "2026-08-24"
     },
     {
       "name": "GitHub code search documentation",
@@ -72,7 +72,7 @@
       ],
       "max_redirects": 0,
       "source_section": "references/catalog-contracts.md",
-      "last_verified": "2026-08-17"
+      "last_verified": "2026-08-24"
     },
     {
       "name": "OpenCode skills documentation",
@@ -82,7 +82,7 @@
       ],
       "max_redirects": 0,
       "source_section": "references/platform-locations.md",
-      "last_verified": "2026-08-17"
+      "last_verified": "2026-08-24"
     },
     {
       "name": "skills.sh",
@@ -92,7 +92,7 @@
       ],
       "max_redirects": 1,
       "source_section": "references/catalog-contracts.md",
-      "last_verified": "2026-08-17"
+      "last_verified": "2026-08-24"
     },
     {
       "name": "skills.sh API documentation",
@@ -102,7 +102,7 @@
       ],
       "max_redirects": 0,
       "source_section": "references/catalog-contracts.md",
-      "last_verified": "2026-08-17"
+      "last_verified": "2026-08-24"
     },
     {
       "name": "skills.sh authenticated search contract",
@@ -113,7 +113,7 @@
       "max_redirects": 0,
       "source_section": "references/catalog-contracts.md",
       "notes": "An anonymous request should be rejected; authenticated response shape is documented by the provider.",
-      "last_verified": "2026-08-17"
+      "last_verified": "2026-08-24"
     },
     {
       "name": "CrossAITools listing API",
@@ -128,7 +128,7 @@
         "type": "array"
       },
       "source_section": "historical research monitoring",
-      "last_verified": "2026-08-17"
+      "last_verified": "2026-08-24"
     },
     {
       "name": "Mercury Skills listing API",
@@ -146,7 +146,7 @@
         ]
       },
       "source_section": "historical research monitoring",
-      "last_verified": "2026-08-17"
+      "last_verified": "2026-08-24"
     }
   ]
 }
