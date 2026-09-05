@@ -115,6 +115,7 @@ jobs:
       - name: Install dependencies
         run: uv sync --locked --only-dev
       - name: Verify and safely auto-fix external contracts
+        id: verify-contracts
         run: uv run python .github/scripts/verify-marketplace-urls.py --fix
       - name: Open PR for auto-fixes if any
         id: create-pr
@@ -122,14 +123,24 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           add-paths: docs/evidence-urls.json
+          sign-commits: true
           commit-message: "chore: auto-fix URL drift detected by contract monitor"
           title: "chore: auto-fix URL drift detected by contract monitor"
           body: |
-            The scheduled external-contract monitor detected and refreshed
-            stale verification timestamps in `docs/evidence-urls.json`.
+            The scheduled external-contract monitor completed bounded checks
+            for ${{ steps.verify-contracts.outputs.checked_count }} manifest
+            contract(s).
+
+            - Verification timestamps refreshed: ${{ steps.verify-contracts.outputs.timestamp_refresh_count }}
+            - Canonical URL corrections: ${{ steps.verify-contracts.outputs.canonical_url_fix_count }}
+
+            A zero correction count means this is timestamp-only evidence
+            maintenance. Any canonical URL correction requires semantic review
+            of the affected provider contract.
 
             This automated change is submitted as a pull request so required
-            checks and review remain in the normal protected-branch workflow.
+            checks, signed-commit policy, and review remain in the normal
+            protected-branch workflow.
           branch: automation/external-contract-drift
           delete-branch: true
       - name: Check research expiry and create issues

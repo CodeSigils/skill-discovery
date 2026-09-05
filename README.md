@@ -229,7 +229,9 @@ External URL monitoring runs on a schedule or manually so transient third-party
 outages do not make ordinary documentation changes flaky. The monitor uses
 bounded retries and response sizes, checks independent sources concurrently,
 and opens a reviewable PR only for safe canonical-URL corrections or refreshed
-verification evidence.
+verification evidence. Its PR body reports the number of contracts checked,
+timestamp refreshes, and canonical URL corrections. Workflow-authored PRs keep
+the normal approval, signed-commit, and required-check boundaries.
 
 ### Catalog status
 
