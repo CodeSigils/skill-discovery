@@ -153,6 +153,10 @@ def validate_workflow(workflow: str) -> list[str]:
             errors.append("ci.yml: monitor job must not use a matrix")
         if "permissions:" not in monitor:
             errors.append("ci.yml: monitor job must declare permissions")
+        if not re.search(r"(?m)^\s*sign-commits:\s*true\s*$", monitor):
+            errors.append(
+                "ci.yml: monitor PR creation must enable sign-commits for protected main"
+            )
 
     # SHA-pinned actions
     uses = re.findall(r"(?m)^\s*(?:-\s+)?uses:\s*([^\s#]+)", active)
@@ -225,6 +229,11 @@ def self_test() -> int:
             "wrong lint Python version",
             workflow.replace(f"python-version: '{LINT_PYTHON_VERSION}'", "python-version: '3.12'"),
             f"lint job must pin Python {LINT_PYTHON_VERSION}",
+        ),
+        (
+            "unsigned monitor commits",
+            workflow.replace("sign-commits: true", "sign-commits: false"),
+            "monitor PR creation must enable sign-commits",
         ),
     ]
 

@@ -60,9 +60,15 @@ an external contract appear verified based on an old result.
 2. Update `docs/evidence-urls.json` with the observed status and verification
    date; keep durable guidance in the relevant reference file.
 3. Run the URL verifier and documentation checks.
-4. If the scheduled monitor opens a drift PR, review the diff for semantic
-   changes. A timestamp refresh alone is not evidence that a contract is still
-   correct.
+4. If the scheduled monitor opens a drift PR, read its check counts and review
+   the diff for semantic changes. A timestamp refresh alone is not evidence
+   that a contract is still correct.
+5. GitHub may require explicit approval before the workflow-authored PR's
+   required checks can run. Approve only after confirming the PR is
+   repository-owned and changes only the evidence manifest; this approval is
+   intentional and must not be weakened into a broad bypass.
+6. The monitor signs its commits to satisfy the protected branch's
+   signed-commit rule. Required checks must still pass before merge.
 
 Never copy credentials, private URLs, or candidate secrets into evidence files,
 issues, or reports.

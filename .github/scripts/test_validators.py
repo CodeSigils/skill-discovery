@@ -4,10 +4,12 @@
 from __future__ import annotations
 
 import importlib.util
+import os
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 def load_script(name: str):
@@ -102,6 +104,13 @@ class PortabilityTests(unittest.TestCase):
 
 class ContractDriftTests(unittest.TestCase):
     """Tests for verify-marketplace-urls.py contract drift detection."""
+
+    def test_monitor_writes_github_actions_output(self):
+        with tempfile.TemporaryDirectory() as directory:
+            output_path = Path(directory) / "github-output"
+            with mock.patch.dict(os.environ, {"GITHUB_OUTPUT": str(output_path)}):
+                verify_urls.write_workflow_output("checked_count", 13)
+            self.assertEqual(output_path.read_text(encoding="utf-8"), "checked_count=13\n")
 
     def test_status_mismatch_detected(self):
         entry = {"expected_statuses": [200], "max_redirects": 5}

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date
@@ -34,6 +35,14 @@ def check_indexed(item):
     return index, entry, check_url(entry)
 
 
+def write_workflow_output(name: str, value: int) -> None:
+    """Expose monitor evidence to a GitHub Actions step when available."""
+    output_path = os.environ.get("GITHUB_OUTPUT")
+    if output_path:
+        with open(output_path, "a", encoding="utf-8") as output:
+            output.write(f"{name}={value}\n")
+
+
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
@@ -59,6 +68,7 @@ def main() -> int:
     validation_errors = False
     drift_count = 0
     fixes: list[tuple[int, str]] = []
+    timestamp_refresh_count = 0
     print(f"{'Name':<44} {'Status':<8} {'Redirects':<10} {'Content':<28} Result")
     print("-" * 105)
     checked: list[tuple[int, dict, object]] = []
@@ -85,7 +95,10 @@ def main() -> int:
                 fixes.append((original_idx, reasons[0]))
         # Update last_verified on success
         if valid:
-            entry["last_verified"] = date.today().isoformat()
+            today = date.today().isoformat()
+            if entry.get("last_verified") != today:
+                timestamp_refresh_count += 1
+            entry["last_verified"] = today
         print(
             f"{entry['name']:<44} {str(result.status):<8} {result.redirects:<10} "
             f"{result.content[:28]:<28} {'OK' if valid else 'DRIFT:' + ';'.join(reasons)}"
@@ -98,6 +111,9 @@ def main() -> int:
         else:
             print("\nUPDATED: last_verified timestamps in evidence-urls.json")
         drift_count -= len(fixes)
+    write_workflow_output("checked_count", len(checked))
+    write_workflow_output("timestamp_refresh_count", timestamp_refresh_count)
+    write_workflow_output("canonical_url_fix_count", len(fixes))
     if args.check_expiry:
         docs_dir = ROOT / "docs"
         expiring = check_research_expiry(docs_dir)
