@@ -301,6 +301,13 @@ installation implicitly mutating.
   Continue with provider-aware fallback and measure candidate usefulness before
   implementing adapters or persistent caching.
 
+### 2026-09-06 — Proportioned cross-platform CI
+
+- Retained Ubuntu Python 3.10/3.14 coverage and one macOS Python 3.14
+  portability job.
+- Removed the redundant macOS Python 3.10 job for the solo-maintainer model;
+  restore it only if a macOS-specific failure or support requirement appears.
+
 ### 2026-08-24 — v0.1.3 release
 
 - Released `v0.1.3` with the post-v0.1.2 CI gate hardening, evidence refresh,
