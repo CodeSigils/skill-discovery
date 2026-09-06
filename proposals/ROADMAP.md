@@ -301,6 +301,17 @@ installation implicitly mutating.
   Continue with provider-aware fallback and measure candidate usefulness before
   implementing adapters or persistent caching.
 
+### 2026-09-06 — Real-task fit pilot started
+
+- Added a lightweight scoring protocol and recorded the first two real
+  discovery requests in
+  [`docs/search-efficiency-evaluation.md`](../docs/search-efficiency-evaluation.md).
+- User acceptance remains explicitly unknown; continued conversation is not
+  counted as success evidence.
+- Collect at least five additional requests with explicit usefulness and
+  acceptance ratings before considering ranking, provider orchestration,
+  caching, or implementation-language changes.
+
 ### 2026-09-06 — Proportioned cross-platform CI
 
 - Retained Ubuntu Python 3.10/3.14 coverage and one macOS Python 3.14

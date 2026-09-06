@@ -456,3 +456,31 @@ selecting a more specialized skill. No installation, copying, execution, or
 cache mutation occurred. The query confirms that frontend ranking must
 separate design guidance from framework- and project-bound implementation
 instructions.
+
+## Real-task fit pilot protocol (started 2026-09-06)
+
+The next evidence stage uses actual discovery requests rather than maintainer-
+invented fixtures. For each request, record the request and constraints,
+provider paths, retrieval time, inspection time, candidate usefulness (0–3),
+whether the user accepted or rejected the recommendation, and any false
+positive, stale-source, or missing-candidate finding. A usefulness score means:
+
+| Score | Meaning |
+|---:|---|
+| 0 | no usable candidate or unsafe/misleading result |
+| 1 | technically related but not actionable |
+| 2 | actionable with caveats or adaptation |
+| 3 | direct fit and actionable |
+
+The first two real requests in this session are recorded below. User
+acceptance was not explicitly stated, so it remains `unknown`; the continued
+conversation is not treated as a success rating.
+
+| Request | Retrieval | Inspection outcome | Usefulness | User acceptance |
+|---|---:|---|---:|---|
+| Learn agent concepts | 211–215 ms | No canonical direct fit; official standard docs offered conditionally | 1 | unknown |
+| Find a frontend skill | 209–214 ms | Canonical `frontend-design` recommended conditionally; component skill as narrower alternative | 2 | unknown |
+
+This is an observational start, not enough evidence to implement ranking,
+provider orchestration, caching, or a new language. Collect at least five more
+requests with explicit user ratings before changing the implementation.
