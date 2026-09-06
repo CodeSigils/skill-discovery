@@ -105,6 +105,17 @@ When real usage shows that discovery is too slow, optimize in this order:
 These are evaluation priorities, not a mandate to add a catalog, cache, or
 second implementation now.
 
+### Provider orchestration
+
+Documented as the next future capability: select the smallest useful provider
+set rather than querying every catalog. Keep local-first search, use skills.sh
+directly when available, use learn-skills.dev for broad structured retrieval,
+and fall back to authenticated GitHub or web search. Provider adapters must
+preserve timestamp, authentication, result-count, failure, and provenance
+fields; catalog data must never replace canonical source inspection. Do not
+adopt an undocumented learn-skills.dev endpoint or build a multi-provider cache
+until its contract and usefulness are measured.
+
 ### Assessment gateway
 
 Proposed as a future product boundary, not as a change to the shipped payload.

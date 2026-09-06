@@ -3,6 +3,26 @@
 Prefer provider CLIs and documented APIs. Verify this file against provider
 documentation when a query depends on exact authentication or response fields.
 
+## Provider selection and fallback
+
+Do not query every provider for every request. Search applicable local roots
+first, then choose the smallest useful set of external sources:
+
+1. skills.sh directly when its installed CLI or authenticated API is available;
+2. learn-skills.dev's documented structured feed/API for broad retrieval;
+3. authenticated GitHub search for canonical source discovery;
+4. browser or general web search as a final fallback.
+
+Record each provider's timestamp, authentication state, result count, and failure
+mode. Run independent lookups in parallel only when the additional coverage is
+useful. Every serious result remains an untrusted pointer until its canonical
+repository, exact revision, and complete payload are inspected.
+
+The learn-skills.dev repository publishes generated JSON/RSS data, but this
+project has not adopted an undocumented endpoint as a stable API contract. Use a
+feed or API only when its current schema, freshness metadata, and access limits
+are documented and verified at use time.
+
 ## skills.sh
 
 For interactive/local discovery, use an already-installed official CLI when one
