@@ -132,7 +132,7 @@ discipline only; it cannot measure user satisfaction.
 | Review Python code | `python review` | 13 | 211 ms | Direct match: `py-review-skill/skills/py-review` |
 | Audit repository health and CI | `repository health` | 23 | 212 ms | Direct match exists, but lexical ordering does not surface it early |
 | Find a discovery/catalog skill | `skill discovery` | 250 | 217 ms | Direct local match exists, but broad query produces substantial noise |
-| Evaluate Alpine.js for a Zola site | `alpine js` | 1 | 212 ms | Conditional/partial: external usage guidance; Zola fit requires separate review |
+| Validate Agent Skills format | `skills-ref` | 61 | 217 ms | Conditional: many authoring-related matches; canonical validator use still requires exact tool inspection |
 
 The replay confirms that retrieval is fast, but it also exposes a concrete
 quality gap: raw lexical ordering can bury the strongest local candidate and
