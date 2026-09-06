@@ -109,6 +109,36 @@ Therefore “installable from a GitHub source” and “discoverable in a catalo
 separate claims. The repository should advertise only the first until a catalog
 actually indexes it.
 
+### Current status (verified 2026-09-06)
+
+The historical July observation above is superseded for present distribution
+status: skills.sh now resolves the repository page and the skill detail page,
+exposes an install command, and serves the README badge endpoint. This confirms
+indexing and install-path visibility only; it does not certify quality or safety.
+
+The current skills.sh API documentation describes authenticated v1 search with
+`data` results, fuzzy/semantic search types, pagination, and source/detail
+records. An anonymous request returned HTTP 401 on this date, so direct API use
+depends on a Vercel OIDC token. The browser/CLI path remains a separate option.
+
+The current learn-skills.dev repository publishes generated JSON/RSS artifacts
+and a `data/version.json` manifest. The upstream manifest observed on this date
+reported `updatedAt` `2026-09-06T07:53:07Z`, with SHA-256 hashes and timestamps
+for its indexes and feed. Its README documents raw GitHub/CDN consumption, but
+no stable public search API contract was verified. It is therefore suitable for
+structured broad retrieval when the feed and schema are checked at use time,
+not as a replacement for canonical source inspection.
+
+### Provider-orchestration evidence
+
+| Question | Evidence | Conclusion |
+|---|---|---|
+| Does skills.sh provide structured live retrieval? | Documented authenticated v1 search, pagination, and source/detail records | Use directly when authentication or the CLI is available |
+| Does learn-skills.dev provide agent-friendly structured data? | Version manifest plus generated `skills.json`, `skills_index.json`, and RSS/JSON feeds | Use as broad retrieval or fallback after verifying freshness and schema |
+| Does either provider prove candidate quality? | Both expose ranking/metadata signals; canonical payload inspection remains separate | Treat both as candidate sources, never trust certification |
+| Is a fixed provider order always optimal? | skills.sh may be freshest but auth-gated; learn-skills.dev is broad but crawler-dependent | Select the smallest useful provider set per request and record limitations |
+| Is a new HTTP implementation language justified? | Local baseline is sub-second; provider/network and inspection costs dominate | No migration without workload and usefulness benchmarks |
+
 ## Durable findings
 
 The survey supports a few conclusions that remain useful without carrying its
@@ -173,3 +203,13 @@ When updating this document:
 | 2026-08-21 | Added supply-chain risk findings from Orca Security research; validated SKILL.md tension analysis | PASS |
 | 2026-09-06 | Reconciled Agent Skills format guidance with pinned `skills-ref`; clarified skills.sh results as untrusted discovery pointers and documented badge/indexing limits | PASS |
 | 2026-09-06 | skills.sh detail page, repository page, install command, and badge endpoint verified for `codesigils/skill-discovery` | Indexed; badge returned SVG; install path confirmed |
+| 2026-09-06 | skills.sh API docs and anonymous search checked; learn-skills.dev `data/version.json` and README checked | API auth/schema confirmed; feed artifacts and freshness manifest available; no stable learn-skills search API verified |
+
+## Sources
+
+| Source | URL | Method | Notes |
+|---|---|---|---|
+| skills.sh API documentation | https://www.skills.sh/docs/api | docs | v1 endpoints, authentication, pagination, response fields; checked 2026-09-06 |
+| skills.sh skill detail | https://www.skills.sh/codesigils/skill-discovery/skill-discovery | tested | Indexed detail page and install command; checked 2026-09-06 |
+| learn-skills.dev repository | https://github.com/NeverSight/learn-skills.dev | docs | README documents generated feeds and raw/CDN consumption; checked 2026-09-06 |
+| learn-skills.dev version manifest | https://raw.githubusercontent.com/NeverSight/learn-skills.dev/main/data/version.json | tested | Freshness timestamps, file hashes, and generated artifact inventory; checked 2026-09-06 |
