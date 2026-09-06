@@ -172,3 +172,4 @@ When updating this document:
 | 2026-07-15 | Repository discovery checked | Direct installer recognizes repository; catalogs do not yet index it |
 | 2026-08-21 | Added supply-chain risk findings from Orca Security research; validated SKILL.md tension analysis | PASS |
 | 2026-09-06 | Reconciled Agent Skills format guidance with pinned `skills-ref`; clarified skills.sh results as untrusted discovery pointers and documented badge/indexing limits | PASS |
+| 2026-09-06 | skills.sh detail page, repository page, install command, and badge endpoint verified for `codesigils/skill-discovery` | Indexed; badge returned SVG; install path confirmed |
