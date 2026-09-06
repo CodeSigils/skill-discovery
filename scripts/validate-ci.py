@@ -17,6 +17,11 @@ SHA_PIN_RE = re.compile(r"^[^@\s]+@[0-9a-f]{40}$")
 # Python version policy — single source of truth for CI version checks
 LINT_PYTHON_VERSION = "3.14"
 TEST_MATRIX_YAML = '["3.10", "3.14"]'
+MACOS_EXCLUDE_BLOCK = (
+    '        exclude:\n'
+    '          - os: macos-latest\n'
+    '            python-version: "3.10"'
+)
 SKILLS_REF_COMMAND = (
     "uvx --from git+https://github.com/agentskills/agentskills.git@69ef37e"
     "#subdirectory=skills-ref skills-ref validate skills/skill-discovery"
@@ -148,6 +153,8 @@ def validate_workflow(workflow: str) -> list[str]:
             errors.append("ci.yml: test job must use a matrix strategy")
         if TEST_MATRIX_YAML not in test:
             errors.append(f"ci.yml: Python matrix must match {TEST_MATRIX_YAML}")
+        if MACOS_EXCLUDE_BLOCK not in test:
+            errors.append("ci.yml: test matrix must retain only one macOS job")
 
     # Monitor job
     monitor = section_body(active, "monitor-external-contracts")
@@ -248,6 +255,11 @@ def self_test() -> int:
                 "#subdirectory=skills-ref skills-ref validate skills/skill-discovery",
             ),
             "lint job missing run command",
+        ),
+        (
+            "full macOS matrix",
+            workflow.replace(f"{MACOS_EXCLUDE_BLOCK}\n", ""),
+            "test matrix must retain only one macOS job",
         ),
     ]
 
