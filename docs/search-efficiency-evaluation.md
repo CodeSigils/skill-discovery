@@ -52,6 +52,40 @@ renewed with a new observation.
 
 ## Limitations
 
-- No external catalog or skills.sh request was timed.
+- The original baseline did not time external catalogs; the provider pilot below
+  adds bounded index-load and matching measurements.
 - No candidate was inspected for task fit or safety as part of this timing run.
 - Results depend on this machine's filesystem, cache state, and root set.
+
+## Provider pilot (2026-09-06)
+
+The five-query pilot compared the bounded local baseline with the current
+learn-skills.dev published index and skills.sh access paths. The learn-skills
+index contained 113,253 entries and reported `updatedAt`
+`2026-09-06T07:52:57Z`. Loading the 62 MB JSON index took 197 ms; lexical
+matching took 71–75 ms per query.
+
+| Query | Local matches | learn-skills matches | skills.sh result |
+|---|---:|---:|---|
+| `zola` | 20 | 0 | Browser search reachable; result list not present in static HTML |
+| `python review` | 13 | 14 | Browser search reachable; result list not present in static HTML |
+| `repository health` | 22 | 0 | Browser search reachable; result list not present in static HTML |
+| `markdown formatter` | 24 | 3 | Browser search reachable; result list not present in static HTML |
+| `skill discovery` | 245 | 108 | Browser search reachable; result list not present in static HTML |
+
+The documented skills.sh API returned HTTP 401 without a Vercel OIDC token.
+The known `skill-discovery` detail page and badge remained reachable, but those
+are not query-result evidence. No candidate was installed or executed.
+
+### Pilot conclusions
+
+1. learn-skills.dev is a useful broad-retrieval provider with explicit freshness
+   metadata, but lexical results show that niche coverage is incomplete.
+2. skills.sh is a useful indexed source and install-path authority, but API
+   authentication and client-rendered search reduce unattended retrieval value.
+3. Local-first search is necessary for project-specific and niche skills.
+4. Provider orchestration should select sources per request and preserve
+   fallback behavior; querying all providers unconditionally is not justified.
+5. Candidate usefulness, precision, and recall remain unmeasured because this
+   pilot measured retrieval signals only. The next experiment should inspect a
+   small sample of returned candidates and record user/task fit.
