@@ -199,6 +199,18 @@ installation implicitly mutating.
 
 ## Implementation record
 
+### 2026-09-06 — Static discovery scope complete
+
+- Completed the non-Claude roadmap for the portable discovery skill.
+- Confirmed the pinned `skills-ref` conformance gate in CI and the release
+  workflow.
+- Confirmed skills.sh indexing, install instructions, detail page, and README
+  badge for `skill-discovery`.
+- Moved the project into maintenance and evidence-gathering mode. The future
+  assessment-gateway stages remain deferred until real usage demonstrates a
+  repeatable need; no gateway, runtime harness, or catalog aggregation service
+  is implied by this completion status.
+
 ### 2026-08-24 — v0.1.3 release
 
 - Released `v0.1.3` with the post-v0.1.2 CI gate hardening, evidence refresh,
