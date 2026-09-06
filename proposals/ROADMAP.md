@@ -296,6 +296,10 @@ installation implicitly mutating.
   exclusion are therefore more important than a language migration.
 - No index, cache, parallel provider layer, or Go implementation is justified
   until real tasks provide usefulness and latency evidence.
+- The provider pilot found learn-skills.dev fast and broad for generic queries,
+  but incomplete for niche terms; skills.sh is auth-gated for API retrieval.
+  Continue with provider-aware fallback and measure candidate usefulness before
+  implementing adapters or persistent caching.
 
 ### 2026-08-24 — v0.1.3 release
 
