@@ -6,9 +6,11 @@
 [![skills.sh](https://skills.sh/b/codesigils/skill-discovery)](https://skills.sh/codesigils/skill-discovery/skill-discovery)
 [![CI](https://github.com/CodeSigils/skill-discovery/actions/workflows/ci.yml/badge.svg)](https://github.com/CodeSigils/skill-discovery/actions/workflows/ci.yml)
 
-A portable workflow for finding, inspecting, and recommending agent skills.
-It searches local installations and external catalogs, checks candidate safety
-and compatibility, and reports what it found without installing or creating
+`skill-discovery` interprets a user's request, searches the best available local
+and external sources, filters candidates against the stated constraints,
+inspects the strongest matches, and presents an evidence-backed recommendation
+to the agent and user before any installation. It is a portable workflow: it
+checks candidate safety and compatibility without installing or creating
 anything unless the user explicitly asks.
 
 **Input:** a task description and any constraints (language, framework, offline
@@ -175,7 +177,8 @@ skill-discovery/
 ├── .agents/skills/skill-discovery     # symlink to the canonical skill
 ├── docs/
 │   ├── evidence-urls.json             # external contract manifest (13 URLs)
-│   └── hub-marketplace-research.md    # dated skill marketplace evidence
+│   ├── hub-marketplace-research.md    # dated skill marketplace evidence
+│   └── search-efficiency-evaluation.md # dated local-search baseline
 ├── proposals/
 │   └── ROADMAP.md                     # implementation history and deferred proposals
 ├── scripts/
