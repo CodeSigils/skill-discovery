@@ -129,6 +129,30 @@ no stable public search API contract was verified. It is therefore suitable for
 structured broad retrieval when the feed and schema are checked at use time,
 not as a replacement for canonical source inspection.
 
+### learn-skills.dev data consumption model
+
+The repository is a catalog data publisher, not itself a portable Agent Skill:
+it has no root-level `SKILL.md` for automatic client loading. An agent or tool
+consuming the clone should read `data/version.json` first, then use the generated
+`data/skills_search_index*.json` shards or `data/skills_index.json` for retrieval.
+Search-index entries inline `descriptionEn` and identify the source repository,
+skill ID, and paths to cached descriptions and payloads. The
+`data/skills-md/**/description_en.txt` files are extracted summaries; cached
+`SKILL.md` files are available only for the subset fetched by the crawler.
+
+Therefore the safe lookup sequence is:
+
+```text
+version.json → generated index/search shards → shortlist
+→ canonical repository and exact revision → complete SKILL.md inspection
+```
+
+The generated files are useful for fast, structured, agent-friendly retrieval,
+but their descriptions and rankings are not quality evidence. Large search
+shards should be queried selectively rather than loaded wholesale, and a
+missing cached payload should trigger canonical-source inspection rather than
+an automatic rejection or recommendation.
+
 ### Provider-orchestration evidence
 
 | Question | Evidence | Conclusion |
@@ -204,6 +228,7 @@ When updating this document:
 | 2026-09-06 | Reconciled Agent Skills format guidance with pinned `skills-ref`; clarified skills.sh results as untrusted discovery pointers and documented badge/indexing limits | PASS |
 | 2026-09-06 | skills.sh detail page, repository page, install command, and badge endpoint verified for `codesigils/skill-discovery` | Indexed; badge returned SVG; install path confirmed |
 | 2026-09-06 | skills.sh API docs and anonymous search checked; learn-skills.dev `data/version.json` and README checked | API auth/schema confirmed; feed artifacts and freshness manifest available; no stable learn-skills search API verified |
+| 2026-09-06 | Inspected learn-skills.dev search shards, `description_en.txt`, cached `SKILL.md`, and `version.json` consumption paths | Generated catalog data is agent-readable but not an auto-loaded skill; canonical payload review remains required |
 
 ## Sources
 
@@ -213,3 +238,4 @@ When updating this document:
 | skills.sh skill detail | https://www.skills.sh/codesigils/skill-discovery/skill-discovery | tested | Indexed detail page and install command; checked 2026-09-06 |
 | learn-skills.dev repository | https://github.com/NeverSight/learn-skills.dev | docs | README documents generated feeds and raw/CDN consumption; checked 2026-09-06 |
 | learn-skills.dev version manifest | https://raw.githubusercontent.com/NeverSight/learn-skills.dev/main/data/version.json | tested | Freshness timestamps, file hashes, and generated artifact inventory; checked 2026-09-06 |
+| learn-skills.dev data README | https://raw.githubusercontent.com/NeverSight/learn-skills.dev/main/README.md | docs | Documents generated indexes, descriptions, feeds, and raw/CDN consumption; checked 2026-09-06 |
