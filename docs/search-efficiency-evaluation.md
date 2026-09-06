@@ -119,3 +119,25 @@ for interactive use and that obvious task-specific candidates can be found. It
 does not justify a Go migration, provider cache, or parallel provider layer.
 The next evidence step is a real user-task sample with success ratings and
 per-stage timings; until then, keep the implementation in maintenance mode.
+
+## Emulated history-based pilot (2026-09-06)
+
+Five realistic requests from the project's prior work were replayed against
+the same two local roots. This emulation tests search behavior and review
+discipline only; it cannot measure user satisfaction.
+
+| Request | Query | Matches | Retrieval | Emulated outcome |
+|---|---|---:|---:|---|
+| Audit a Zola skill | `zola` | 20 | 212 ms | Direct match: `zola-skill/skills/zola` |
+| Review Python code | `python review` | 13 | 211 ms | Direct match: `py-review-skill/skills/py-review` |
+| Audit repository health and CI | `repository health` | 23 | 212 ms | Direct match exists, but lexical ordering does not surface it early |
+| Find a discovery/catalog skill | `skill discovery` | 250 | 217 ms | Direct local match exists, but broad query produces substantial noise |
+| Evaluate Alpine.js for a Zola site | `alpine js` | 1 | 212 ms | Conditional/partial: external usage guidance; Zola fit requires separate review |
+
+The replay confirms that retrieval is fast, but it also exposes a concrete
+quality gap: raw lexical ordering can bury the strongest local candidate and
+does not distinguish a direct task match from a broad ecosystem mention.
+Aliases, frontmatter-aware ranking, and candidate inspection remain more
+valuable than changing implementation language. These observations are still
+not sufficient to justify implementing a ranking service; validate the pattern
+against real user requests first.
