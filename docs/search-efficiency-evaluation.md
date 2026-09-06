@@ -89,3 +89,33 @@ are not query-result evidence. No candidate was installed or executed.
 5. Candidate usefulness, precision, and recall remain unmeasured because this
    pilot measured retrieval signals only. The next experiment should inspect a
    small sample of returned candidates and record user/task fit.
+
+## Bounded task-fit pilot (2026-09-06)
+
+To make the next experiment concrete, five representative requests were run
+against the same local-first roots (`/home/sand/projects` and
+`/home/sand/.codex/skills`). VCS metadata, dependency directories, and virtual
+environments were excluded. These are maintainer-selected requests, not real
+user outcomes or a benchmark of agent reasoning.
+
+| Request | Query | Matches | Retrieval | Strongest inspected candidate | Static fit |
+|---|---|---:|---:|---|---|
+| Zola site generation | `zola` | 20 | 216 ms | `zola-skill/skills/zola` | Direct |
+| Python code review | `python review` | 13 | 213 ms | `py-review-skill/skills/py-review` | Direct |
+| Repository health scan | `repository health` | 23 | 210 ms | `repo-health-and-sync-skill/skills/repo-health-scan` | Direct |
+| Markdown formatting | `markdown formatter` | 24 | 210 ms | `zero-md-formatter/skills/markdown-formatter` | Direct |
+| Quantum gardening workflows | `quantum gardening` | 0 | 212 ms | None | Reject/no candidate |
+
+The four inspected candidates had readable frontmatter and descriptions that
+matched the requested task. Inspection was static only: no candidate scripts
+were executed, no installation was attempted, and no claim of behavioral
+quality or user satisfaction was made. The zero-result request correctly
+produced no recommendation rather than triggering creation or installation.
+
+### Pilot decision
+
+This small task-fit sample confirms that bounded local retrieval is fast enough
+for interactive use and that obvious task-specific candidates can be found. It
+does not justify a Go migration, provider cache, or parallel provider layer.
+The next evidence step is a real user-task sample with success ratings and
+per-stage timings; until then, keep the implementation in maintenance mode.
