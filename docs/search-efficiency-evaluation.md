@@ -345,3 +345,114 @@ with the official Anthropic implementation retained as a cross-reference for
 evaluation methodology. No installation, copying, execution, or skill
 replacement occurred. This query reinforces that client compatibility and
 provenance-aware ranking matter more than raw lexical coverage.
+
+## Query record: learning agent concepts (2026-09-06)
+
+Request: “Use skill-discovery to find a skill for learning agent concepts.”
+The target was interpreted as foundational, client-neutral concepts rather
+than a framework-specific implementation tutorial. Installation and execution
+were not authorized.
+
+### Search effort and behavior
+
+Local-first search covered `/home/sand/projects` and
+`/home/sand/.codex/skills`, excluding VCS metadata, `node_modules`, and virtual
+environments. Independent lexical queries produced:
+
+| Query | Matches | Retrieval |
+|---|---:|---:|
+| `agent concepts` | 9 | 213 ms |
+| `agentic concepts` | 0 | 215 ms |
+| `agent fundamentals` | 6 | 211 ms |
+| `agent architecture` | 345 | 215 ms |
+| `multi-agent concepts` | 0 | 212 ms |
+
+The narrow concepts queries were fast but sparse; `agent architecture` was
+too broad. The apparent local hits were generated learn-skills.dev catalog
+entries, not installed, provenance-qualified skills. The freshness manifest
+was current at query time (`2026-09-06T07:53:07Z`). No skills.sh CLI or
+authenticated API path was available, so canonical GitHub inspection was used
+as the external fallback.
+
+### Candidate inspection and outcome
+
+`adenhq/hive` catalog entries named `hive-concepts` and
+`building-agents-core` appeared to fit, but neither path exists in the
+repository's current canonical tree. The repository's current `main` commit
+is `0c387492067e8b7d3e1c803009169f202f30ed77` and its license is Apache-2.0;
+the cached entries therefore have a source-revision mismatch and were
+rejected. `all-agentic-architectures` is implementation-heavy, framework
+oriented, and expects multiple dependencies/API keys, so it is not a general
+concepts tutor.
+
+The conditional external alternative for learning the Agent Skills format is
+[`magnus919/agent-skills/agent-skills/SKILL.md`](https://github.com/magnus919/agent-skills/blob/main/agent-skills/SKILL.md),
+but it should be re-verified at selection time. The official
+[`Agent Skills overview`](https://github.com/agentskills/agentskills/blob/main/docs/home.mdx)
+is stronger evidence for the standard itself than any catalog result, but is
+documentation rather than a teaching skill.
+
+### Query outcome
+
+No unconditional direct-fit, canonical skill passed for general agent
+concepts. The recommendation was to use the official standard documentation
+for Agent Skills concepts, or run a second, framework-specific search after
+the learner names a target runtime. No installation, copying, execution, or
+cache mutation occurred. This query again shows that stale catalog provenance
+can outweigh an otherwise excellent lexical match.
+
+## Query record: frontend skill (2026-09-06)
+
+Request: “Use skill-discovery to find a skill for front end.” The target was
+interpreted as web UI/frontend design and implementation, with framework and
+hosting context left unspecified. Installation and execution were not
+authorized.
+
+### Search effort and behavior
+
+The same local-first roots and exclusions were used. Independent lexical
+queries produced:
+
+| Query | Matches | Retrieval |
+|---|---:|---:|
+| `front end` | 23 | 214 ms |
+| `frontend development` | 294 | 214 ms |
+| `frontend design` | 269 | 210 ms |
+| `web frontend` | 88 | 210 ms |
+| `react frontend` | 132 | 209 ms |
+
+`front end` was precise but sparse; `frontend development` and
+`frontend design` produced many client- or project-specific catalog entries.
+The learn-skills.dev freshness manifest was current at query time. No skills.sh
+CLI or authenticated API path was available, so canonical GitHub inspection
+was used as the external fallback.
+
+### Candidate inspection and outcome
+
+The local `front-end-skill` entry for `0xgeorgemathew/splithub` is tightly
+coupled to that repository's Next.js 15, Tailwind, Framer Motion, and NFC
+payment context; its advertised path is not present at the current canonical
+`main` revision (`18fda880922c223f23ec434a32dfcc2ba9d32862`), so it was
+rejected. `wshobson/agents`' `web-component-design` is present and inspectable
+at current commit `a30778f8c4e6b0a87567941b7cca4f534bf642b6` (MIT), and gives
+useful React/Vue/Svelte component patterns, but it assumes a component-library
+or design-system task rather than general frontend work.
+
+The strongest broad UI candidate was the official
+[`anthropics/skills frontend-design`](https://github.com/anthropics/skills/tree/41bbe19d1a1a7eaab5e7bb9050a417e5c6cffc8f/skills/frontend-design),
+verified at commit `41bbe19d1a1a7eaab5e7bb9050a417e5c6cffc8f`. Its complete
+payload covers visual direction, typography, layout, accessibility, motion,
+responsive quality, and self-critique. It is design-focused rather than a
+complete frontend engineering stack, and its bundled license terms should be
+reviewed before redistribution.
+
+### Query outcome
+
+Recommend `anthropics/skills` `frontend-design` when the request is about
+web UI direction or implementation quality; recommend `web-component-design`
+only when the request specifically concerns reusable React/Vue/Svelte
+components. Ask for the framework, repository, and deployment context before
+selecting a more specialized skill. No installation, copying, execution, or
+cache mutation occurred. The query confirms that frontend ranking must
+separate design guidance from framework- and project-bound implementation
+instructions.
