@@ -92,10 +92,11 @@ plain-language stale/unknown flag for each serious candidate.
 Widen the search in this order:
 
 1. the client's documented catalog or curated source;
-2. a documented marketplace CLI or API;
-3. authenticated source-host search;
-4. marketplace browser search;
-5. general web research and vendor documentation.
+2. skills.sh directly when its installed CLI or authenticated API is available;
+3. learn-skills.dev's documented structured feed/API for broad retrieval;
+4. authenticated source-host search;
+5. marketplace browser search;
+6. general web research and vendor documentation.
 
 Use only interfaces documented by their provider. An undocumented endpoint that
 currently returns data is a legacy observation, not a stable contract. Read
