@@ -190,3 +190,49 @@ was made.
 This query reinforces that the current bottleneck is candidate ranking and
 provenance inspection, not local search speed. It is one observed request and
 does not justify a Go implementation, provider cache, or parallel lookup layer.
+
+## Query record: novel-writing skill (2026-09-06)
+
+Request: “Find a good skill on novel writing.” The need was interpreted as a
+general reusable workflow for planning, drafting, revising, and reviewing a
+novel. Installation and execution were not authorized.
+
+### Search effort and behavior
+
+Local-first search covered `/home/sand/projects` and
+`/home/sand/.codex/skills`, excluding VCS metadata, `node_modules`, and virtual
+environments. Independent lexical queries produced:
+
+| Query | Matches | Retrieval |
+|---|---:|---:|
+| `novel writing` | 7 | 210 ms |
+| `fiction writing` | 14 | 213 ms |
+| `creative writing` | 108 | 215 ms |
+| `storytelling` | 1,126 | 212 ms |
+
+The narrow novel/fiction terms were useful; `storytelling` was too broad. The
+local results were primarily generated learn-skills.dev catalog content rather
+than clearly installed, provenance-qualified skills. The current learn-skills
+freshness manifest was available at query time (`2026-09-06T07:53:07Z`). The
+skills.sh CLI was not installed and its authenticated API path was unavailable,
+so GitHub search was used as the external fallback.
+
+### Candidate inspection and outcome
+
+The strongest local candidates were inspected statically. `creative-writing-craft`
+contained useful general craft guidance but linked reference files were absent
+from the inspected cache. `novel-writing-techniques` had the same reference
+completeness problem. `novel-architect` was comprehensive but creates and
+manages files under `~/writing/novels`, so it was treated as conditional rather
+than read-only discovery guidance.
+
+GitHub source inspection identified [`wgwtest/novel-writing`](https://github.com/wgwtest/novel-writing)
+as the strongest candidate. Its complete payload, ten references,
+`agents/openai.yaml`, and manuscript-checking script were present at commit
+`b6382cf7ff29caa83830646432d8010ca96120f5`; the repository license was MIT.
+The result was a direct fit for general novel work, with a maintenance caveat
+that its latest source update was `2026-08-24`.
+
+No candidate scripts were executed, no manuscript data was supplied, and no
+installation or file mutation occurred. This query again shows that ranking,
+provenance, and reference completeness matter more than local search speed.
