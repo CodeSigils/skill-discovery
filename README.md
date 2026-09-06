@@ -3,6 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![agentskills.io](https://img.shields.io/badge/agentskills.io-v1-blue)](https://agentskills.io/specification)
 [![Skill](https://img.shields.io/badge/skill-discovery-purple)](skills/skill-discovery/SKILL.md)
+[![skills.sh](https://skills.sh/b/codesigils/skill-discovery)](https://skills.sh/codesigils/skill-discovery/skill-discovery)
 [![CI](https://github.com/CodeSigils/skill-discovery/actions/workflows/ci.yml/badge.svg)](https://github.com/CodeSigils/skill-discovery/actions/workflows/ci.yml)
 
 A portable workflow for finding, inspecting, and recommending agent skills.
