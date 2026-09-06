@@ -46,6 +46,21 @@ external maintenance burden. Use documented, read-only provider interfaces at
 query time; keep current contracts in the shipped catalog reference and dated
 observations in `docs/hub-marketplace-research.md`.
 
+### Assessment gateway
+
+Proposed as a future product boundary, not as a change to the shipped payload.
+The gateway would consume read-only catalog candidates (including
+`learn-skills.dev` outputs), pin each candidate to an exact source revision,
+and produce provenance, static-safety, compatibility, maintenance, and later
+behavioral-evaluation evidence before a user chooses to install. It must not
+become a second catalog, treat install counts as quality proof, or install and
+mutate a user's skill directory as a side effect of discovery.
+
+The current repository remains static by default. Any runtime evaluation would
+need a separate isolated runner, synthetic fixtures, explicit authorization,
+and a documented no-credentials/no-network boundary; it is not part of the
+current skill payload or CI gate.
+
 ## Current implementation state
 
 ### Validation and CI
@@ -75,6 +90,102 @@ direct, conditional, partial, blocked, and rejected outcomes, plus freshness,
 loader, privacy, and behavior-validation states. The validator checks schema,
 coverage, and consistency. These fixtures do not execute candidate content.
 
+## Future assessment-gateway roadmap
+
+This roadmap is exploratory. Do not change the shipped discovery behavior or
+release a runtime harness until the earlier stage has evidence and acceptance
+criteria. Each stage must remain independently revertible.
+
+### Stage 0 — Assessment contract
+
+Define a machine-readable assessment record containing source URL, repository,
+skill path, exact commit, checker version, findings, review date, and status.
+Keep provenance, static risk, compatibility, maintenance, and behavioral fit as
+separate signals; do not collapse them into one trust score.
+
+Acceptance criteria:
+
+- Fixtures represent known-safe, clearly hazardous, ineffective, and ambiguous
+  candidates.
+- Every result is reproducible from a pinned source revision and checker
+  version.
+- Status semantics are non-certifying (`unreviewed`, `inspected`, `tested`,
+  `reviewed`, `stale`, `deprecated`).
+
+### Stage 1 — Read-only static assessment MVP
+
+Accept a GitHub skill URL or a candidate from a catalog feed. Resolve the exact
+`SKILL.md`, deduplicate by provenance-qualified identity, and report metadata,
+required tools, referenced files, permissions, external fetches, subprocesses,
+secret access, instruction-injection indicators, and unsupported assumptions.
+
+Acceptance criteria:
+
+- No installation, copying, execution, or user-directory mutation occurs.
+- Reports are available as Markdown and JSON.
+- Findings include severity, evidence location, checker version, and source
+  hash.
+- Network-dependent observations are distinct from deterministic local checks.
+
+### Stage 2 — Discovery integration and shortlist
+
+Use `learn-skills.dev` and other documented providers only as candidate sources.
+Rank by task fit, compatibility, maintenance, and review state; keep install
+counts and rankings as popularity signals only. Produce a bounded shortlist
+with alternatives, evidence, warnings, and the exact reviewed revision.
+
+Acceptance criteria:
+
+- Provider data cannot overwrite the pinned assessment without a new review.
+- Source changes invalidate or stale the prior assessment.
+- Discovery and installation remain separate authorization steps.
+
+### Stage 3 — Isolated behavioral evaluation
+
+Only after Stages 0–2 are stable, add opt-in execution in a disposable
+environment using synthetic fixtures, no credentials, no private data, and no
+network by default. Record client, model, tool, environment, fixture, and
+source-revision context alongside results.
+
+Acceptance criteria:
+
+- The runner distinguishes `not run`, `partial`, `pass`, and `fail`.
+- Results include side-effect checks and reproducibility metadata.
+- False-positive, false-negative, reviewer-time, and repeatability measures
+  are collected before broadening the fixture suite.
+
+### Stage 4 — Review and distribution
+
+Add dated human decisions, advisory baselines, expiry/reassessment triggers,
+and a machine-readable assessment API. Installer integrations remain opt-in
+and must show the source, revision, findings, target path, and operation before
+requesting confirmation.
+
+### Stage 5 — Evidence-backed skill authoring
+
+Only after the assessment and evaluation contracts are stable, add an opt-in
+authoring flow. Clarify the task, target client, scope, expected behavior, and
+allowed tools; search existing skills first; preserve provenance for borrowed
+patterns; draft the smallest valid `SKILL.md`; and generate offline fixtures
+and review prompts.
+
+Acceptance criteria:
+
+- A failed discovery result never implicitly authorizes creation.
+- Drafts are written only after explicit user approval and are validated before
+  installation or publication.
+- Generated content identifies borrowed sources and separates them from new
+  project-specific guidance.
+- Static safety, portability, frontmatter, reference, and fixture checks run on
+  the draft before it is offered for installation.
+- Creation, installation, and publication remain separate user decisions.
+
+Completion boundary: the gateway is useful when it reliably separates clearly
+hazardous, behaviorally ineffective, and review-worthy candidates without
+claiming that a passing assessment certifies safety. Authoring is complete only
+when a draft can be validated and reviewed without making discovery or
+installation implicitly mutating.
+
 ## Implementation record
 
 ### 2026-08-24 — v0.1.3 release
@@ -93,6 +204,16 @@ coverage, and consistency. These fixtures do not execute candidate content.
 - Added redaction requirements and robust catalog-shape examples.
 - Expanded evaluation fixtures to cover all decision classes.
 - Rewrote maintainer guidance using Diátaxis-oriented sections.
+
+### 2026-08-24 — Assessment gateway proposal
+
+- Recorded a future, read-only assessment-gateway direction using catalog
+  ingestion, pinned provenance, static checks, task-fit shortlists, and a
+  separately gated isolated evaluation stage.
+- Added a separately gated future authoring stage for provenance-preserving
+  drafts, offline fixtures, and explicit creation approval.
+- Preserved the current static-only discovery boundary; no runtime harness,
+  registry aggregation service, or automatic installation was added.
 
 ### 2026-08-21 — Repository hardening and v0.1.2
 
