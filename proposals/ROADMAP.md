@@ -17,6 +17,28 @@ When behavior, CI, or repository structure changes:
 The shipped runtime boundary is `skills/skill-discovery/`. Repository tooling,
 research, CI, and roadmap files remain outside the payload.
 
+## Vision: agent-integrated discovery orchestration
+
+`skill-discovery` interprets the user's request, searches the best available
+local and external sources, filters candidates against constraints, inspects the
+strongest matches, and presents an evidence-backed recommendation to the agent
+and user before any installation.
+
+The project is an assessment and decision layer over catalogs such as
+skills.sh and learn-skills.dev, not a competing catalog. Its value is the
+translation from an ambiguous need to a bounded, provenance-aware recommendation
+with explicit compatibility, capability, and authorization boundaries.
+
+```text
+request → need and constraints → source search → candidate filtering
+→ evidence inspection → recommendation → explicit installation decision
+```
+
+The current implementation delivers this vision as a static, read-only skill.
+Future orchestration work must preserve these non-goals: no popularity-based
+trust score, automatic installation, or default execution of untrusted skills;
+no runtime service or catalog duplication without measured user need.
+
 ## Active deferred decisions
 
 ### Official format conformance gate

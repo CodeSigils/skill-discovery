@@ -1,11 +1,10 @@
 ---
 name: skill-discovery
 description: >
-  Find, inspect, compare, and recommend agent skills when a user explicitly asks
-  for a skill or when no installed skill clearly covers the requested capability.
-  Search local skills before external catalogs, verify candidate safety and
-  compatibility, and ask before installing or creating anything. Do not invoke
-  for ordinary tasks that an available skill already clearly handles.
+  Interpret a user's request, find and filter agent skills from local and external
+  sources, inspect the strongest matches, and recommend with evidence before
+  installation. Verify safety and compatibility; do not invoke for ordinary
+  tasks an installed skill already clearly handles.
 ---
 
 # Skill Discovery
