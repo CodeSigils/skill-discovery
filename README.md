@@ -175,7 +175,8 @@ skill-discovery/
 ├── .agents/skills/skill-discovery     # symlink to the canonical skill
 ├── docs/
 │   ├── evidence-urls.json             # external contract manifest (13 URLs)
-│   └── hub-marketplace-research.md    # dated skill marketplace evidence
+│   ├── hub-marketplace-research.md    # dated skill marketplace evidence
+│   └── search-efficiency-evaluation.md # dated local-search baseline
 ├── proposals/
 │   └── ROADMAP.md                     # implementation history and deferred proposals
 ├── scripts/

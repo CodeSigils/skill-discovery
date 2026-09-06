@@ -237,6 +237,16 @@ installation implicitly mutating.
   repeatable need; no gateway, runtime harness, or catalog aggregation service
   is implied by this completion status.
 
+### 2026-09-06 — Search-efficiency baseline
+
+- Measured five representative local queries in
+  [`docs/search-efficiency-evaluation.md`](../docs/search-efficiency-evaluation.md).
+- Raw retrieval was sub-second, but broad roots contained 110,470 skill files
+  and exceeded the workflow's bounded-search cap. Root selection and duplicate
+  exclusion are therefore more important than a language migration.
+- No index, cache, parallel provider layer, or Go implementation is justified
+  until real tasks provide usefulness and latency evidence.
+
 ### 2026-08-24 — v0.1.3 release
 
 - Released `v0.1.3` with the post-v0.1.2 CI gate hardening, evidence refresh,
