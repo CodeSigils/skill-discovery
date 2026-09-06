@@ -236,3 +236,58 @@ that its latest source update was `2026-08-24`.
 No candidate scripts were executed, no manuscript data was supplied, and no
 installation or file mutation occurred. This query again shows that ranking,
 provenance, and reference completeness matter more than local search speed.
+
+## Query record: note-taking skill (2026-09-06)
+
+Request: “Use skill-discovery to find a skill in note taking.” The target
+storage system was unspecified, so the search considered project-file notes,
+meeting notes, Obsidian, and app-backed note systems. Installation and
+execution were not authorized.
+
+### Search effort and behavior
+
+Local-first search covered `/home/sand/projects` and
+`/home/sand/.codex/skills`, excluding VCS metadata, `node_modules`, and virtual
+environments. Independent lexical queries produced:
+
+| Query | Matches | Retrieval |
+|---|---:|---:|
+| `note taking` | 6 | 213 ms |
+| `note-taking` | 184 | 213 ms |
+| `notetaking` | 1 | 212 ms |
+| `knowledge management` | 145 | 210 ms |
+
+The hyphenated and knowledge-management queries were noisy and mostly surfaced
+generated catalog entries or client-specific skills. The learn-skills.dev
+freshness manifest was current at query time (`2026-09-06T07:53:07Z`). No
+skills.sh CLI or authenticated API path was available, so GitHub/web search was
+used for provider-specific alternatives.
+
+### Candidate inspection and outcome
+
+The local `note-taker` candidate directly described meeting, interview, and
+template-based note capture, but assumed Claude paths (`~/.claude`), Claude
+tools, and persistent preferences; it was therefore incompatible with the
+current Codex client without adaptation. `localbrain-collect` included a remote
+installer and external service dependency, so it was not recommended. The
+Ars Contexta setup/recommendation candidates were broad knowledge-system
+scaffolds rather than lightweight note capture.
+
+The strongest portable candidate was
+[`OthmanAdi/planning-with-files`](https://github.com/OthmanAdi/planning-with-files),
+whose Codex-specific payload, MIT license, and latest commit
+`d47a61950e784fc4237ba10ddc1e9e198bd0f275` were verified. It is a conditional
+fit for durable project notes because it maintains `task_plan.md`,
+`findings.md`, and `progress.md`, but it is not a general meeting-notes system
+and introduces file creation plus lifecycle hooks. Obsidian and Inkdrop
+alternatives were classified as provider-specific because they require their
+respective vault/MCP environments.
+
+### Query outcome
+
+No unconditional direct-fit note-taking skill passed for Codex. The result was
+reported as a conditional choice: use `planning-with-files` for project-bound
+working memory, or choose a provider-specific skill after naming the target
+note system. This query demonstrates that destination-aware constraints are
+more important than lexical match count; no ranking, cache, or language
+migration is justified by this single observation.
