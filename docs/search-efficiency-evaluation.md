@@ -141,3 +141,52 @@ Aliases, frontmatter-aware ranking, and candidate inspection remain more
 valuable than changing implementation language. These observations are still
 not sufficient to justify implementing a ranking service; validate the pattern
 against real user requests first.
+
+## Query record: general Go skill (2026-09-06)
+
+Request: “Find a good skill on Go language.” The request was interpreted as a
+general Go-development need covering implementation, refactoring, review,
+testing, and architecture, with no installation or execution authorization.
+
+### Search effort and behavior
+
+Local-first search covered `/home/sand/projects` and
+`/home/sand/.codex/skills`, excluding VCS metadata, `node_modules`, and virtual
+environments. Three lexical queries were measured independently:
+
+| Query | Matches | Retrieval |
+|---|---:|---:|
+| `go golang` | 2 | 211 ms |
+| `golang` | 617 | 210 ms |
+| `go language` | 29 | 212 ms |
+
+The short compound query under-retrieved, while `golang` over-retrieved from
+cached catalogs and Claude-specific material. Frontmatter-aware interpretation
+and manual ranking were necessary to identify useful candidates.
+
+The local candidates inspected completely were `golang-idioms`, `go-guide`,
+and `golang-expert-skill`; a specialized `review-go` candidate was inspected
+enough to classify it as review-only. Candidate inspection remained static and
+within the documented file/size/depth budgets. The strongest external candidate
+was [`madflojo/go-style-agent-skill`](https://github.com/madflojo/go-style-agent-skill),
+whose canonical `go-style-guide` payload and 11 referenced documents were
+verified at commit
+`0d8eed0a8ff1acb586e9fa0a4b1c67b59ed449e8`.
+
+Provider behavior was mixed: the learn-skills.dev freshness manifest was
+available and current at query time, while the skills.sh CLI was not installed
+and its authenticated API path was unavailable. GitHub source inspection added
+more effort but supplied the canonical revision, license, and reference-tree
+evidence required for a conditional recommendation.
+
+### Query outcome
+
+The result was a conditional recommendation of `go-style-guide`, due to its
+scope and inspectable references. The candidate’s latest source update
+(`2026-06-13`) and apparent README/embedded-version mismatch were reported as
+maintenance caveats. No installation, copying, execution, or behavioral claim
+was made.
+
+This query reinforces that the current bottleneck is candidate ranking and
+provenance inspection, not local search speed. It is one observed request and
+does not justify a Go implementation, provider cache, or parallel lookup layer.
