@@ -61,6 +61,8 @@ jobs:
         run: uv run ruff check .github/scripts/ scripts/
       - name: Check portable payload references
         run: uv run python .github/scripts/ci-check.py
+      - name: Validate Agent Skills format with skills-ref
+        run: 'uvx --from git+https://github.com/agentskills/agentskills.git@69ef37e#subdirectory=skills-ref skills-ref validate skills/skill-discovery'
       - name: Validate offline discovery evaluation fixtures
         run: uv run python scripts/validate-evaluation-fixtures.py
       - name: Audit dependencies for vulnerabilities

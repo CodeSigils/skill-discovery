@@ -237,7 +237,13 @@ the normal approval, signed-commit, and required-check boundaries.
 
 The repository is directly installable by compatible GitHub skill installers.
 Catalog indexing is separate from local installability and may change
-independently; use the verified local installation paths above.
+independently; use the verified local installation paths above. The historical
+marketplace evidence and current contract limits are recorded in
+[`docs/hub-marketplace-research.md`](docs/hub-marketplace-research.md).
+
+The CI gate also runs the official pinned `skills-ref validate` check. That
+proves Agent Skills format conformance only; it does not certify task quality,
+runtime behavior, safety, or skills.sh indexing.
 
 ### Maintainer maintenance
 

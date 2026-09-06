@@ -6,8 +6,9 @@ documentation when a query depends on exact authentication or response fields.
 ## skills.sh
 
 For interactive/local discovery, use an already-installed official CLI when one
-is available. The commands below are examples, not permission to bootstrap a
-package runner:
+is available. Check that the `skills` executable already exists before running
+it. The commands below are examples, not permission to bootstrap a package
+runner:
 
 ```bash
 npx skills find '<query>'
@@ -15,8 +16,8 @@ npx skills add <owner/repository> --list
 ```
 
 If `skills` is not already installed, prefer the read-only API below or another
-documented fallback. Running `npx --yes` downloads and executes external code
-and requires explicit user approval before discovery begins.
+documented fallback. Running `npx` for a missing CLI downloads and executes
+external code and requires explicit user approval before discovery begins.
 
 Programmatic search uses the documented v1 endpoint:
 
@@ -28,6 +29,13 @@ Authorization: Bearer <Vercel OIDC token>
 The response places results in `data`. Authentication and rate limits are part
 of the contract; see <https://www.skills.sh/docs/api>. Do not rely on the legacy
 unauthenticated `/api/search` endpoint even if it happens to respond.
+
+Treat each result as an untrusted pointer. Before recommending it, resolve the
+canonical repository, skill path, license, and exact reviewed commit from the
+source repository. A missing token, unavailable API, stale index, or 404 detail
+page is a source limitation to report—not evidence that no suitable skill
+exists. Do not add a skills.sh badge or claim indexing until the detail page is
+confirmed at use time.
 
 ## GitHub source search
 

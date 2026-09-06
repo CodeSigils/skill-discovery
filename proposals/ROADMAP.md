@@ -19,6 +19,17 @@ research, CI, and roadmap files remain outside the payload.
 
 ## Active deferred decisions
 
+### Official format conformance gate
+
+Implemented: run the official `skills-ref validate` command from CI and the
+tagged release workflow against every shipped skill, pinned to an immutable
+`agentskills` commit. Keep the
+repository validator as a supplementary check for local links, budgets, and
+documentation. Add offline fixtures for validator failures, marketplace
+authentication limits, stale/unknown catalog freshness, provenance mismatch,
+and source-revision changes. Do not add `read-properties` or `to-prompt` until
+the repository has a real inventory or host-integration consumer.
+
 ### Markdown style linter
 
 Deferred. The documentation validator already checks fences, relative links,
