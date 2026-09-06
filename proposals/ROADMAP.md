@@ -68,6 +68,21 @@ concurrency, a long-running service, a standalone binary, or stricter runtime
 resource isolation. Any migration requires a benchmark, a named owner, and an
 explicit maintenance-cost justification.
 
+### Search-efficiency guidance
+
+When real usage shows that discovery is too slow, optimize in this order:
+
+1. Use [`learn-skills.dev`](https://www.learn-skills.dev) for broad retrieval.
+2. Keep local-first search.
+3. Parallelize independent provider lookups.
+4. Cache only timestamped, provenance-qualified metadata.
+5. Measure search latency and candidate usefulness.
+6. Consider Go only if benchmarks show the current implementation is the
+   actual bottleneck.
+
+These are evaluation priorities, not a mandate to add a catalog, cache, or
+second implementation now.
+
 ### Assessment gateway
 
 Proposed as a future product boundary, not as a change to the shipped payload.
