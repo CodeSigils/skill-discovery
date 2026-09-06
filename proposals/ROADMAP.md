@@ -39,6 +39,23 @@ Future orchestration work must preserve these non-goals: no popularity-based
 trust score, automatic installation, or default execution of untrusted skills;
 no runtime service or catalog duplication without measured user need.
 
+### Cross-cutting invariants
+
+These are planning constraints, not new runtime phases:
+
+- **Human decision boundary:** the agent gathers evidence and prepares a
+  recommendation, but the user decides when requirements are ambiguous,
+  evidence conflicts, a candidate is conditional or stale, or installation
+  would mutate files, use credentials, access the network, or send messages.
+- **File-swamp avoidance:** keep the runtime payload to one focused `SKILL.md`
+  plus targeted references; load detail progressively; keep research, fixtures,
+  catalogs, and CI outside the payload; enforce file/byte/depth caps; and avoid
+  generated indexes unless a concrete consumer requires one.
+
+Any future provider or assessment work must preserve both invariants. They do
+not authorize changes to the current workflow without a measured user need,
+fixture, and reviewable implementation boundary.
+
 ## Active deferred decisions
 
 ### Official format conformance gate
