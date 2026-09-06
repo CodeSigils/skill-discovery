@@ -291,3 +291,57 @@ working memory, or choose a provider-specific skill after naming the target
 note system. This query demonstrates that destination-aware constraints are
 more important than lexical match count; no ranking, cache, or language
 migration is justified by this single observation.
+
+## Query record: Agent Skills authoring best practices (2026-09-06)
+
+Request: “Use skill-discovery to find a skill in agent skill creation best
+practices.” The need was interpreted as guidance for creating, structuring,
+testing, validating, and improving an Agent Skill for the current Codex client.
+Installation and execution were not authorized.
+
+### Search effort and behavior
+
+Local-first search covered `/home/sand/projects` and
+`/home/sand/.codex/skills`, excluding VCS metadata, `node_modules`, and virtual
+environments. Independent lexical queries produced:
+
+| Query | Matches | Retrieval |
+|---|---:|---:|
+| `skill creation` | 679 | 214 ms |
+| `skill authoring` | 136 | 214 ms |
+| `agent skills` | 1,481 | 219 ms |
+| `skill best practices` | 34 | 216 ms |
+
+The broad `agent skills` and `skill creation` terms were highly noisy,
+dominated by generated catalog entries and client-specific authoring skills.
+The local Codex system skill was identified by its name and direct path rather
+than by lexical ranking. The learn-skills.dev freshness manifest was current at
+query time (`2026-09-06T07:53:07Z`).
+
+### Candidate inspection and outcome
+
+The installed Codex `skill-creator` at
+`/home/sand/.codex/skills/.system/skill-creator/SKILL.md`
+was the strongest candidate: it provides scoped authoring guidance, minimal
+frontmatter, progressive disclosure, references/scripts decisions, evaluation
+cases, iterative improvement, and packaging. Its 229-line payload was fully
+inspected and requires no external service.
+
+The official [`anthropics/skills` skill-creator](https://github.com/anthropics/skills/tree/41bbe19d1a1a7eaab5e7bb9050a417e5c6cffc8f/skills/skill-creator)
+was also inspected at commit `41bbe19d1a1a7eaab5e7bb9050a417e5c6cffc8f`.
+Its complete resource tree includes evaluation runners, benchmark aggregation,
+description optimization, packaging, graders, and schemas. It is strong
+methodological evidence, but parts of its runner workflow assume Claude
+CLI/subagents, so it is a conditional rather than a drop-in Codex replacement.
+
+Other candidates were lower-fit: `writing-skills` requires a separate
+Superpowers TDD skill; Hermes authoring guidance is Hermes-specific; and
+`skill-best-practices` mandates Claude repository conventions.
+
+### Query outcome
+
+The direct recommendation was the already-installed Codex `skill-creator`,
+with the official Anthropic implementation retained as a cross-reference for
+evaluation methodology. No installation, copying, execution, or skill
+replacement occurred. This query reinforces that client compatibility and
+provenance-aware ranking matter more than raw lexical coverage.
