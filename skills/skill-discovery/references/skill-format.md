@@ -1,6 +1,8 @@
 # Skill Format Reference
 
-This document outlines the standard format for agent skills, serving as a reference for evaluating whether a candidate skill is well-made.
+This document summarizes the portable Agent Skills format used during candidate
+review. It is a conformance reference, not a quality certificate. Run the
+official `skills-ref validate` command for the authoritative format check.
 
 ## 1. Frontmatter Specification
 
@@ -21,10 +23,15 @@ Skill metadata is defined in the frontmatter section of the `SKILL.md` file.
 - `license`: (String) The license under which the skill is distributed (e.g., `MIT`, `Apache-2.0`).
 - `compatibility`: (String) A comma-separated list of agent platforms the skill is known to be compatible with.
   - Constraints: Maximum 500 characters.
-- `metadata`: (Object) Contains additional structured information about the skill.
-  - `author`: (String) The author or organization responsible for the skill.
-  - `version`: (String) The semantic version (e.g., `1.0.0`) of the skill itself. This is distinct from any product version the skill might interact with, which should be tracked in a separate `README.md` if applicable.
-  - `argument-hint`: (String) A brief hint for skill invocation arguments.
+- `metadata`: (Object) An opaque string-to-string extension map. Clients may
+  ignore unknown keys; do not assume that `author`, `version`, or
+  `argument-hint` has portable meaning.
+- `allowed-tools`: (String) Experimental, client-dependent tool permissions;
+  treat this as an extension and verify the named client's support.
+
+Unknown top-level fields, including a bare `version:`, are not portable and are
+rejected by the reference validator. Keep release versions in git tags and
+changelogs; keep product/tool versions in ordinary reference documentation.
 
 **Field Order (Recommended):**
 
@@ -33,7 +40,7 @@ Skill metadata is defined in the frontmatter section of the `SKILL.md` file.
 3. `license`
 4. `compatibility`
 5. `metadata`
-6. Any other custom fields
+6. `allowed-tools` only when a client explicitly supports it
 
 ## 2. Description Quality
 
@@ -77,13 +84,13 @@ This structure aligns with the existing repository patterns.
 
 Some agent platforms may utilize platform-specific frontmatter fields. These fields are generally safe to ignore by other clients. The primary risk is a skill shipping platform-specific fields as if they were universally portable.
 
-| Client            | Example Agent-Specific Fields |
-| :---------------- | :---------------------------- |
-| Codex             | `codex-hooks`                 |
-| Claude Code       | `claude-specific-field`       |
-| Cursor            | `cursor-rules`                |
-| OpenCode          | `opencode-plugin`             |
-| Gemini CLI        | `gemini-config`               |
-| GitHub Copilot    | `copilot-feature`             |
+| Client            | Extension examples/status |
+| :---------------- | :------------------------ |
+| Codex             | Client-specific hooks — verify current documentation |
+| Claude Code       | Client-specific extensions — verify current documentation |
+| Cursor            | Client-specific extensions — verify current documentation |
+| OpenCode          | Client-specific extensions — verify current documentation |
+| Gemini CLI        | Client-specific extensions — verify current documentation |
+| GitHub Copilot    | Client-specific extensions — verify current documentation |
 
 (Refer to [`platform-locations.md`](platform-locations.md) for client-specific paths and documentation.)

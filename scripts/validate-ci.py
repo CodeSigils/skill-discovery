@@ -17,6 +17,10 @@ SHA_PIN_RE = re.compile(r"^[^@\s]+@[0-9a-f]{40}$")
 # Python version policy — single source of truth for CI version checks
 LINT_PYTHON_VERSION = "3.14"
 TEST_MATRIX_YAML = '["3.10", "3.14"]'
+SKILLS_REF_COMMAND = (
+    "uvx --from git+https://github.com/agentskills/agentskills.git@69ef37e"
+    "#subdirectory=skills-ref skills-ref validate skills/skill-discovery"
+)
 
 # NOTE: validate-ci.py verifies that actions are SHA-pinned but does NOT
 # verify the SHA matches the claimed version tag. That check requires a
@@ -31,6 +35,7 @@ LINT_COMMANDS = (
     "uv run python3 scripts/check-readme-tree.py",
     "uv run ruff check .github/scripts/ scripts/",
     "uv run python .github/scripts/ci-check.py",
+    SKILLS_REF_COMMAND,
     "uv run python scripts/validate-evaluation-fixtures.py",
 )
 
@@ -61,7 +66,7 @@ def active_workflow_lines(workflow: str) -> str:
 def has_run_command(body: str, command: str) -> bool:
     return bool(
         re.search(
-            rf"(?m)^\s*run:\s*{re.escape(command)}\s*(?:#.*)?$",
+            rf"(?m)^\s*run:\s*['\"]?{re.escape(command)}['\"]?\s*(?:#.*)?$",
             body,
         )
     )
@@ -234,6 +239,15 @@ def self_test() -> int:
             "unsigned monitor commits",
             workflow.replace("sign-commits: true", "sign-commits: false"),
             "monitor PR creation must enable sign-commits",
+        ),
+        (
+            "missing skills-ref gate",
+            workflow.replace(
+                SKILLS_REF_COMMAND,
+                "uvx --from git+https://github.com/agentskills/agentskills.git@main"
+                "#subdirectory=skills-ref skills-ref validate skills/skill-discovery",
+            ),
+            "lint job missing run command",
         ),
     ]
 

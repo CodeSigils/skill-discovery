@@ -96,9 +96,13 @@ When a skill declares a product version or `release_date`:
 
 - Check the source repo's last commit date.
 - Compare declared product version against current docs.
-- Treat skills with no version metadata as potentially stale.
 - Flag if `release_date` is older than six months and the product has had major
   releases since.
+
+Absence of version metadata is not itself evidence of staleness. Many valid
+skills intentionally omit a product or release version. Use the reviewed commit
+or tag, repository activity, current product documentation, and observed
+compatibility instead.
 
 ## Decision
 

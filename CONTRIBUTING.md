@@ -41,6 +41,7 @@ uv run python -m pytest .github/scripts/test_integration.py -v
 uv run python scripts/test_validate_skill.py
 uv run python scripts/validate-evaluation-fixtures.py
 uv run python .github/scripts/validate-docs.py
+uvx --from git+https://github.com/agentskills/agentskills.git@69ef37e#subdirectory=skills-ref skills-ref validate skills/skill-discovery
 ```
 
 For a payload-only edit, run:
@@ -52,6 +53,11 @@ uv run python .github/scripts/validate-docs.py
 
 If network access is unavailable, report which checks were not run. Do not make
 an external contract appear verified based on an old result.
+
+The `skills-ref` command is pinned to an immutable upstream commit and is the
+official Agent Skills format check. It requires network access unless the
+package is already cached; a passing result does not certify runtime quality or
+safety.
 
 ## How-to: update external evidence
 

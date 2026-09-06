@@ -1,7 +1,7 @@
 ---
 status: historical-reference
 date: 2026-07-01
-updated: 2026-08-21
+updated: 2026-09-06
 expires: 2026-10-01
 purpose: >
   Preserve the evidence and lessons from the original marketplace survey while
@@ -37,6 +37,18 @@ These values are retained only as examples of point-in-time evidence. Do not use
 them in a recommendation without a new timestamped measurement.
 
 ## Contract changes found during re-verification
+
+### Agent Skills conformance
+
+The official `skills-ref` reference validator is the appropriate machine gate
+for the shipped `SKILL.md` format. Its result is limited to frontmatter,
+naming, and structural conformance; it is not evidence that an agent will
+select the skill, follow it correctly, or produce a safe result. Pin its source
+to an immutable commit in CI or the manual release gate. The related
+`read-properties` and `to-prompt` helpers are optional integration aids, not
+additional repository requirements. See the dated study notes
+`2026-09-06-NORM-agent-skills-validation-evidence.md` and
+`2026-09-05-SYNTHESIS-skill-repo-standards-stack.md` for the evidence boundary.
 
 ### skills.sh
 
@@ -159,3 +171,4 @@ When updating this document:
 | 2026-07-15 | Client documentation checked | Codex, Cursor, and Copilot placement claims corrected |
 | 2026-07-15 | Repository discovery checked | Direct installer recognizes repository; catalogs do not yet index it |
 | 2026-08-21 | Added supply-chain risk findings from Orca Security research; validated SKILL.md tension analysis | PASS |
+| 2026-09-06 | Reconciled Agent Skills format guidance with pinned `skills-ref`; clarified skills.sh results as untrusted discovery pointers and documented badge/indexing limits | PASS |
