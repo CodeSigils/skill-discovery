@@ -57,6 +57,32 @@ external maintenance burden. Use documented, read-only provider interfaces at
 query time; keep current contracts in the shipped catalog reference and dated
 observations in `docs/hub-marketplace-research.md`.
 
+### Future gateway implementation language
+
+Deferred. Do not migrate the current Markdown/Python skill and maintainer tools
+to Go for presumed HTTP performance. Search latency is dominated by provider
+network latency, authentication, rate limits, candidate inspection, and agent
+reasoning rather than local request code. Reconsider Go only for a future
+assessment gateway after a measured workload demonstrates a need for high
+concurrency, a long-running service, a standalone binary, or stricter runtime
+resource isolation. Any migration requires a benchmark, a named owner, and an
+explicit maintenance-cost justification.
+
+### Search-efficiency guidance
+
+When real usage shows that discovery is too slow, optimize in this order:
+
+1. Use [`learn-skills.dev`](https://www.learn-skills.dev) for broad retrieval.
+2. Keep local-first search.
+3. Parallelize independent provider lookups.
+4. Cache only timestamped, provenance-qualified metadata.
+5. Measure search latency and candidate usefulness.
+6. Consider Go only if benchmarks show the current implementation is the
+   actual bottleneck.
+
+These are evaluation priorities, not a mandate to add a catalog, cache, or
+second implementation now.
+
 ### Assessment gateway
 
 Proposed as a future product boundary, not as a change to the shipped payload.
