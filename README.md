@@ -18,6 +18,25 @@ permissions, audits), known gaps, and next steps. Volatile external contracts
 (catalog endpoints, install commands, marketplace URLs) are verified at use
 time rather than cached.
 
+## Relationship to skill catalogs
+
+[`learn-skills.dev`](https://www.learn-skills.dev) is a catalog crawler and
+presentation layer with broader coverage and a stronger user-facing search,
+copy, and sharing experience. Its primary mechanism is provider aggregation and
+ranking; the local data snapshot inspected on 2026-09-06 was dated 2026-08-25,
+so its freshness depends on the crawler workflow and must be checked at use
+time.
+
+This skill does not compete by building another catalog. It adds an
+evidence-backed assessment layer:
+
+1. Search local skills first.
+2. Use `learn-skills.dev`, skills.sh, and other providers as candidate sources.
+3. Inspect the canonical repository and exact revision.
+4. Evaluate compatibility, permissions, provenance, and maintenance.
+5. Recommend or reject with explicit evidence.
+6. Ask separately before installation.
+
 This repository contains a methodology, not a static skill collection. Catalog
 sizes, client support, endpoints, and install commands change frequently, so the
 shipped workflow verifies volatile contracts at use time and keeps dated research
