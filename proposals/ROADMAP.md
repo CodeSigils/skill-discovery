@@ -402,6 +402,11 @@ installation implicitly mutating.
   Keep these as evidence for canonical inspection and task-fit filtering, not
   as automated quality scores. User acceptance is still required before
   ranking, provider adapters, caching, or a language rewrite.
+- Inspected Matt Pocock’s `writing-great-skills` and `writing-beats` candidates.
+  The former is a 3/3 occasional maintainer checklist for completion criteria,
+  progressive disclosure, and pruning; the latter is a 1/3 article-authoring
+  workflow and not a discovery dependency. Keep both opt-in and out of runtime
+  ranking.
 
 ### 2026-09-06 — Proportioned cross-platform CI
 

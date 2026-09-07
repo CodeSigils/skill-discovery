@@ -1319,6 +1319,48 @@ would over-report when applied mechanically. Keep it supplementary to
 report a rule after inspecting callers and project architecture. This was a
 static contextual test; no candidate code or skill subprocess was executed.
 
+## Source audit: Matt Pocock writing skills (2026-09-07)
+
+The learn-skills.dev snapshot points both requested URLs to
+[`mattpocock/skills`](https://github.com/mattpocock/skills), with catalog data
+updated at `2026-09-07T03:55:10.137Z`. The local synchronized payload was
+inspected because the live catalog page was not a stable machine-readable
+interface. The catalog paths are present in the cached source tree; the
+canonical repository should still be re-pinned at use time. The latest
+canonical revision previously observed for this repository is
+`3cca18b368ae95cdbdebbff572ccafa662551015`.
+
+### `writing-great-skills`
+
+This is a strong **3/3 maintainer fit** for improving a skill such as
+`skill-discovery`. Its useful, testable principles are completion criteria for
+each step, progressive disclosure, context pointers, single-source-of-truth
+pruning, and explicit defenses against premature completion and no-op prose.
+Applying those principles to this repository confirms that the discovery
+workflow already has ordered steps, bounded inspection, and linked references;
+the main remaining risk is documentation sediment as the evidence log grows.
+The skill is `disable-model-invocation: true`, so it is a maintainer aid rather
+than an automatic runtime dependency. It does not itself validate a skill or
+replace `skills-ref`/repository tests.
+
+### `writing-beats`
+
+This is a **1/3 fit** for the current request. It is a user-driven article
+authoring workflow: choose a starting beat, write only that beat, reread the
+file, and offer the next choices. That is coherent and has strong write-boundary
+discipline, but it does not improve skill discovery, Python review, or
+repository maintenance. Recommend it only when the user explicitly wants to
+assemble an article from raw material. It writes incrementally to a user file,
+so any behavior test would require an explicit output path and approval.
+
+### Decision
+
+Use `writing-great-skills` as an occasional authoring checklist when editing
+`SKILL.md` or maintainer guidance. Do not load either candidate automatically
+for discovery requests, and do not add either to runtime ranking. Popularity
+(322,170 and 310,155 all-time catalog installs) is recorded as retrieval
+context only, not quality evidence.
+
 ## Source audit: Lanshu animated architecture diagram (2026-09-07)
 
 The canonical [`cclank/lanshu-animated-architecture-diagram`](https://github.com/cclank/lanshu-animated-architecture-diagram/tree/c17f5b4e5de99d3603b364530ad04d930d038d24)
