@@ -407,6 +407,12 @@ installation implicitly mutating.
   progressive disclosure, and pruning; the latter is a 1/3 article-authoring
   workflow and not a discovery dependency. Keep both opt-in and out of runtime
   ranking.
+- Follow-up synthetic experiments passed the observable boundaries for both
+  candidates: `py-review` produced concrete, contextual findings on a Python
+  fixture, and `writing-beats` reread a selected beat before offering three
+  next choices without writing ahead. The Codex subprocess smoke run was
+  blocked by the reviewer environment’s read-only app-server state; do not
+  treat that infrastructure limitation as candidate behavior evidence.
 
 ### 2026-09-06 — Proportioned cross-platform CI
 
