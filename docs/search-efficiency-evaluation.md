@@ -570,6 +570,10 @@ links explicit security/roles, authentication, SSL, RLS, backup, transaction,
 and connection-pooling references, all present at that revision. It is a
 conditional-to-direct fit depending on whether “safety” means database design
 review or operational changes; no mutation should be implied.
+The live [skills.sh listing](https://www.skills.sh/neondatabase/postgres-skills/postgres-best-practices)
+reported 1.2K installs on 2026-09-07 (the requester reported an earlier 1.1K
+snapshot). This is popularity context only and is not evidence of safety or
+quality.
 
 For brainstorming, the canonical [`iurysza/agent-skills` brainstorming
 skill](https://github.com/iurysza/agent-skills/tree/f5d5de34a8ef4437ea705dcbdb80f23ed83e192e/skills/brainstorming)
