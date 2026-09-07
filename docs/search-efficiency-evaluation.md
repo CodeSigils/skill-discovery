@@ -1400,6 +1400,31 @@ RunComfy CLI, account/token, network access, and writes to an output directory,
 so they are conditional rather than safe default suggestions. No installation,
 credential use, video upload, or external generation was performed.
 
+### Popular-candidate retrieval probes (2026-09-07)
+
+Using the same timestamped structured index, four realistic requests were
+shortlisted by installation count and then compared with cached payloads:
+
+- `create skill` returned 961 matches, but the top result was a Convex
+  component-creation skill. This is a lexical false lead for a user asking to
+  author an agent skill; the query needs intent expansion such as “agent skill
+  authoring” and canonical inspection.
+- `frontend design` returned 370 matches. `anthropics/skills/frontend-design`
+  was a direct task match, but its broad creative mandate and license reference
+  still require client and source verification.
+- `python testing` returned 40 matches. `wshobson/agents/python-testing-patterns`
+  was a direct semantic match with pytest/fixtures/mocking coverage; the
+  candidate remains untrusted until its canonical revision is inspected.
+- `writing` returned 1,079 matches. Matt Pocock’s `writing-shape` and
+  `writing-beats` are strong article-authoring matches, while `writing-great-
+  skills` is a maintainer/documentation match rather than prose generation.
+
+All shortlisted records had cached `skillMdPath` values in the snapshot. These
+probes show that popularity improves candidate coverage but can elevate
+lexically related, task-mismatched results. Preserve the user’s original task
+as the relevance test, expand intent terms before narrowing, and never treat a
+high-download result as a recommendation without canonical inspection.
+
 ### Decision
 
 Use `writing-great-skills` as an occasional authoring checklist when editing
