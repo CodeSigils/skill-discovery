@@ -541,3 +541,57 @@ remote-project effects; otherwise refine the request with platform (iOS,
 Android, Flutter, React Native, or web prototype) and provide a narrower
 read-only candidate search. Provisional fit: 1/3. User acceptance: `unknown`.
 No installation, copying, execution, or external project creation occurred.
+
+## Real-task observations: trending selections (2026-09-07)
+
+The requester selected these four topics from learn-skills.dev's trending
+view. Trending was treated as a retrieval hint, not as evidence of quality,
+security, or maintenance. Installation and execution were not authorized.
+
+| Request | Query | Matches | Retrieval |
+|---|---|---:|---:|
+| Next.js on Cloudflare | `next js cloudflare` | 0 | 210 ms |
+| Postgres safety | `postgres safety` | 1 | 210 ms |
+| Brainstorming | `brainstorming` | 1,380 | 209 ms |
+| UX designer | `ux designer` | 131 | 209 ms |
+
+### Candidate review and outcomes
+
+`cloudflare/skills` [`nextjs-on-cloudflare`](https://github.com/cloudflare/skills/tree/d924cd8f59e75e08fd3dd52843bb2776de35c77e/skills/nextjs-on-cloudflare)
+was verified at commit `d924cd8f59e75e08fd3dd52843bb2776de35c77e`. It is a
+direct fit for Next.js on Cloudflare Workers, but setup/deployment may invoke
+an upstream installer and requires checking current vinext compatibility;
+classify as conditional until the user names a deployment action.
+
+For Postgres safety, the strongest canonical candidate was Neon’s
+[`postgres-best-practices`](https://github.com/neondatabase/postgres-skills/tree/27fe45e0f71ea89a6eaf9ea4d2e4068957c81c26/skills/postgres-best-practices)
+at commit `27fe45e0f71ea89a6eaf9ea4d2e4068957c81c26`. Its complete payload
+links explicit security/roles, authentication, SSL, RLS, backup, transaction,
+and connection-pooling references, all present at that revision. It is a
+conditional-to-direct fit depending on whether “safety” means database design
+review or operational changes; no mutation should be implied.
+
+For brainstorming, the canonical [`iurysza/agent-skills` brainstorming
+skill](https://github.com/iurysza/agent-skills/tree/f5d5de34a8ef4437ea705dcbdb80f23ed83e192e/skills/brainstorming)
+was inspected at commit `f5d5de34a8ef4437ea705dcbdb80f23ed83e192e`. It is a
+portable planning skill that clarifies context, compares approaches, and
+captures an approved design; it is a direct fit for ideation before
+implementation, not for ordinary coding.
+
+For UX design, the canonical
+[`mobile-ui-ux-designer`](https://github.com/mdrmuhaimin/agentic-skills/tree/c7c4e9fdfbcd4d8ed39bde5231813e38d83eb019/codex/mobile-ui-ux-designer)
+payload was inspected at commit `c7c4e9fdfbcd4d8ed39bde5231813e38d83eb019`
+(MIT). It covers mobile UX research, platform conventions, accessibility,
+states, tokens, and handoff, but is 913 lines with no bundled reference tree;
+classify as conditional and confirm the target platform and output depth first.
+
+### Query outcome
+
+The four provisional fits are: Cloudflare Next.js (conditional direct), Neon
+Postgres practices (conditional direct), brainstorming (direct), and mobile UX
+(conditional). The exact query precision varied sharply: brainstorming and UX
+were noisy, while the two infrastructure queries under-retrieved locally and
+needed canonical/web fallback. Provisional usefulness scores are 2, 2, 3, and
+2 respectively; user acceptance is `unknown`. No installation, copying,
+execution, deployment, database mutation, or external project creation
+occurred.

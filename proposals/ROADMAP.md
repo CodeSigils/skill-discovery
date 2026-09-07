@@ -316,6 +316,10 @@ installation implicitly mutating.
   drawing a product or architecture conclusion.
 - A seventh request (mobile app design) was added on 2026-09-07. The sample
   now spans seven requests, but still lacks explicit user acceptance ratings.
+- Four trending selections (Next.js on Cloudflare, Postgres safety,
+  brainstorming, and UX design) were recorded on 2026-09-07. The sample now
+  spans eleven requests; trend status remains a retrieval hint and acceptance
+  ratings are still required.
 
 ### 2026-09-06 — Proportioned cross-platform CI
 
