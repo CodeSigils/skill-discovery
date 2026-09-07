@@ -51,6 +51,14 @@ immutable revision. The README's “data updated daily” statement is a provide
 claim to verify at use time. Ignore unrelated promotional links in catalog
 documentation.
 
+These generated artifacts are reasonably agent-friendly retrieval inputs:
+`skills_index.json` exposes stable IDs, source repositories, counts,
+descriptions, and cached `skillMdPath` values, while `skills.json` preserves
+leaderboard data. They are not an evaluation authority. Descriptions and
+cached markdown may be absent because enrichment is coverage-biased, paths may
+drift, and leaderboard order reflects popularity. Treat every record as a
+pointer that still needs canonical revision and path verification.
+
 The crawler's default GitHub enrichment is coverage-biased: its README says it
 fetches cached `SKILL.md` files for top-list entries unless a full sync is
 requested. A missing `skillMdPath` or description file therefore records a
