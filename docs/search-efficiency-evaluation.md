@@ -917,3 +917,31 @@ are favorable for portability, but the collection also includes cross-skill
 references and client/plugin setup paths; inspect the selected skill and its
 referenced files rather than recommending the whole repository by popularity.
 No installation or execution occurred.
+
+## Fresh-catalog pilot: first-indication policy (2026-09-07)
+
+After updating the local `learn-skills.dev` checkout to upstream commit
+`345807d4f52`, three representative requests were rerun. The catalog reported
+`updatedAt=2026-09-07T03:55:10.137Z` and 113,458 entries. Measurements are
+retrieval signals, not a benchmark of agent reasoning or user satisfaction.
+
+| Request | Local matches / retrieval | learn-skills matches / matching | Assessment outcome |
+|---|---:|---:|---|
+| Create an architecture diagram | 9 / 246 ms | 19 / 49 ms | Excalidraw is a conditional fit after canonical inspection; catalog broadens alternatives |
+| Python code review | 18 / 238 ms | 7 / 49 ms | Local `py-review` remains the strongest direct fit; external results are alternatives |
+| Learn agent concepts | 1 / 235 ms | 0 / 51 ms | No direct catalog fit; retain official documentation and conditional skills as fallback |
+
+The refreshed index improves freshness confidence and provides useful
+candidate leads, but it does not replace local-first search: the Python direct
+fit was local-only, while the catalog missed the agent-concepts request. The
+architecture query also shows why catalog ranking should prioritize inspection,
+not certification. No installation, copying, execution, or external mutation
+occurred.
+
+### Pilot decision
+
+The first-indication policy is working as intended. Keep learn-skills.dev as the
+first broad external signal after local search, preserve canonical inspection,
+and do not add a provider adapter, cache, ranking score, or new language yet.
+Continue collecting explicit user acceptance and task outcomes before changing
+the implementation.
