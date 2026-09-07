@@ -626,6 +626,12 @@ bounded timeout. The CDN endpoint itself returned HTTP 200, so the smoke test
 remains `partial` with module-readiness/browser integration unresolved rather
 than a simple connectivity failure.
 
+Browser diagnostics showed a resource 404 while loading the template; after
+10 seconds `window.__moduleReady` and `window.renderDiagram` were still
+undefined. The renderer therefore cannot reach its own readiness signal in this
+environment, which is a concrete integration failure rather than merely a
+slow request.
+
 ## Canonical Claude Code frontend-design check (2026-09-07)
 
 The canonical [`anthropics/claude-code` frontend-design plugin](https://github.com/anthropics/claude-code/tree/ab9b2cf7bb9e4f98ff264c07a22e46d83c29c558/plugins/frontend-design)
