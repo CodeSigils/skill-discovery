@@ -613,6 +613,13 @@ needed canonical/web fallback. Provisional usefulness scores are 2, 2, 3, and
 execution, deployment, database mutation, or external project creation
 occurred.
 
+The authorized synthetic smoke test was partial: the declared Python/Playwright
+dependencies and Chromium installed in an isolated `/tmp` directory, but the
+renderer did not produce a PNG within a bounded retry because the template waits
+for its remote `esm.sh` module. This confirms the documented runtime network
+dependency; it is not evidence that generated diagrams fail generally. No
+credentials, repository files, or external services were used.
+
 ## Canonical Claude Code frontend-design check (2026-09-07)
 
 The canonical [`anthropics/claude-code` frontend-design plugin](https://github.com/anthropics/claude-code/tree/ab9b2cf7bb9e4f98ff264c07a22e46d83c29c558/plugins/frontend-design)
