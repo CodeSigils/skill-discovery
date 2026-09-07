@@ -91,8 +91,9 @@ The workflow guides the agent to:
    personal data during discovery.
 7. **Evaluate fit** — classify each candidate:
    - **Direct fit** — meets all stated constraints.
-   - **Conditional fit** — works if a minor modification is made (e.g., wrap
-     the Python dependency in a container).
+   - **Conditional fit** — covers the task with a disclosed safety, freshness,
+     compatibility, dependency, capability, or other material condition (for
+     example, wrapping a Python dependency in a container).
    - **Partial fit** — covers part of the need; supplementary skill required.
    - **Rejected** — fails a hard constraint (e.g., requires Python at runtime).
 8. **Report** — return a ranked table with evidence per candidate, catalog and
