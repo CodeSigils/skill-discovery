@@ -122,6 +122,16 @@ When real usage shows that discovery is too slow, optimize in this order:
 These are evaluation priorities, not a mandate to add a catalog, cache, or
 second implementation now.
 
+### Python-source evaluation
+
+Completed 2026-09-07. For Python coding requests, prefer the local `py-review`
+router for focused review routing and use `ludo-technologies/python-best-practices`
+as supplementary general standards when its contextual caveats fit. The
+`jasong98/code-skills` Python skill is conditional because its repository has no
+declared license, tests, or CI, and its Chinese-only, prescriptive guidance is
+less portable. Do not hard-code provider candidates into runtime ranking;
+re-check revision, license, toolchain, and project fit at query time.
+
 ### Diagram-source evaluation
 
 Completed 2026-09-07. For diagram requests, use catalog metadata only to find
