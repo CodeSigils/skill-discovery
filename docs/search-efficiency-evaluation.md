@@ -506,3 +506,38 @@ with real personal data.
 These four observations bring the pilot to six requests, but none has an
 explicit acceptance rating yet. Do not treat provisional fit scores as user
 success evidence or use them to justify implementation changes.
+
+## Real-task observation: mobile app design (2026-09-07)
+
+Request: “design mobile apps.” The need was interpreted as mobile UI/UX
+guidance with no framework, platform, backend, or design-service assumption.
+Installation and execution were not authorized.
+
+| Query | Matches | Retrieval |
+|---|---:|---:|
+| `design mobile apps` | 4 | 213 ms |
+| `mobile app design` | 19 | 209 ms |
+| `mobile UI` | 98 | 211 ms |
+| `ios android design` | 0 | 212 ms |
+
+The exact phrase was precise but sparse; `mobile UI` was noisy. Local results
+were primarily generated learn-skills.dev catalog entries. The strongest
+candidate, `designed-by-ai/skills` `design-mobile-apps`, is present at
+canonical commit `4e7e900773f213b2165dfb95d81e8e1d677a6af3` (MIT), but requires
+`SLEEK_API_KEY`, sends requests to an external design service, and can create
+remote projects. It is therefore a conditional fit only for users explicitly
+choosing Sleek and authorizing that network/service workflow.
+
+`mobile-app-ui-design` had a missing canonical path at the current repository
+revision and was inspection-blocked. `mobile-app-design-mastery` is
+Claude/project-oriented despite useful platform heuristics, so it is not a
+portable default recommendation.
+
+### Query outcome
+
+No unconditional direct-fit mobile-app design skill passed. Recommend the
+Sleek skill only when the user names Sleek and approves its key/network and
+remote-project effects; otherwise refine the request with platform (iOS,
+Android, Flutter, React Native, or web prototype) and provide a narrower
+read-only candidate search. Provisional fit: 1/3. User acceptance: `unknown`.
+No installation, copying, execution, or external project creation occurred.
