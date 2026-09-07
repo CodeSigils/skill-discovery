@@ -699,3 +699,49 @@ Agent fit is the maintainer's static assessment, not a user-success claim:
 project; `bmad-forge-idea` directly matches idea pressure-testing. User
 usefulness and acceptance remain unmeasured until the skills are used in a
 real task.
+
+## Source checks: Browser Use, Claude Code simplify, and templates (2026-09-07)
+
+### Browser Use
+
+The canonical [`browser-use/browser-use`](https://github.com/browser-use/browser-use/tree/e25ab65e699af3031a1f2d348526de2844be0e89/skills)
+repository is MIT-licensed and was inspected at commit
+`e25ab65e699af3031a1f2d348526de2844be0e89`. It ships `browser-use`, `open-source`,
+`cloud`, `qa`, `remote-browser`, and related skills. `browser-use` is a direct
+fit for interactive browser automation, but it can attach to a browser,
+navigate logged-in sessions, access network resources, and install a CLI via
+`uv`; it is therefore conditional on explicit browser, account, and network
+authorization. `qa` is a separate cloud-browser testing workflow with API-key
+and billing implications. No browser, tunnel, CLI, or cloud session was
+started.
+
+### Claude Code simplify
+
+[`anthropics/claude-code`](https://github.com/anthropics/claude-code/tree/ab9b2cf7bb9e4f98ff264c07a22e46d83c29c558/plugins/pr-review-toolkit/agents)
+contains `code-simplifier.md` at commit
+`ab9b2cf7bb9e4f98ff264c07a22e46d83c29c558`, not a `SKILL.md` named
+`simplify`. It is a Claude agent configured to refine recently modified code,
+preserve behavior, and use project standards; its metadata selects the Opus
+model. It is useful for Claude Code's native agent workflow but is not a
+portable Agent Skills payload for Codex without adaptation.
+
+### claude-code-templates code reviewer
+
+The published `claude-code-templates` package was checked at npm version
+`1.29.4` (MIT). Its tarball contains the CLI and component infrastructure but
+not a static `development/code-reviewer` or `development-tools/code-reviewer`
+payload; the CLI resolves components dynamically from its catalog/GitHub when
+run. This makes the requested component inspection-blocked from the package
+alone and couples installation to `npx`, network access, and Claude's
+`.claude/` layout. The package README documents the installer command, but
+that is not equivalent to reviewing the exact agent source. No `npx` command
+was run and no files were installed.
+
+### Outcome
+
+Recommend Browser Use's `browser-use` only for an explicitly authorized
+interactive browser task; treat Claude Code `code-simplifier` as a native
+Claude agent rather than a portable skill; and do not recommend the
+`claude-code-templates` code reviewer until its exact catalog payload and
+revision are available for inspection. Popularity, package availability, and
+installer documentation are not substitutes for source review.
