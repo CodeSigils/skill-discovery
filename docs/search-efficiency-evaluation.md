@@ -969,3 +969,40 @@ first broad external signal after local search, preserve canonical inspection,
 and do not add a provider adapter, cache, ranking score, or new language yet.
 Continue collecting explicit user acceptance and task outcomes before changing
 the implementation.
+
+## Source audit: proyecto26 system-design architecture diagram (2026-09-07)
+
+The canonical [`proyecto26/system-design-skills`](https://github.com/proyecto26/system-design-skills/tree/a70772efb956e8c9b78ef5b7538dee00cc3b9263)
+repository was inspected at commit `a70772efb956e8c9b78ef5b7538dee00cc3b9263`.
+GitHub reports MIT licensing, 69 stars, and a last push on 2026-06-02. The
+`skills/architecture-diagram/` payload includes `SKILL.md`, a complete HTML/SVG
+template, and design/interactive references.
+
+This is a stronger architecture-diagram candidate than the tested Excalidraw
+renderer. Its template is self-contained HTML with inline SVG/CSS and a system
+font stack, so the diagram itself renders offline with no rendering dependency.
+PNG/PDF export is optional and uses two pinned jsDelivr scripts with SRI hashes;
+the base diagram remains usable if those CDN scripts are unavailable. The
+instructions specify component semantics, trust boundaries, arrow order,
+spacing, and a bounded 8–15 component target, making the output reviewable.
+
+Qualifications:
+
+- The repository describes the skill as part of a Claude Code `system-design`
+  plugin. Treat portability as conditional until the host loader and whole-plugin
+  references are verified.
+- Export buttons require network-fetched CDN scripts (and clipboard export may
+  require a secure context); this is optional, not an offline guarantee for
+  every toolbar action.
+- The repository is less recently maintained than other shortlisted candidates.
+  Pin the reviewed revision and re-check freshness before use.
+- The interactive reference can add JavaScript controls and optional prompt
+  transport, so inspect that path separately before enabling it. No interactive
+  transport, installation, or external mutation was performed.
+
+Classify this as a **conditional-to-strong recommendation** for static
+architecture diagrams when an HTML/SVG artifact is acceptable and the user can
+accept Claude/plugin adaptation. Prefer it over the Excalidraw candidate for an
+offline-first workflow; use AWS’s architecture skill instead when the request
+is specifically AWS infrastructure. No runtime smoke test was run because this
+is a source-template evaluation rather than an installed candidate.
