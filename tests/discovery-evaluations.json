@@ -35,6 +35,17 @@
       "behavior_validation": "not-run"
     },
     {
+      "id": "install-sort-popularity-bias",
+      "task": "Find a video-generation skill",
+      "result": "conditional_fit",
+      "catalog_freshness": "known",
+      "candidate_revision": "owner/repo@popular-result",
+      "catalog_sort": "installations",
+      "loader_status": "structural_only",
+      "privacy": "not-applicable",
+      "behavior_validation": "not-run"
+    },
+    {
       "id": "resume-cv",
       "task": "Find a resume or CV skill",
       "result": "partial_fit",
