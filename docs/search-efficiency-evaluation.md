@@ -151,6 +151,36 @@ client. Static fit for a request to review a diff is **3/3 when those project
 and client prerequisites exist**, otherwise **conditional 2/3**. No scripts were
 executed and no installation occurred; user acceptance remains unmeasured.
 
+### Go skill/project pilot (2026-09-07)
+
+Three shallow public Go projects were downloaded under
+`/home/sand/projects/go-skill-pilot` for a read-only evaluation:
+
+| Project | Revision | Scope tested |
+|---|---|---|
+| `spf13/cobra` | `adbc8813901b` | code-style review |
+| `go-chi/chi` | `ae6be7469132` | test-suite review |
+| `gin-gonic/gin` | `dcaa4296d111` | security review |
+
+The three strongest catalog candidates came from
+`samber/cc-skills-golang` at commit `19a0626ae8565d27a7b7bdf59d8d99d94d7e284c`:
+`golang-code-style` (24 bundled eval cases), `golang-testing` (14), and
+`golang-security` (43). Their evals are structured prompt/assertion fixtures,
+not executable project tests; they are useful for checking instruction coverage
+but do not prove review accuracy.
+
+The style skill found three concrete Cobra issues: positional struct literals,
+overlong/multi-argument calls, and a complex condition. Static usefulness was
+**3/3**. The testing skill's criteria exposed Chi's eight `time.Sleep` calls,
+concurrent HTTP tests, and zero integration build tags, but the mandatory tag
+rule is too broad for tests that use only local `httptest` servers; static
+usefulness was **2/3**. The security skill was applicable to Gin's forwarded
+headers, file serving, cookies, and unbounded request-body reads, but those
+findings require caller/data-flow context to avoid flagging safe framework
+defaults; static usefulness was **2/3**. No project code or candidate scripts
+were executed, no dependencies were installed, and no user acceptance rating
+was collected.
+
 ### Behavioral smoke test: code-review candidate (2026-09-07)
 
 The candidate was tested in an isolated temporary Git repository containing a

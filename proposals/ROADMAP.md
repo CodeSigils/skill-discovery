@@ -385,6 +385,14 @@ installation implicitly mutating.
   handling. Parallel sub-agent behavior was not executed in the isolated test,
   so the result validates the report contract only; user acceptance remains
   pending.
+- A read-only Go pilot tested three promising `samber/cc-skills-golang` skills
+  against shallow `spf13/cobra`, `go-chi/chi`, and `gin-gonic/gin` checkouts.
+  Code-style review was highly actionable (3/3); testing guidance was useful
+  but over-broad on integration tags (2/3); security guidance was relevant but
+  required caller/data-flow context to avoid framework false positives (2/3).
+  Bundled eval fixtures (24/14/43) improve instruction coverage but are not
+  executable proof. No implementation change is justified until user
+  usefulness is explicitly rated.
 
 ### 2026-09-06 — Proportioned cross-platform CI
 
