@@ -1505,3 +1505,42 @@ general standards with contextual caveats; and `jasong98/code-skills` **1/3**
 for the default portable workflow because of licensing, language, validation,
 and prescriptive-rule limitations. These are maintainer assessments, not user
 acceptance ratings.
+
+## Direct discovery query: brainstorming (2026-09-07)
+
+The explicit request “find a brainstorming skill for clarifying software
+project ideas” was run through the skill-discovery workflow. Local-first search
+covered the skill-discovery payload and the user skill root; it found no
+installed brainstorming candidate. The learn-skills.dev
+`skills_search_index2.json` artifact was updated at
+`2026-09-07T03:55:10.137Z` and contained
+`obra/superpowers/brainstorming`, with a task-specific description and cached
+`SKILL.md` path. The provider artifact therefore demonstrates that
+skill-discovery can retrieve this candidate from the broad catalogue.
+
+The cached payload was inspected statically. It has valid `name` and
+`description` frontmatter and describes clarification-first dialogue,
+one-question-at-a-time refinement, alternatives with trade-offs, incremental
+design validation, and a documented implementation hand-off. The canonical
+repository was then inspected directly at
+[`skills/brainstorming/`](https://github.com/obra/superpowers/tree/main/skills/brainstorming).
+The directory contains `SKILL.md`, `scripts/`,
+`spec-document-reviewer-prompt.md`, and `visual-companion.md`; the referenced
+visual companion is present, and its `scripts/` directory contains the server
+and helper files it documents. The repository README lists support for Codex
+and other clients, but the complete client-specific install path still needs
+to be followed for any actual installation.
+
+The cached catalogue copy is older than the canonical `main` payload: it does
+not include the current three-path classification or the explicit hard
+approval gate. This is a concrete candidate-payload drift example; the
+canonical revision takes precedence.
+
+The candidate is therefore **direct fit, conditionally recommended** for
+interactive design clarification. Its hard approval gate, mandatory
+questioning, and optional browser companion can add substantial ceremony to
+small tasks. No scripts were executed and no files were installed.
+
+This corrects the earlier classification: the skill was directly discoverable
+through the current learn-skills catalogue and its canonical repository and
+referenced files are now verified.

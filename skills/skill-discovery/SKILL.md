@@ -30,6 +30,12 @@ contain something related, or when an installed skill already clearly matches.
 Do not turn “find a skill” into permission to install one. Do not turn a failed
 search into permission to create one.
 
+Before proposing a new catalog, index, validator, or discovery workflow, inspect
+established reusable sources and implementations first. Adopt or reference an
+existing source when it satisfies the need; build locally only to close a
+demonstrated gap. This rule applies to capability and infrastructure work, not
+routine maintenance.
+
 ## Required workflow
 
 ### 1. Define the need
@@ -162,7 +168,9 @@ Search-result metadata is not enough. For each serious candidate:
 
 1. open the source repository or provider record;
 2. read the complete `SKILL.md`;
-3. enumerate and inspect referenced scripts, templates, assets, and nested files;
+3. enumerate referenced scripts, templates, assets, and nested files; inspect
+   each one that exists and classify missing references by whether the workflow
+   requires them;
 4. identify required tools, packages, credentials, network access, and writes;
 5. check provenance, maintenance activity, license, and duplication/fork status;
 6. check available security-audit results, while treating badges as supporting
@@ -174,16 +182,26 @@ Search-result metadata is not enough. For each serious candidate:
 
 Compare every catalog-declared skill path with the canonical tree at the exact
 reviewed revision. Record `path: present` only when the file exists there. If
-the path is missing, renamed, or only present on another branch, record
-`path: stale` with the missing path and stop the candidate at `inspection
-blocked`; do not recommend or install it from the catalog pointer. Search the
-canonical tree for a replacement path and inspect that replacement as a new
-candidate, preserving the stale-pointer evidence.
+the catalog-declared `SKILL.md` path is missing, renamed, or only present on
+another branch, record `path: stale` with the missing path and stop the
+candidate at `inspection blocked`; do not recommend or install it from the
+catalog pointer. Search the canonical tree for a replacement path and inspect
+that replacement as a new candidate, preserving the stale-pointer evidence.
+
+Apply a narrower rule to files referenced from an otherwise present
+`SKILL.md`: record each missing file as `missing-required` when the documented
+workflow depends on it, or `missing-optional` when it is an optional
+integration, example, visual aid, or client-specific extension. Continue
+inspection when the missing reference is optional; block recommendation only
+when a required reference is unavailable or the resulting capability cannot
+be evaluated safely. Do not infer that a reference is required solely because
+it is named in prose.
 
 Apply a compatibility gate before recommending a candidate: require valid
 `name` and `description` frontmatter, confirm the expected skill location for
-the named client, verify every referenced file exists at the reviewed revision,
-and label platform-specific extensions or integration steps explicitly.
+the named client, classify referenced-file presence using the required versus
+optional rule above, and label platform-specific extensions or integration
+steps explicitly.
 
 Bound inspection of each candidate to at most 32 referenced files, 100 KiB per
 file, 1 MiB total, and three nested directory levels. Skip binary and generated

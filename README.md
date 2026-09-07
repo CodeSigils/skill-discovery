@@ -40,6 +40,11 @@ evidence-backed assessment layer:
 5. Recommend or reject with explicit evidence.
 6. Ask separately before installation.
 
+When considering new discovery infrastructure, inspect reusable catalogs,
+indexes, and provider implementations first. Prefer adopting or referencing a
+source that already meets the need; create local infrastructure only for a
+measured, documented gap.
+
 Learn-skills.dev generated feeds and JSON/search data are broad discovery
 signals only. We have not verified a stable public search API contract; use the
 documented artifacts and freshness metadata at query time, and inspect the

@@ -39,6 +39,15 @@ Future orchestration work must preserve these non-goals: no popularity-based
 trust score, automatic installation, or default execution of untrusted skills;
 no runtime service or catalog duplication without measured user need.
 
+### Reusable-source-first rule
+
+Before adding catalog, index, validation, or provider infrastructure, inspect
+established reusable sources and implementations. Prefer a documented external
+source such as `learn-skills.dev` for broad retrieval and keep local additions
+limited to demonstrated gaps. Any proposed local cache or derived index needs a
+measured latency or usefulness benefit, timestamped provenance, and a bounded
+maintenance owner.
+
 ### Cross-cutting invariants
 
 These are planning constraints, not new runtime phases:
