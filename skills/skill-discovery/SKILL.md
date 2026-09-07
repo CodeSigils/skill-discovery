@@ -20,6 +20,11 @@ downloads and executes external code and receiving approval.
 Use this skill when the user asks to find, compare, evaluate, or recommend a
 skill, or when the user explicitly asks whether a suitable skill exists.
 
+When the user explicitly invokes `skill-discovery`, treat the current request
+as the active discovery task. Do not answer the preceding task; carry forward
+only constraints the user explicitly retains or that clearly apply. Follow the
+discovery report contract before taking action.
+
 Do not use it merely because a task looks difficult, because a marketplace might
 contain something related, or when an installed skill already clearly matches.
 Do not turn “find a skill” into permission to install one. Do not turn a failed
