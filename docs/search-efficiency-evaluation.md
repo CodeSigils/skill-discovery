@@ -1291,6 +1291,34 @@ as stale until verified, and do not add ranking or provider adapters yet.
 Collect explicit user usefulness/acceptance ratings before changing the
 implementation or claiming behavioral quality.
 
+### Contextual rule test: `python-best-practices` (2026-09-07)
+
+The `ludo-technologies/python-best-practices` `coding-standards` skill was
+applied as a read-only checklist to the same three revisions. It produced
+useful context, but no unambiguous defect finding:
+
+- **Requests**: its strict Ruff/Pyright configuration and typed public helpers
+  make the type-hints and style rules largely covered by existing tooling.
+  `Any` occurrences in `src/requests/_types.py` and `utils.py` are deliberate
+  boundary types, so a blanket “remove Any” rule would be a false positive.
+- **HTTPX**: the async category is relevant because the project supports
+  asyncio/Trio, but no `asyncio.gather` use was found. The two broad
+  `except Exception` blocks in `httpx/_utils.py` convert invalid host parsing
+  into a boolean result; they are not silent exception swallowing without
+  reading their callers. The error rule therefore requires data-flow context.
+- **pytest**: the performance and Pydantic rules are not generally applicable
+  to this mature test framework. Bare exception handlers in
+  `testing/test_unittest.py` and `testing/code/test_source.py` are compatibility
+  behavior and need project intent before being reported.
+
+Practical usefulness for these real repositories: **2/3**. The skill helps
+surface review questions (especially exception intent and boundary validation),
+but its `CRITICAL` labels and universal performance/Pydantic recommendations
+would over-report when applied mechanically. Keep it supplementary to
+`py-review`, defer to each repository’s configured Ruff/type checker, and only
+report a rule after inspecting callers and project architecture. This was a
+static contextual test; no candidate code or skill subprocess was executed.
+
 ## Source audit: Lanshu animated architecture diagram (2026-09-07)
 
 The canonical [`cclank/lanshu-animated-architecture-diagram`](https://github.com/cclank/lanshu-animated-architecture-diagram/tree/c17f5b4e5de99d3603b364530ad04d930d038d24)
