@@ -82,6 +82,16 @@ Deferred. CI is the authoritative gate and local hooks would add setup friction
 for the solo-maintained project. Reconsider if contributor volume or repeated
 local-only failures justify the maintenance cost.
 
+### Solo evaluation branch policy
+
+Active 2026-09-07. While the project is a solo-maintained candidate under
+heavy evaluation, `main` keeps signed-commit and linear-history protection but
+does not require pull-request checks or administrator enforcement. CI still
+runs on every push and pull request. Use focused PRs for risky, externally
+reviewed, or collaborative changes. Re-enable required PR checks before the
+repository accepts regular external contributions or needs a formal release
+review.
+
 ### Runtime execution harness for third-party skills
 
 Not planned. Discovery remains static by default. Behavior checks require

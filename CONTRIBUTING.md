@@ -11,7 +11,9 @@ Read [SECURITY.md](SECURITY.md) before reporting a security issue.
 
 ## Tutorial: first contribution
 
-1. Create a focused branch from current `main`.
+1. Create a focused branch from current `main` for changes that benefit from
+   review. During the solo evaluation phase, small signed maintenance changes
+   may be pushed directly to `main`; keep the same validation gate.
 2. Change the smallest relevant file set. The shipped runtime boundary is only
    `skills/skill-discovery/`; tooling and research stay outside it.
 3. Update README, references, dated evidence, and
@@ -86,7 +88,10 @@ issues, or reports.
 - Keep each branch and pull request focused.
 - Use a short imperative commit subject and add `What:` and `Why:` lines for
   non-trivial changes.
-- Required CI checks must pass before merge.
+- CI runs on every push and pull request. Required PR checks are intentionally
+  disabled during solo evaluation to avoid merge-queue overhead; use a focused
+  PR for risky or collaborative changes.
+- Commits entering `main` must remain signed and linear.
 - Release notes are generated from commit history; this repository does not keep
   a separate changelog.
 
