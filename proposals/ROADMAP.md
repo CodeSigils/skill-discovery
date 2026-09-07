@@ -326,6 +326,15 @@ installation implicitly mutating.
   Continue with provider-aware fallback and measure candidate usefulness before
   implementing adapters or persistent caching.
 
+### 2026-09-07 — Broad provider query correction
+
+- A broad `golang` query against the synchronized learn-skills.dev generated
+  index returned 158 lexical matches; the leading results clustered in one
+  collection. Direct website access was rate-limited with HTTP 429.
+- This reinforces the provider boundary: use learn-skills.dev for broad,
+  timestamped candidate retrieval, then inspect canonical repositories; do not
+  infer quality from ranking or build against an unverified search endpoint.
+
 ### 2026-09-06 — Real-task fit pilot started
 
 - Added a lightweight scoring protocol and recorded the first two real

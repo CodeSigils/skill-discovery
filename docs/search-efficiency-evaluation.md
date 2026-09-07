@@ -107,6 +107,17 @@ learn-skills.dev search API contract has been verified; generated JSON/search
 artifacts may be consumed only after checking their documented schema and
 freshness metadata at query time.
 
+### Broad Golang query (2026-09-07)
+
+The requested [`q=golang`](https://www.learn-skills.dev/en/skills?q=golang)
+search was rate-limited with HTTP 429 in this environment. The synchronized
+generated index was used as the documented-data fallback: it contained 158
+lexical `golang` matches in the `2026-09-07T03:55:10Z` snapshot. The leading
+results were concentrated in `samber/cc-skills-golang`, illustrating why broad
+catalog retrieval should produce candidates for inspection rather than an
+automatic recommendation. The observation supports a future read-only provider
+adapter, but does not establish a stable public search API contract.
+
 ## Bounded task-fit pilot (2026-09-06)
 
 To make the next experiment concrete, five representative requests were run
