@@ -898,3 +898,22 @@ evaluate permissions and side effects before making a recommendation. Do not
 install from a leaderboard entry solely because it is highly ranked, and do not
 claim its popularity is validated without an explicit methodology. No account,
 installation, or candidate execution was performed during this inspection.
+
+## Source audit: Addy Osmani agent-skills (2026-09-07)
+
+The additional canonical source is [`addyosmani/agent-skills`](https://github.com/addyosmani/agent-skills/tree/48cb1168aeaaa70dfcbbf709eddfa2a8ed8129a)
+at commit `48cb1168aeaaa70dfcbbf709eddfa2a8ed8129a`. GitHub reported 92,642 stars,
+9,881 forks, MIT licensing, and a recent push on 2026-09-06. The repository is
+a broad engineering collection, not a diagram-specific skill: its relevant
+`frontend-ui-engineering` skill covers production UI, accessibility, responsive
+layout, design systems, and visual quality, while no architecture or
+Excalidraw skill was present in the inspected tree.
+
+The collection is a useful conditional alternative when “diagram” actually
+means designing or implementing a user interface. It is not a substitute for
+the Excalidraw skill when the requested artifact is an architecture, workflow,
+or sequence diagram. Its root `skills/<name>/SKILL.md` layout and MIT license
+are favorable for portability, but the collection also includes cross-skill
+references and client/plugin setup paths; inspect the selected skill and its
+referenced files rather than recommending the whole repository by popularity.
+No installation or execution occurred.
