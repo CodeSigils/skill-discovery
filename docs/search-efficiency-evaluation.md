@@ -620,6 +620,12 @@ for its remote `esm.sh` module. This confirms the documented runtime network
 dependency; it is not evidence that generated diagrams fail generally. No
 credentials, repository files, or external services were used.
 
+A follow-up retry served the same isolated template over localhost HTTP to rule
+out a `file://` origin restriction. It also failed to produce a PNG within the
+bounded timeout. The CDN endpoint itself returned HTTP 200, so the smoke test
+remains `partial` with module-readiness/browser integration unresolved rather
+than a simple connectivity failure.
+
 ## Canonical Claude Code frontend-design check (2026-09-07)
 
 The canonical [`anthropics/claude-code` frontend-design plugin](https://github.com/anthropics/claude-code/tree/ab9b2cf7bb9e4f98ff264c07a22e46d83c29c558/plugins/frontend-design)
