@@ -1360,6 +1360,23 @@ beats were proposed and the workflow stopped before creating the requested
 the reread-after-write loop remain untested until a user chooses a starting
 beat.
 
+### Follow-up bounded experiments (2026-09-07)
+
+A synthetic Python fixture under `~/projects/skill-discovery-pilot` introduced
+an overly broad exception, an `Any` input boundary, missing async annotations,
+and sequential independent requests. Applying `py-review` produced four
+line-specific review questions and correctly kept `Any`, exception scope, and
+`asyncio.gather` contextual rather than automatic violations. The isolated
+Codex subprocess could not start because the reviewer environment denied its
+read-only app-server state; the result is therefore a manual checklist pass,
+not executable candidate behavior.
+
+The same pilot selected the “map” starting beat for `writing-beats`, reread the
+four-line article, and generated three distinct next-beat choices without
+writing a second beat. This passes the second interaction boundary. Full
+user-driven continuation remains intentionally untested until a user chooses
+the next beat.
+
 ### Decision
 
 Use `writing-great-skills` as an occasional authoring checklist when editing
