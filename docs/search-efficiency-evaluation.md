@@ -1381,6 +1381,25 @@ The requester accepted both pilot results as useful on 2026-09-07. This closes
 the bounded pilot gate, but does not turn static or manual checks into universal
 quality proof.
 
+### End-to-end local `video` query (2026-09-07)
+
+Using the synchronized `skills_index.json` (`updatedAt`
+`2026-09-07T03:55:10.137Z`, `sourceUpdatedAt` `2026-09-07T02:47:41.533Z`), a
+lexical `video` search returned **1,252** matches from 113,458 indexed records.
+The installation-sorted shortlist was led by RunComfy `video-edit`,
+`image-to-video`, and `ai-video-generation` entries with cached `SKILL.md`
+paths. The first result was therefore treated as a popularity-biased retrieval
+signal, not a recommendation.
+
+Canonical inspection of the cached payload exposed a provenance warning: some
+records are named under `prime-skills/runcomfy-agent-skills`, while their
+embedded install/source links point to `agentspace-so/runcomfy-skills`. This is
+exactly the kind of source mismatch that requires canonical repository and
+revision verification before recommendation. The candidates also require a
+RunComfy CLI, account/token, network access, and writes to an output directory,
+so they are conditional rather than safe default suggestions. No installation,
+credential use, video upload, or external generation was performed.
+
 ### Decision
 
 Use `writing-great-skills` as an occasional authoring checklist when editing
