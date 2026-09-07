@@ -260,8 +260,9 @@ outages do not make ordinary documentation changes flaky. The monitor uses
 bounded retries and response sizes, checks independent sources concurrently,
 and opens a reviewable PR only for safe canonical-URL corrections or refreshed
 verification evidence. Its PR body reports the number of contracts checked,
-timestamp refreshes, and canonical URL corrections. Workflow-authored PRs keep
-the normal approval, signed-commit, and required-check boundaries.
+timestamp refreshes, and canonical URL corrections. Workflow-authored changes
+remain reviewable and signed; required PR checks are intentionally relaxed
+during solo evaluation.
 
 ### Catalog status
 

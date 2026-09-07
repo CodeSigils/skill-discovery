@@ -41,11 +41,12 @@ trust model:
 
 - Commits are **signed** by the GitHub Actions bot identity to satisfy the
   protected-branch signed-commit rule.
-- Pull requests require all required checks to pass before merge — the
-  signed-commit property does not bypass CI gates.
+- CI still runs on every pull request, and maintainers should review failures
+  before merging. During solo evaluation, required PR checks are not enforced
+  by branch protection; signed commits and linear history remain enforced.
 - GitHub may require an explicit human approval before workflow-authored PRs
-  can run required checks; this approval is scoped to the monitor's bot-owned
-  PR and must not be widened into a generic CI bypass.
+  can run their checks; this approval is scoped to the monitor's bot-owned PR
+  and must not be widened into a generic CI bypass.
 - The monitor exposes only bounded counters (`checked_count`,
   `timestamp_refresh_count`, `canonical_url_fix_count`) to the workflow through
   `GITHUB_OUTPUT`; it does not write arbitrary files, secrets, or environment

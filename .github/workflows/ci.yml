@@ -143,9 +143,9 @@ jobs:
             maintenance. Any canonical URL correction requires semantic review
             of the affected provider contract.
 
-            This automated change is submitted as a pull request so required
-            checks, signed-commit policy, and review remain in the normal
-            protected-branch workflow.
+            This automated change is submitted as a pull request so the
+            signed-commit policy and semantic review remain visible. Required
+            PR checks are intentionally relaxed during solo evaluation.
           branch: automation/external-contract-drift
           delete-branch: true
       - name: Check research expiry and create issues
