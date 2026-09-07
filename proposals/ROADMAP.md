@@ -148,13 +148,15 @@ and output quality at query time.
 ### Provider orchestration
 
 Documented as the next future capability: select the smallest useful provider
-set rather than querying every catalog. Keep local-first search, use skills.sh
-directly when available, use learn-skills.dev for broad structured retrieval,
-and fall back to authenticated GitHub or web search. Provider adapters must
+set rather than querying every catalog. Keep local-first search, use
+learn-skills.dev generated data for broad structured retrieval, then skills.sh
+and other providers as candidate sources, with authenticated GitHub or web
+search as fallbacks. Provider adapters must
 preserve timestamp, authentication, result-count, failure, and provenance
-fields; catalog data must never replace canonical source inspection. Do not
-adopt an undocumented learn-skills.dev endpoint or build a multi-provider cache
-until its contract and usefulness are measured.
+fields; catalog data must never replace canonical source inspection. Keep a
+provider's total result count distinct from the bounded inspection shortlist.
+Do not scrape the learn-skills.dev website, adopt an undocumented endpoint, or
+build a multi-provider cache until its contract and usefulness are measured.
 
 ### Assessment gateway
 
