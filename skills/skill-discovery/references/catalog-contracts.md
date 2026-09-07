@@ -29,6 +29,13 @@ API contract, so do not scrape the website or rely on an observed undocumented
 endpoint. Preserve the provider's total result count separately from the
 shortlist returned for inspection.
 
+The canonical publisher is
+<https://github.com/NeverSight/learn-skills.dev>. Prefer its generated
+`data/skills_search_index*.json` shards, which inline extracted English and
+translated descriptions, over recursively scanning `data/skills-md/**` text
+files. Description text is cached metadata: use it to retrieve candidates, then
+inspect the current source repository and exact revision before recommending.
+
 ## skills.sh
 
 For interactive/local discovery, use an already-installed official CLI when one

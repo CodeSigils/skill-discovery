@@ -153,6 +153,16 @@ shards should be queried selectively rather than loaded wholesale, and a
 missing cached payload should trigger canonical-source inspection rather than
 an automatic rejection or recommendation.
 
+The canonical publisher repository is
+[`NeverSight/learn-skills.dev`](https://github.com/NeverSight/learn-skills.dev).
+Its `data/skills-md/**/description_en.txt` files are extracted frontmatter
+descriptions, with parallel translated text files. The current checkout has
+roughly one English description per indexed skill, and the search shards inline
+these descriptions as `descriptionEn`/`descriptionCn`. Consumers should query
+the bounded search shards rather than scan the millions of generated text
+files. These text artifacts are cached retrieval metadata; they can be stale
+and do not replace reading the canonical repository's current `SKILL.md`.
+
 ### Provider-orchestration evidence
 
 | Question | Evidence | Conclusion |
@@ -238,6 +248,6 @@ When updating this document:
 |---|---|---|---|
 | skills.sh API documentation | https://www.skills.sh/docs/api | docs | v1 endpoints, authentication, pagination, response fields; checked 2026-09-06 |
 | skills.sh skill detail | https://www.skills.sh/codesigils/skill-discovery/skill-discovery | tested | Indexed detail page and install command; checked 2026-09-06 |
-| learn-skills.dev repository | https://github.com/NeverSight/learn-skills.dev | docs | README documents generated feeds and raw/CDN consumption; checked 2026-09-06 |
+| learn-skills.dev repository | https://github.com/NeverSight/learn-skills.dev | docs | Canonical publisher repository; README documents generated feeds and raw/CDN consumption; checked 2026-09-07 |
 | learn-skills.dev version manifest | https://raw.githubusercontent.com/NeverSight/learn-skills.dev/main/data/version.json | tested | Freshness timestamps, file hashes, and generated artifact inventory; checked 2026-09-06 |
 | learn-skills.dev data README | https://raw.githubusercontent.com/NeverSight/learn-skills.dev/main/README.md | docs | Documents generated indexes, descriptions, feeds, and raw/CDN consumption; checked 2026-09-06 |
