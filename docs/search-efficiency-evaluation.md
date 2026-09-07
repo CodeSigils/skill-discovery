@@ -871,6 +871,42 @@ development branches, PRs, and deploy requests when authorized by its safety
 model. No CLI authentication, database access, mutation, or installation was
 performed during this audit.
 
+## Source audit: jasong98 Python coding skill (2026-09-07)
+
+The canonical [`JasonG98/code-skills`](https://github.com/JasonG98/code-skills/tree/fdb79f786fc058cd5331ce2d470302c1e68f2bd7)
+repository was inspected at commit `fdb79f786fc058cd5331ce2d470302c1e68f2bd7`.
+GitHub reports one star, no forks, no declared repository license, and a last
+push on 2026-06-13. The `skills/python-coding/` payload contains a concise
+Chinese-language core skill plus four substantial references for style,
+review, design patterns, and refactoring.
+
+Strengths include correctness-before-optimization, project-style alignment,
+modern type-annotation examples, resource cleanup, concrete review checklists,
+and explicit security/dependency checks. The payload is directly relevant to
+general Python coding and review requests.
+
+Qualifications:
+
+- The repository has no declared license and no visible tests or CI workflow in
+  the inspected tree, so its rules are static guidance rather than a validated
+  quality gate.
+- The Chinese-only prose may reduce portability for English-language workflows
+  unless the agent can reliably interpret it.
+- Hard limits such as “functions ≤60 lines” and “parameters ≤5” are useful
+  heuristics, not correctness rules; blindly applying them can cause needless
+  refactoring. The design-pattern reference is large enough to encourage
+  speculative abstraction when simpler code would be better.
+- Some examples (such as a module-level database URL in the style guide) need
+  contextual review against the skill’s own configuration and secret-handling
+  advice.
+
+Classify this as a **conditional recommendation** for Python coding guidance:
+prefer the MIT-licensed `ludo-technologies/python-best-practices` collection for
+English, rule-oriented standards and the local `py-review` router for focused
+review routing. Use this candidate when Chinese guidance or its specific
+refactoring/design references match the user’s needs. No installation or
+execution was performed.
+
 ## Source audit: Excalidraw diagram skill (2026-09-07)
 
 The supplied [`coleam00/excalidraw-diagram-skill`](https://github.com/coleam00/excalidraw-diagram-skill/tree/8646fcc9f74f38539c6cdb4c969723336a96ddcd)
