@@ -570,6 +570,19 @@ links explicit security/roles, authentication, SSL, RLS, backup, transaction,
 and connection-pooling references, all present at that revision. It is a
 conditional-to-direct fit depending on whether “safety” means database design
 review or operational changes; no mutation should be implied.
+The live [skills.sh listing](https://www.skills.sh/neondatabase/postgres-skills/postgres-best-practices)
+reported 1.2K installs on 2026-09-07 (the requester reported an earlier 1.1K
+snapshot). This is popularity context only and is not evidence of safety or
+quality.
+
+The requester also supplied the official
+[`planetscale-mcp-agent-operating-model`](https://www.learn-skills.dev/en/skills/planetscale/skills/planetscale-mcp-agent-operating-model)
+listing as an alternative. The local catalog metadata reports 1,128 installs
+and `isOfficial: true`, but the corresponding `SKILL.md` was absent from the
+available cache and the page returned HTTP 429 during inspection. It is
+therefore inspection-blocked: treat the install count and official flag as
+discovery metadata only, and do not recommend installation until the canonical
+payload, permissions, references, and current revision can be inspected.
 
 For brainstorming, the canonical [`iurysza/agent-skills` brainstorming
 skill](https://github.com/iurysza/agent-skills/tree/f5d5de34a8ef4437ea705dcbdb80f23ed83e192e/skills/brainstorming)
