@@ -103,5 +103,3 @@ runtime instructions.
       environment state outside that surface.
 - [x] Assessment gateway is bounded to static, read-only analysis; runtime evaluation
       is opt-in, isolated, and explicitly out of the current shipped payload.
-
-Last reviewed: 2026-09-05.
