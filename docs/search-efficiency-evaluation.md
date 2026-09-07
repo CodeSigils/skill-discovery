@@ -90,6 +90,23 @@ are not query-result evidence. No candidate was installed or executed.
    pilot measured retrieval signals only. The next experiment should inspect a
    small sample of returned candidates and record user/task fit.
 
+### Broad-query correction (2026-09-07)
+
+The `q=python` catalog query was compared with the narrower phrase queries used
+in the initial Python-source pilot. The current generated index contained 756
+lexical matches for `python`, compared with 12 for `python coding`, 10 for
+`python development`, and 16 for `python best practices`. The earlier reports
+showed bounded shortlists and did not represent catalog totals. Future discovery
+must report both values and use the broad domain query as the first indication
+before applying intent-specific refinements.
+
+The resulting source order is: local search → learn-skills.dev broad retrieval
+→ skills.sh/other providers → canonical repository inspection → recommendation.
+The catalog remains a discovery signal, not quality proof. No stable public
+learn-skills.dev search API contract has been verified; generated JSON/search
+artifacts may be consumed only after checking their documented schema and
+freshness metadata at query time.
+
 ## Bounded task-fit pilot (2026-09-06)
 
 To make the next experiment concrete, five representative requests were run
@@ -1186,3 +1203,10 @@ architecture requests, subject to repository-read and file-write authorization.
 For general architecture diagrams, prefer the offline HTML/SVG system-design
 candidate; keep Excalidraw lower priority until its renderer dependency issue
 is resolved.
+
+Maintainer usefulness scores for the Python-source comparison: local
+`py-review` **3/3** for focused review routing; `ludo-technologies` **2/3** for
+general standards with contextual caveats; and `jasong98/code-skills` **1/3**
+for the default portable workflow because of licensing, language, validation,
+and prescriptive-rule limitations. These are maintainer assessments, not user
+acceptance ratings.

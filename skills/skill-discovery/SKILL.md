@@ -38,6 +38,10 @@ Extract:
 
 Create two or three primary search terms, then add common aliases and acronyms.
 Keep the original task as the relevance test; a broad domain match is not enough.
+For a broad domain request (for example, `python`), run the single-domain search
+as the first catalog query before applying narrower AND refinements. Keep the
+provider's total match count separate from the bounded shortlist shown to the
+user; never describe a top-N shortlist as the catalog total.
 
 ### 2. Search installed and local skills
 
@@ -89,14 +93,13 @@ plain-language stale/unknown flag for each serious candidate.
 
 ### 4. Search external sources
 
-Widen the search in this order:
+Widen the search in this order after local discovery:
 
-1. the client's documented catalog or curated source;
-2. learn-skills.dev's documented structured feed/API for the first broad relevance indication;
-3. skills.sh directly when its installed CLI or authenticated API is available;
-4. authenticated source-host search;
-5. marketplace browser search;
-6. general web research and vendor documentation.
+1. learn-skills.dev's documented generated feed or structured data for the first broad relevance indication;
+2. skills.sh directly when its installed CLI or authenticated API is available;
+3. other documented catalogs or authenticated source-host search;
+4. marketplace browser search;
+5. general web research and vendor documentation.
 
 Use only interfaces documented by their provider. An undocumented endpoint that
 currently returns data is a legacy observation, not a stable contract. Read
@@ -121,9 +124,12 @@ full result count and status in notes without reproducing a long undifferentiate
 result list in the recommendation.
 
 Treat learn-skills.dev's titles, descriptions, freshness, and trending fields as
-retrieval signals only. They help prioritize which candidates to inspect first;
-they do not establish quality, safety, compatibility, or user satisfaction.
-Always resolve and inspect the canonical source before recommending a result.
+retrieval signals only. Its generated JSON/search shards are a broad discovery
+source, not a quality authority; no stable public search API contract has been
+verified. Check the current schema, freshness metadata, and access path at use
+time. These signals help prioritize which candidates to inspect first; they do
+not establish quality, safety, compatibility, or user satisfaction. Always
+resolve and inspect the canonical source before recommending a result.
 
 ### 5. Inspect complete candidates
 

@@ -8,9 +8,9 @@ documentation when a query depends on exact authentication or response fields.
 Do not query every provider for every request. Search applicable local roots
 first, then choose the smallest useful set of external sources:
 
-1. skills.sh directly when its installed CLI or authenticated API is available;
-2. learn-skills.dev's documented structured feed/API for the first broad relevance indication;
-3. authenticated GitHub search for canonical source discovery;
+1. learn-skills.dev's documented generated feed or structured data for the first broad relevance indication;
+2. skills.sh directly when its installed CLI or authenticated API is available;
+3. other documented catalogs or authenticated GitHub search for canonical source discovery;
 4. browser or general web search as a final fallback.
 
 Record each provider's timestamp, authentication state, result count, and failure
@@ -22,10 +22,12 @@ Use learn-skills.dev metadata and trending fields to prioritize inspection, not
 to certify a candidate. Popularity is a first indication of what may be useful,
 never evidence of quality, safety, compatibility, or user satisfaction.
 
-The learn-skills.dev repository publishes generated JSON/RSS data, but this
-project has not adopted an undocumented endpoint as a stable API contract. Use a
-feed or API only when its current schema, freshness metadata, and access limits
-are documented and verified at use time.
+The learn-skills.dev repository publishes generated JSON/RSS data. Use those
+artifacts for broad retrieval when their current schema and freshness metadata
+are verified at use time. This project has not verified a stable public search
+API contract, so do not scrape the website or rely on an observed undocumented
+endpoint. Preserve the provider's total result count separately from the
+shortlist returned for inspection.
 
 ## skills.sh
 

@@ -229,6 +229,7 @@ When updating this document:
 | 2026-09-06 | skills.sh detail page, repository page, install command, and badge endpoint verified for `codesigils/skill-discovery` | Indexed; badge returned SVG; install path confirmed |
 | 2026-09-06 | skills.sh API docs and anonymous search checked; learn-skills.dev `data/version.json` and README checked | API auth/schema confirmed; feed artifacts and freshness manifest available; no stable learn-skills search API verified |
 | 2026-09-06 | Inspected learn-skills.dev search shards, `description_en.txt`, cached `SKILL.md`, and `version.json` consumption paths | Generated catalog data is agent-readable but not an auto-loaded skill; canonical payload review remains required |
+| 2026-09-07 | Compared broad `q=python` retrieval with phrase queries | Current generated index contained 756 `python` matches; `python coding`, `python development`, and `python best practices` returned 12, 10, and 16 lexical matches. Earlier three-item reports were bounded shortlists, not catalog totals. Use local search → learn-skills.dev broad retrieval → skills.sh/other providers → canonical inspection → recommendation. No stable public search API contract was verified. |
 
 ## Sources
 

@@ -33,16 +33,18 @@ This skill does not compete by building another catalog. It adds an
 evidence-backed assessment layer:
 
 1. Search local skills first.
-2. Use `learn-skills.dev` as the first broad relevance indication, then skills.sh
-   and other providers as candidate sources.
+2. Use `learn-skills.dev` for broad retrieval, then skills.sh and other providers
+   as candidate sources.
 3. Inspect the canonical repository and exact revision.
 4. Evaluate compatibility, permissions, provenance, and maintenance.
 5. Recommend or reject with explicit evidence.
 6. Ask separately before installation.
 
-Learn-skills.dev titles, freshness, and trending data are retrieval signals only;
-the canonical repository and exact revision must still be inspected before a
-recommendation.
+Learn-skills.dev generated feeds and JSON/search data are broad discovery
+signals only. We have not verified a stable public search API contract; use the
+documented artifacts and freshness metadata at query time, and inspect the
+canonical repository and exact revision before a recommendation. Report the
+provider's total matches separately from the small shortlist selected for review.
 
 This repository contains a methodology, not a static skill collection. Catalog
 sizes, client support, endpoints, and install commands change frequently, so the
