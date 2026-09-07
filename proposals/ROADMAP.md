@@ -58,6 +58,16 @@ fixture, and reviewable implementation boundary.
 
 ## Active deferred decisions
 
+### Maintenance-mode decision (2026-09-07)
+
+The requester considers the current skill complete and does not want further
+polish. Keep the shipped workflow stable and make only maintenance, drift, or
+concrete failure fixes. All future capabilities below—provider orchestration,
+assessment gateway stages, runtime evaluation, registry integration, caching,
+and a possible language migration—remain under consideration for a future
+evaluation only. Reopen them only when real usage supplies a specific failure,
+measurable benefit, bounded fixture, and maintenance owner.
+
 ### Official format conformance gate
 
 Implemented: run the official `skills-ref validate` command from CI and the
