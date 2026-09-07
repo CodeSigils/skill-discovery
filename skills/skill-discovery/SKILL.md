@@ -95,10 +95,14 @@ plain-language stale/unknown flag for each serious candidate.
 
 Widen the search in this order after local discovery:
 
-1. learn-skills.dev's documented generated feed or structured data for the first broad relevance indication;
+1. learn-skills.dev's documented generated artifacts for the first broad
+   relevance indication. Prefer `data/version.json` plus
+   `data/skills_search_index*.json` or `skills_index.json`; search IDs, titles,
+   and descriptions and record the artifact timestamp and total count;
 2. skills.sh directly when its installed CLI or authenticated API is available;
 3. other documented catalogs or authenticated source-host search;
-4. marketplace browser search;
+4. the learn-skills.dev UI or other marketplace browser search when human
+   browsing is useful or structured artifacts are unavailable;
 5. general web research and vendor documentation.
 
 Use only interfaces documented by their provider. An undocumented endpoint that
@@ -115,6 +119,10 @@ installations, trend, newest, name, or favorites). Assume the default may be
 installation-sorted and popularity-biased; use it to widen retrieval, not to
 select a winner. Inspect multiple candidates and rank by task fit and canonical
 evidence.
+
+Do not make the learn-skills.dev UI URL a required machine-search step. It is a
+human-facing fallback, not a stable search API. If a documented provider API is
+available, use it; never invent or scrape an undocumented endpoint.
 
 For remote sources, use documented provider interfaces and bounded, read-only
 requests. Use a 15-second request timeout and a total external-search budget of

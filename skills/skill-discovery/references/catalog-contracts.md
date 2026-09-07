@@ -35,6 +35,13 @@ API contract, so do not scrape the website or rely on an observed undocumented
 endpoint. Preserve the provider's total result count separately from the
 shortlist returned for inspection.
 
+For agent retrieval, fetch `data/version.json` and the compact
+`data/skills_search_index*.json` shards (or `data/skills_index.json`) before
+considering the human-facing `/en/skills?q=...` page. Search IDs, titles, and
+descriptions in those artifacts, preserve their timestamp and total count, and
+use the UI only as a human-browsing fallback. If the provider later documents a
+machine API, prefer that contract; do not infer one from frontend requests.
+
 The canonical publisher is
 <https://github.com/NeverSight/learn-skills.dev>. Prefer its generated
 `data/skills_search_index*.json` shards, which inline extracted English and
