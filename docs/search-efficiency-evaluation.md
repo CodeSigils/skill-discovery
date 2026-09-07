@@ -770,3 +770,34 @@ main risks are breadth/noise, duplicates, client-specific bundles, and the
 additional installer/MCP control plane. Always pin a selected skill to its
 source revision and inspect the individual payload before installation.
 No installation, MCP setup, or candidate execution occurred.
+
+## Source audit: PlanetScale Database Skills description (2026-09-07)
+
+The supplied description was compared with the canonical
+[`planetscale/skills`](https://github.com/planetscale/skills/tree/999045cfbad79222f38a99599eb96bc736feabee)
+pack at commit `999045cfbad79222f38a99599eb96bc736feabee` (MIT). Several
+claims need correction:
+
+- `planetscale/agent-skill` is not the current repository. The documented
+  Skills CLI command is `npx skills add planetscale/skills -g -y`; the setup
+  script and manual sibling-directory routes are also supported.
+- PlanetScale is not limited to a single “MySQL-compatible” workflow in this
+  pack. The skills explicitly cover both Vitess and Postgres, with separate
+  safety reviews and operating guidance.
+- Branches, PRs, and deploy requests are the reviewable path, but “one branch
+  for every feature” and “never touch production schema directly” are useful
+  policy defaults, not universal platform guarantees. The pack permits
+  development-branch DDL and review-gated deploy requests; direct production
+  writes/deploys remain forbidden by default.
+- The sample `2ms vs 8s at 10M rows` query estimate is not supported by an
+  inspected benchmark. Keep the index and projection advice as a hypothesis to
+  validate with `EXPLAIN`, representative data, and measured Insights results.
+
+The pack is a strong conditional recommendation for database safety and
+reviewable schema workflows. Its most valuable behavior is evidence-backed
+assessment, explicit operation classes, rollback/approval gates, and
+read-back verification—not automatic scaling guarantees. It requires a
+PlanetScale account/CLI or MCP access for live operations and can create
+development branches, PRs, and deploy requests when authorized by its safety
+model. No CLI authentication, database access, mutation, or installation was
+performed during this audit.
