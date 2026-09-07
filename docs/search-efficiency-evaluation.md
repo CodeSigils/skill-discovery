@@ -632,6 +632,11 @@ undefined. The renderer therefore cannot reach its own readiness signal in this
 environment, which is a concrete integration failure rather than merely a
 slow request.
 
+A final browser trace identified the failing import precisely:
+`https://esm.sh/@braintree/sanitize-url@6.0.2/es2022/dist/constants.mjs` returned
+404 and the request was aborted. This dependency-level failure prevents the
+Excalidraw module from defining its readiness signal in the tested renderer.
+
 ## Canonical Claude Code frontend-design check (2026-09-07)
 
 The canonical [`anthropics/claude-code` frontend-design plugin](https://github.com/anthropics/claude-code/tree/ab9b2cf7bb9e4f98ff264c07a22e46d83c29c558/plugins/frontend-design)
