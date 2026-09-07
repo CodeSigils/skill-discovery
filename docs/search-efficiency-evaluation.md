@@ -871,3 +871,30 @@ the unlicensed repository, runtime network dependency, browser setup, output
 side effects, and the need for human review of both accuracy and sensitive
 content. No installation, dependency setup, renderer execution, or diagram
 generation was performed during this audit.
+
+## Source audit: MCP Market skills leaderboard (2026-09-07)
+
+The supplied [MCP Market skills leaderboard](https://mcpmarket.com/tools/skills/leaderboard)
+is a useful additional candidate source. The public page labels itself “Top
+Agent Skills” and lists up to 100 entries with category labels and compact
+counts (for example, the listed diagram maker is ranked #8). It advertises
+skills for Claude, Claude Code, ChatGPT, and Codex, but the page is a rendered
+directory rather than a canonical source repository for the entries.
+
+The displayed counts and ordering are not independently interpretable as user
+ratings. The page does not disclose, in the inspected public content, whether
+they represent unique users, views, installs, downloads, votes, or an
+algorithmic popularity score; it also does not provide a review sample,
+timestamp policy, identity/anti-abuse controls, or a reproducible ranking
+formula. Therefore the user-rating rationale cannot be verified from this
+source. Counts and rank should be treated as discovery signals only, not as
+quality, safety, compatibility, maintenance, or user-satisfaction evidence.
+
+For `skill-discovery`, use MCP Market as a broad retrieval fallback after local
+search and stronger provider sources. For any candidate, resolve the linked
+canonical repository or package, pin an exact revision, inspect the complete
+`SKILL.md` and referenced files, check license/provenance/maintenance, and
+evaluate permissions and side effects before making a recommendation. Do not
+install from a leaderboard entry solely because it is highly ranked, and do not
+claim its popularity is validated without an explicit methodology. No account,
+installation, or candidate execution was performed during this inspection.
