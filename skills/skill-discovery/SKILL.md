@@ -110,6 +110,12 @@ Record each source searched, the query, the timestamp, and whether the source wa
 unavailable, unauthenticated, stale, empty, or successful. Do not silently skip a
 stage because tooling or network access is missing.
 
+When a catalog UI exposes sorting, record the selected mode (for example,
+installations, trend, newest, name, or favorites). Assume the default may be
+installation-sorted and popularity-biased; use it to widen retrieval, not to
+select a winner. Inspect multiple candidates and rank by task fit and canonical
+evidence.
+
 For remote sources, use documented provider interfaces and bounded, read-only
 requests. Use a 15-second request timeout and a total external-search budget of
 two minutes unless the user explicitly authorizes a longer investigation. Do not

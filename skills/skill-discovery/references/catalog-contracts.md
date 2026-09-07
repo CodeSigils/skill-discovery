@@ -22,6 +22,12 @@ Use learn-skills.dev metadata and trending fields to prioritize inspection, not
 to certify a candidate. Popularity is a first indication of what may be useful,
 never evidence of quality, safety, compatibility, or user satisfaction.
 
+The Learn Skills UI exposes `Installations`, `Installations Trend`, `Newest`,
+`Name`, and `Favorites` sorting, and its top-skills view is installation-sorted
+by default. Record the observed sort mode for UI searches. Treat a default or
+explicit installation sort as a popularity-biased shortlist: inspect several
+task-matching candidates and never describe the first result as the best skill.
+
 The learn-skills.dev repository publishes generated JSON/RSS data. Use those
 artifacts for broad retrieval when their current schema and freshness metadata
 are verified at use time. This project has not verified a stable public search

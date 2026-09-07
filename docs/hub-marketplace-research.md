@@ -254,6 +254,7 @@ When updating this document:
 | 2026-09-06 | Inspected learn-skills.dev search shards, `description_en.txt`, cached `SKILL.md`, and `version.json` consumption paths | Generated catalog data is agent-readable but not an auto-loaded skill; canonical payload review remains required |
 | 2026-09-07 | Compared broad `q=python` retrieval with phrase queries | Current generated index contained 756 `python` matches; `python coding`, `python development`, and `python best practices` returned 12, 10, and 16 lexical matches. Earlier three-item reports were bounded shortlists, not catalog totals. Use local search → learn-skills.dev broad retrieval → skills.sh/other providers → canonical inspection → recommendation. No stable public search API contract was verified. |
 | 2026-09-07 | Queried broad `q=golang` search and synchronized generated index | The local snapshot contained 158 lexical `golang` matches; leading results were concentrated in `samber/cc-skills-golang`. Direct website access returned HTTP 429 in this environment. Treat generated artifacts as the usable broad-retrieval fallback and verify schema/freshness at query time. |
+| 2026-09-07 | Checked Learn Skills `q=video` behavior and homepage controls | UI exposes Installations, Installations Trend, Newest, Name, and Favorites sorting; top skills are explicitly sorted by installs. Treat default query ordering as popularity-biased retrieval, not quality ranking. |
 
 ## Sources
 
