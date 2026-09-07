@@ -1377,6 +1377,10 @@ writing a second beat. This passes the second interaction boundary. Full
 user-driven continuation remains intentionally untested until a user chooses
 the next beat.
 
+The requester accepted both pilot results as useful on 2026-09-07. This closes
+the bounded pilot gate, but does not turn static or manual checks into universal
+quality proof.
+
 ### Decision
 
 Use `writing-great-skills` as an occasional authoring checklist when editing

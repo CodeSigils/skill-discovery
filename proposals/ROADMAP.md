@@ -413,6 +413,10 @@ installation implicitly mutating.
   next choices without writing ahead. The Codex subprocess smoke run was
   blocked by the reviewer environment’s read-only app-server state; do not
   treat that infrastructure limitation as candidate behavior evidence.
+- The requester accepted both follow-up pilot results as useful on 2026-09-07.
+  Close this evaluation gate and keep the implementation in maintenance mode;
+  acceptance does not justify automatic execution, provider adapters, ranking,
+  caching, or a language rewrite.
 
 ### 2026-09-06 — Proportioned cross-platform CI
 
