@@ -613,6 +613,23 @@ needed canonical/web fallback. Provisional usefulness scores are 2, 2, 3, and
 execution, deployment, database mutation, or external project creation
 occurred.
 
+## Canonical Claude Code frontend-design check (2026-09-07)
+
+The canonical [`anthropics/claude-code` frontend-design plugin](https://github.com/anthropics/claude-code/tree/ab9b2cf7bb9e4f98ff264c07a22e46d83c29c558/plugins/frontend-design)
+was checked at commit `ab9b2cf7bb9e4f98ff264c07a22e46d83c29c558`. The skill is
+located at `plugins/frontend-design/skills/frontend-design/SKILL.md`, alongside
+Claude plugin metadata and a README. Its 9,390-byte payload has the same
+SHA-256 as the previously reviewed `anthropics/skills` frontend-design source,
+so there is no substantive instruction drift.
+
+The plugin is Claude Code-specific and is not a drop-in Codex installation
+without adapting the plugin wrapper. More importantly, the skill frontmatter
+says `license: Complete terms in LICENSE.txt`, but the current plugin tree does
+not contain `LICENSE.txt`; the standalone `anthropics/skills` distribution does.
+Treat the Claude Code plugin as conditionally portable and resolve the license
+file before redistribution. No installation, execution, or code generation
+was performed.
+
 ## Real-task observations: additional trending selections (2026-09-07)
 
 The requester selected three more topics from learn-skills.dev's trending view.
