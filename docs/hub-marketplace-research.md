@@ -170,6 +170,12 @@ should not be used as a complete search index. `@main` CDN URLs are mutable;
 record `data/version.json` and retrieval time for provenance. The provider's
 daily-update statement is a claim to re-check, not a freshness guarantee.
 
+The upstream README also documents that GitHub `SKILL.md` enrichment is limited
+to top-list entries by default, with a token/full-sync option for broader
+coverage. Evaluation must therefore record cached-payload availability as a
+fetch-status signal. Missing cached markdown is not evidence that a candidate is
+invalid; canonical source inspection remains the deciding gate.
+
 ### Provider-orchestration evidence
 
 | Question | Evidence | Conclusion |

@@ -131,6 +131,12 @@ time. These signals help prioritize which candidates to inspect first; they do
 not establish quality, safety, compatibility, or user satisfaction. Always
 resolve and inspect the canonical source before recommending a result.
 
+Treat cached-payload availability as a separate coverage signal. The provider's
+README says it fetches `SKILL.md` files by default only for top-list entries;
+missing cached markdown means “not fetched” or rate-limited, not “invalid.”
+Record provider/fetch status and continue to canonical source inspection when a
+candidate is otherwise relevant.
+
 ### 5. Inspect complete candidates
 
 Search-result metadata is not enough. For each serious candidate:

@@ -45,6 +45,13 @@ immutable revision. The README's “data updated daily” statement is a provide
 claim to verify at use time. Ignore unrelated promotional links in catalog
 documentation.
 
+The crawler's default GitHub enrichment is coverage-biased: its README says it
+fetches cached `SKILL.md` files for top-list entries unless a full sync is
+requested. A missing `skillMdPath` or description file therefore records a
+provider fetch/coverage limitation, not a failed compatibility or safety check.
+Keep that status distinct and inspect the canonical repository when the
+candidate remains relevant.
+
 ## skills.sh
 
 For interactive/local discovery, use an already-installed official CLI when one
