@@ -36,6 +36,15 @@ translated descriptions, over recursively scanning `data/skills-md/**` text
 files. Description text is cached metadata: use it to retrieve candidates, then
 inspect the current source repository and exact revision before recommending.
 
+The publisher's README documents raw GitHub and jsDelivr URLs for
+`data/skills.json` and `data/feed.xml`. `skills.json` is the complete leaderboard
+payload; RSS/feed data is a small top-list subscription and is not a complete
+search source. CDN URLs pinned to `@main` are mutable, so record the retrieval
+timestamp and `data/version.json` metadata rather than treating a URL as an
+immutable revision. The README's “data updated daily” statement is a provider
+claim to verify at use time. Ignore unrelated promotional links in catalog
+documentation.
+
 ## skills.sh
 
 For interactive/local discovery, use an already-installed official CLI when one

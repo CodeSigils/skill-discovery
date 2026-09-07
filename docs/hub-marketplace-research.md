@@ -163,6 +163,13 @@ the bounded search shards rather than scan the millions of generated text
 files. These text artifacts are cached retrieval metadata; they can be stale
 and do not replace reading the canonical repository's current `SKILL.md`.
 
+The publisher README also documents raw GitHub/jsDelivr access to
+`data/skills.json` and an RSS feed. The JSON is suitable for complete leaderboard
+retrieval, while the RSS/feed is intentionally only a top-list subscription and
+should not be used as a complete search index. `@main` CDN URLs are mutable;
+record `data/version.json` and retrieval time for provenance. The provider's
+daily-update statement is a claim to re-check, not a freshness guarantee.
+
 ### Provider-orchestration evidence
 
 | Question | Evidence | Conclusion |
