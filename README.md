@@ -25,9 +25,9 @@ time rather than cached.
 [`learn-skills.dev`](https://www.learn-skills.dev) is a catalog crawler and
 presentation layer with broader coverage and a stronger user-facing search,
 copy, and sharing experience. Its primary mechanism is provider aggregation and
-ranking; the local data snapshot inspected on 2026-09-06 was dated 2026-08-25,
-so its freshness depends on the crawler workflow and must be checked at use
-time.
+ranking; the synchronized data snapshot inspected on 2026-09-07 was generated
+that day, but freshness still depends on the crawler workflow and must be
+checked at use time.
 
 This skill does not compete by building another catalog. It adds an
 evidence-backed assessment layer:
@@ -74,11 +74,12 @@ The workflow guides the agent to:
    separately record each candidate's reviewed revision, repository update date,
    license, and stale/unknown status. A skill indexed six months ago with no
    release update is flagged, not silently trusted.
-4. **Search externally** — query agentskills.io, GitHub topic search, and
-   marketplace APIs. Each source is tried with documented fallbacks; no single
-   outage blocks the workflow. Keep each source to a ranked shortlist of about
-   five serious candidates, use bounded requests, and record unavailable
-   inspection separately.
+4. **Search externally** — use learn-skills.dev for broad retrieval, then
+   skills.sh and other documented catalogs or source-host search as applicable.
+   Each source is tried with documented fallbacks; no single outage blocks the
+   workflow. Keep each source to a ranked shortlist of about five serious
+   candidates, use bounded requests, and record unavailable inspection
+   separately.
 5. **Inspect candidates** — for each serious match, read the full payload:
    `SKILL.md`, any scripts or templates, dependency declarations, license,
    provenance, and maintenance activity.
@@ -280,7 +281,7 @@ runtime behavior, safety, or skills.sh indexing.
 
 | Check | Trigger | Action |
 |---|---|---|
-| Payload, documentation, evaluation fixtures, and dependency validation | Every push and pull request | CI reports failures that must be fixed before merge. |
+| Payload, documentation, evaluation fixtures, and dependency validation | Every push and pull request | CI reports failures; required PR checks are relaxed during solo evaluation, so review failures before merging. |
 | External contract reachability and URL drift | Weekly schedule or manual dispatch | CI refreshes the evidence manifest through bounded checks and opens a PR when changes need review. |
 | Research expiry and reference accuracy | Weekly schedule or manual review | A maintainer reviews expiring research and updates dated references or the affected guidance. |
 | Internal link rot, reference integrity, SKILL.md budget | Weekly schedule or manual dispatch | Detect-only checks warn when markdown links break, reference files go missing, or the skill payload exceeds budget. Known warnings are suppressed by the advisory baseline. |
