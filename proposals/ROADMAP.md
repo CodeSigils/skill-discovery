@@ -122,6 +122,19 @@ When real usage shows that discovery is too slow, optimize in this order:
 These are evaluation priorities, not a mandate to add a catalog, cache, or
 second implementation now.
 
+### Diagram-source evaluation
+
+Completed 2026-09-07. For diagram requests, use catalog metadata only to find
+candidates, then inspect and smoke-test the canonical source. Current evidence
+supports this capability-scoped order: `proyecto26/system-design-skills` for
+general offline HTML/SVG architecture diagrams; AWS’s `aws-architecture-diagram`
+for AWS-specific draw.io diagrams; Lanshu for explicitly animated Excalidraw-
+style output (maintainer usefulness 2/3 because of readability adaptation).
+The `coleam00` Excalidraw renderer remains conditional because its pinned
+`esm.sh` dependency failed to load in the isolated test. Do not hard-code these
+repositories into runtime ranking; re-check revision, license, dependencies,
+and output quality at query time.
+
 ### Provider orchestration
 
 Documented as the next future capability: select the smallest useful provider
