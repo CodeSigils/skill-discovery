@@ -1007,6 +1007,15 @@ offline-first workflow; use AWS’s architecture skill instead when the request
 is specifically AWS infrastructure. No runtime smoke test was run because this
 is a source-template evaluation rather than an installed candidate.
 
+Real-task smoke test: a redacted `skill-discovery` provider-search workflow was
+rendered with Lanshu’s bundled renderer. `--verify --check` passed and produced
+PNG, GIF, and Excalidraw artifacts with 41 animated frames and nonzero motion.
+Visual inspection found the workflow stages, evidence layers, feedback loop,
+and authorization boundary coherent; the fixed full-canvas layout makes some
+title/body text small, so a real user should review readability and may need a
+more focused diagram. No project files, credentials, or external services were
+used.
+
 An isolated Lanshu smoke test using its bundled `default-spec.json` passed. The
 renderer produced PNG, GIF, and Excalidraw outputs; `--verify` observed 41 GIF
 frames at 20 FPS with nonzero frame differences, and `--check` returned
