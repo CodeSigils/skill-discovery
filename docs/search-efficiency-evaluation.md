@@ -1007,6 +1007,13 @@ offline-first workflow; use AWS’s architecture skill instead when the request
 is specifically AWS infrastructure. No runtime smoke test was run because this
 is a source-template evaluation rather than an installed candidate.
 
+An isolated Lanshu smoke test using its bundled `default-spec.json` passed. The
+renderer produced PNG, GIF, and Excalidraw outputs; `--verify` observed 41 GIF
+frames at 20 FPS with nonzero frame differences, and `--check` returned
+`ok: true` for dimensions, motion, unique IDs, font family, and empty embedded
+files. This validates the bundled renderer contract only, not diagram content
+quality for arbitrary user specifications.
+
 ## Source audit: Lanshu animated architecture diagram (2026-09-07)
 
 The canonical [`cclank/lanshu-animated-architecture-diagram`](https://github.com/cclank/lanshu-animated-architecture-diagram/tree/c17f5b4e5de99d3603b364530ad04d930d038d24)
