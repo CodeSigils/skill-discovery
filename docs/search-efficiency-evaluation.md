@@ -1007,6 +1007,31 @@ offline-first workflow; use AWS’s architecture skill instead when the request
 is specifically AWS infrastructure. No runtime smoke test was run because this
 is a source-template evaluation rather than an installed candidate.
 
+## Source audit: Lanshu animated architecture diagram (2026-09-07)
+
+The canonical [`cclank/lanshu-animated-architecture-diagram`](https://github.com/cclank/lanshu-animated-architecture-diagram/tree/c17f5b4e5de99d3603b364530ad04d930d038d24)
+repository was inspected at commit `c17f5b4e5de99d3603b364530ad04d930d038d24`.
+GitHub reports MIT licensing, 957 stars, and a push on 2026-09-03. It ships a
+root `SKILL.md`, a bundled Pillow renderer, a default spec, previews, and tests.
+
+This is a conditional option for users explicitly requesting animated,
+hand-drawn Excalidraw-style architecture or process diagrams. Unlike the
+tested `coleam00` renderer, its renderer is bundled and its `--verify`/`--check`
+paths validate frame differences, output dimensions, GIF metadata, Excalidraw
+IDs, and font contracts. It requires only Pillow and writes three artifacts
+(Excalidraw, PNG, GIF) to a user-selected output directory.
+
+The renderer executes local Python and writes files, so it remains an explicit
+execution/mutation step rather than a read-only discovery operation. Its fixed
+Lanshu visual grammar and three-card layout are less suitable for arbitrary
+system topologies than `proyecto26`; output should receive content and visual
+review. No installation, rendering, or external mutation was performed.
+
+Classify it as a **conditional recommendation** for animated diagram requests:
+prefer `proyecto26` for general offline architecture diagrams, AWS’s skill for
+AWS infrastructure, and Lanshu only when its animation/style and artifact
+requirements are actually desired.
+
 An isolated browser smoke test of the `proyecto26` template passed: the local
 HTML produced one SVG, rendered 687 characters of visible body text, and
 reported no page errors. The test exercised only the inline base diagram; it did
