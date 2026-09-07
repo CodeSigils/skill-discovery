@@ -380,6 +380,11 @@ installation implicitly mutating.
   and parallel-sub-agent prerequisites exist; otherwise it is conditional 2/3.
   User acceptance remains pending, so no ranking or provider adapter is
   justified yet.
+- A synthetic smoke test at fixed point `d864511` confirmed the candidate's
+  fixed-point gate, separate Standards/Spec reporting, and correct no-spec
+  handling. Parallel sub-agent behavior was not executed in the isolated test,
+  so the result validates the report contract only; user acceptance remains
+  pending.
 
 ### 2026-09-06 — Proportioned cross-platform CI
 

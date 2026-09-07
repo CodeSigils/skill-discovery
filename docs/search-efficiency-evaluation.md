@@ -151,6 +151,22 @@ client. Static fit for a request to review a diff is **3/3 when those project
 and client prerequisites exist**, otherwise **conditional 2/3**. No scripts were
 executed and no installation occurred; user acceptance remains unmeasured.
 
+### Behavioral smoke test: code-review candidate (2026-09-07)
+
+The candidate was tested in an isolated temporary Git repository containing a
+two-commit Python change. With fixed point `d864511`, it correctly resolved the
+ref, confirmed a non-empty three-dot diff, and produced separate `Standards`
+and `Spec` sections. It reported zero Standards findings and skipped the Spec
+axis because no issue tracker or specification was available, as required by
+its instructions. No files, network resources, credentials, or candidate
+scripts were accessed.
+
+Parallel sub-agent behavior was deliberately emulated rather than executed in
+this smoke test. The result validates the gate and report contract, not the
+delegation behavior. Static fit is **3/3** when the client provides the
+issue-tracker setup and sub-agents; otherwise **conditional 2/3**. User
+acceptance remains unmeasured.
+
 ## Bounded task-fit pilot (2026-09-06)
 
 To make the next experiment concrete, five representative requests were run
