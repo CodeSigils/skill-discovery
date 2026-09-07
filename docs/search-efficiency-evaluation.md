@@ -1036,6 +1036,43 @@ title/body text small, so a real user should review readability and may need a
 more focused diagram. No project files, credentials, or external services were
 used.
 
+## Source audit: ludo-technologies Python best practices (2026-09-07)
+
+The canonical [`ludo-technologies/python-best-practices`](https://github.com/ludo-technologies/python-best-practices/tree/bf64c51d2f4c8255f126c98359bdbcd5e2587b92)
+repository was inspected at commit `bf64c51d2f4c8255f126c98359bdbcd5e2587b92`.
+GitHub reports MIT licensing, 18 stars, 5 forks, and a push on 2026-08-31.
+The `coding-standards` skill contains 26 linked rules across error handling,
+performance, async code, design, documentation, validation, and OOP, with
+consistent metadata and rule templates.
+
+Strengths include narrow rule files, explicit bad/good examples, references to
+Python documentation, and useful cautions such as preserving cancellation and
+inspecting `asyncio.gather` exceptions. The payload is a good checklist source
+for Python implementation and review, and its `paths` frontmatter makes its
+intended activation scope clear.
+
+Qualifications:
+
+- Several performance rules are labeled `CRITICAL` and make broad speed claims
+  (for example, list comprehensions being 1.5–2x faster). These are context-
+  dependent micro-optimizations and must not override readability, profiling,
+  or algorithmic improvements.
+- The Pydantic rule is sensible for untrusted boundary data, but Pydantic is
+  not a universal requirement; standard-library validation or an existing
+  project model may be more appropriate. Preserve the project’s dependency and
+  architecture choices.
+- The repository tree contains no tests or GitHub workflow for the rules in the
+  inspected revision. Treat consistency and examples as static evidence, not a
+  behaviorally validated quality gate.
+- The skill recommends a broad tooling set (`ruff`, `mypy`, `pytest`, `pyscn`,
+  `uv`) that should be adopted incrementally and only when the project benefits.
+
+Classify this as a **conditional-to-direct recommendation** for general Python
+coding standards when the user wants a checklist and accepts project-specific
+adaptation. Prefer the local `py-review` router for focused review routing, and
+use this collection as supplementary guidance rather than an automatic mandate.
+No installation or candidate execution was performed.
+
 Maintainer provisional usefulness for this real-task artifact: **2/3** (useful
 with adaptation). The workflow structure is coherent, but text sizing requires
 focused diagrams or manual refinement. User acceptance remains unknown; this
