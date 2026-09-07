@@ -745,3 +745,28 @@ Claude agent rather than a portable skill; and do not recommend the
 `claude-code-templates` code reviewer until its exact catalog payload and
 revision are available for inspection. Popularity, package availability, and
 installer documentation are not substitutes for source review.
+
+## Source check: Antigravity Awesome Skills (2026-09-07)
+
+The supplied `antigravity-awesome-skills` name resolves to the renamed
+[`sickn33/agentic-awesome-skills`](https://github.com/sickn33/agentic-awesome-skills)
+repository. At commit `b1aebac60a88dffa0f5723cb3816f22cc0af6b13`, GitHub reported
+46,083 stars, 6,737 forks, MIT licensing, and release `v16.9.1`; the README
+registry header reports 2,113 catalog skills. The earlier claim of 22,000+
+stars, 3,800+ forks, and v7.3.0 is stale.
+
+The repository is broad and actively maintained, with a local MCP/catalog,
+plugins, bundles, installers, and many `SKILL.md` files. A raw tree count is
+not a unique-skill count (the current tree contains 6,648 `SKILL.md` paths,
+including variants and nested agents), so “most comprehensive skill
+collection” cannot be established from file count, stars, forks, or the
+README's catalog total. The README itself says the catalog does not certify
+suitability, compatibility, or safety.
+
+For `skill-discovery`, classify it as a high-coverage candidate source and
+assessment surface, not an authority or trust score. Its strongest value is
+structured local search, exact IDs, manifests, and inspectable evidence; its
+main risks are breadth/noise, duplicates, client-specific bundles, and the
+additional installer/MCP control plane. Always pin a selected skill to its
+source revision and inspect the individual payload before installation.
+No installation, MCP setup, or candidate execution occurred.
