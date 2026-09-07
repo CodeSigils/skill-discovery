@@ -153,6 +153,14 @@ Search-result metadata is not enough. For each serious candidate:
    a local listing makes that possible, and label loader verification as
    `verified`, `structural only`, or `unavailable`.
 
+Compare every catalog-declared skill path with the canonical tree at the exact
+reviewed revision. Record `path: present` only when the file exists there. If
+the path is missing, renamed, or only present on another branch, record
+`path: stale` with the missing path and stop the candidate at `inspection
+blocked`; do not recommend or install it from the catalog pointer. Search the
+canonical tree for a replacement path and inspect that replacement as a new
+candidate, preserving the stale-pointer evidence.
+
 Apply a compatibility gate before recommending a candidate: require valid
 `name` and `description` frontmatter, confirm the expected skill location for
 the named client, verify every referenced file exists at the reviewed revision,
@@ -212,9 +220,9 @@ Searched:
 | <source> | <terms> | <UTC timestamp> | <successful/unavailable/etc.> | <count and cap> |
 
 Candidate review:
-| Candidate | Revision/update/license | Freshness | Loader | Gate | Result |
-|---|---|---|---|---|---|
-| <candidate> | <commit/tag/date/license> | <known/stale/unknown> | <status> | <pass/fail> | <fit class> |
+| Candidate | Revision/update/license | Freshness | Path | Loader | Gate | Result |
+|---|---|---|---|---|---|---|
+| <candidate> | <commit/tag/date/license> | <known/stale/unknown> | <present/stale> | <status> | <pass/fail> | <fit class> |
 
 Recommendation: <skill name and source>
 Why it fits: <task-specific evidence>

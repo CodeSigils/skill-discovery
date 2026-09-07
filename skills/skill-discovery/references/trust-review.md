@@ -57,6 +57,9 @@ single safety adjective.
 - Confirm the expected project, user, or admin location for the named client.
 - Verify every relative reference, script, asset, template, and nested file
   exists at the reviewed revision.
+- Compare any catalog-declared skill path with that revision. If it is absent,
+  renamed, or branch-only, record `path: stale`, classify the catalog pointer as
+  `inspection blocked`, and search for a replacement path before evaluating it.
 - Mark platform-specific fields, hooks, or integration instructions as
   extensions rather than silently treating them as portable.
 - Verify the named client's documented loader or local discovery listing when

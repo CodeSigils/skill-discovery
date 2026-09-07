@@ -23,6 +23,18 @@
       "behavior_validation": "partial"
     },
     {
+      "id": "catalog-path-stale",
+      "task": "Find a prose-writing skill",
+      "result": "inspection_blocked",
+      "catalog_freshness": "known",
+      "candidate_revision": "owner/repo@current",
+      "catalog_path": "skills/old-prose/SKILL.md",
+      "canonical_path_status": "stale",
+      "loader_status": "unavailable",
+      "privacy": "not-applicable",
+      "behavior_validation": "not-run"
+    },
+    {
       "id": "resume-cv",
       "task": "Find a resume or CV skill",
       "result": "partial_fit",

@@ -60,9 +60,9 @@ Searched:
 | GitHub code search | table, markdown, formatter | <UTC timestamp> | unavailable | authentication unavailable |
 
 Candidate review:
-| Candidate | Revision/update/license | Freshness | Loader | Gate | Result |
-|---|---|---|---|---|---|
-| owner/repo@formatter | commit <sha>; updated <date>; MIT | known | verified | pass | direct_fit |
+| Candidate | Revision/update/license | Freshness | Path | Loader | Gate | Result |
+|---|---|---|---|---|---|---|
+| owner/repo@formatter | commit <sha>; updated <date>; MIT | known | present | verified | pass | direct_fit |
 
 Recommendation: owner/repo@formatter
 Why it fits: explicitly preserves fences and validates GFM table structure
