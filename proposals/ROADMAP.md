@@ -326,6 +326,9 @@ installation implicitly mutating.
   failure modes. The requester subsequently rated all three latest results
   3/3 and accepted them; popularity was recorded only as user-provided context,
   not as quality evidence.
+- Two BMAD candidates (`bmad-sprint-planning` and `bmad-forge-idea`) were added
+  on 2026-09-07. The sample now spans sixteen requests; explicit usefulness and
+  acceptance ratings are pending for these two selections.
 
 ### 2026-09-06 — Proportioned cross-platform CI
 
