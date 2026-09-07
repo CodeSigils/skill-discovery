@@ -826,3 +826,48 @@ PlanetScale account/CLI or MCP access for live operations and can create
 development branches, PRs, and deploy requests when authorized by its safety
 model. No CLI authentication, database access, mutation, or installation was
 performed during this audit.
+
+## Source audit: Excalidraw diagram skill (2026-09-07)
+
+The supplied [`coleam00/excalidraw-diagram-skill`](https://github.com/coleam00/excalidraw-diagram-skill/tree/8646fcc9f74f38539c6cdb4c969723336a96ddcd)
+repository was inspected at commit `8646fcc9f74f38539c6cdb4c969723336a96ddcd`.
+GitHub reported 4,705 stars, 533 forks, and no declared repository license.
+The inspected tree is small and self-contained: `SKILL.md`, a color palette,
+element templates, a JSON-format reference, and a Python/Playwright renderer.
+
+The requested examples are consistent with the payload: it explicitly covers
+workflow, architecture, and sequence diagrams, and requires technical diagrams
+to use researched event names, formats, or API methods and concrete evidence
+artifacts. The “self-validation loop” is also real: the instructions require
+rendering to PNG, viewing the result, checking clipping/overlap/bindings and
+composition, fixing the JSON, and repeating until it is presentable. The
+palette file is a useful single source of guidance for generated colors and
+brand styles, but changing it is not an automatic runtime theme mechanism; the
+agent must read and apply it for each generation.
+
+Important qualifications for discovery:
+
+- The renderer performs only basic structural checks (`type`, a non-empty
+  `elements` array, and JSON parsing). Most quality gates are visual and human
+  or agent inspection, not schema-complete validation.
+- Rendering requires Python 3.11+, `uv`, Playwright, and a locally installed
+  Chromium. The HTML renderer imports `@excalidraw/excalidraw` from
+  `https://esm.sh` at runtime, so a render is not fully offline or hermetic.
+- The normal workflow writes `.excalidraw` and PNG artifacts and executes a
+  browser process. It does not request credentials or perform target-system
+  mutations in the inspected files, but generated diagrams can still contain
+  user-provided sensitive architecture details and should receive a content
+  review before publication.
+- The README emphasizes Claude Code’s `.claude/skills/` layout, although its
+  root `SKILL.md` follows the common agent-skill shape. Treat Codex/other-agent
+  portability as conditional on the host’s skill loader and path conventions.
+
+Classify this as a **useful, conditional recommendation** for requests that
+benefit from a durable architecture or workflow artifact. Its strongest value
+is the combination of visual design guidance, evidence requirements, and an
+iterative rendered QA loop—not popularity (4,705 stars) or the claim that the
+output is automatically publishable. Before recommending installation, disclose
+the unlicensed repository, runtime network dependency, browser setup, output
+side effects, and the need for human review of both accuracy and sensitive
+content. No installation, dependency setup, renderer execution, or diagram
+generation was performed during this audit.
