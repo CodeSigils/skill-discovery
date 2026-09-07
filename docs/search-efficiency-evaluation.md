@@ -484,3 +484,25 @@ conversation is not treated as a success rating.
 This is an observational start, not enough evidence to implement ranking,
 provider orchestration, caching, or a new language. Collect at least five more
 requests with explicit user ratings before changing the implementation.
+
+## Additional real-task observations (2026-09-07)
+
+Four follow-up requests were run to expand the pilot. These are discovery
+observations, not installation or behavior tests; user acceptance remains
+`unknown` until the requester rates each result.
+
+| Request | Query | Matches | Retrieval | Candidate outcome | Provisional fit |
+|---|---|---:|---:|---|---:|
+| Python code review | `python review` | 13 | 217 ms | Local `py-review` is a direct Codex-oriented router with complete payload inspected | 3 |
+| Go best practices | `go best practices` | 50 | 215 ms | `effective-go` matches the task, but its referenced files were absent from the catalog cache; canonical verification required | 2 |
+| Note taking | `note taking` | 6 | 212 ms | Results were mostly provider- or workflow-specific; prior conditional `planning-with-files` remains the portable option | 2 |
+| Novel writing | `novel writing` | 7 | 215 ms | `novel-writing-techniques` is technique-specific and its referenced files were not available in the cache; prior canonical alternative remains stronger | 2 |
+
+The Python request is the only direct local fit. The other three require
+conditional handling because of missing references, provider specificity, or
+incomplete coverage. No candidate was installed, copied, executed, or used
+with real personal data.
+
+These four observations bring the pilot to six requests, but none has an
+explicit acceptance rating yet. Do not treat provisional fit scores as user
+success evidence or use them to justify implementation changes.

@@ -311,6 +311,9 @@ installation implicitly mutating.
 - Collect at least five additional requests with explicit usefulness and
   acceptance ratings before considering ranking, provider orchestration,
   caching, or implementation-language changes.
+- Four additional requests were recorded on 2026-09-07; provisional fit is
+  documented, but acceptance is still unknown. Obtain explicit ratings before
+  drawing a product or architecture conclusion.
 
 ### 2026-09-06 — Proportioned cross-platform CI
 
