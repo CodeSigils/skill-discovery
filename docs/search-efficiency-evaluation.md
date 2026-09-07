@@ -1007,6 +1007,11 @@ offline-first workflow; use AWS’s architecture skill instead when the request
 is specifically AWS infrastructure. No runtime smoke test was run because this
 is a source-template evaluation rather than an installed candidate.
 
+An isolated browser smoke test of the `proyecto26` template passed: the local
+HTML produced one SVG, rendered 687 characters of visible body text, and
+reported no page errors. The test exercised only the inline base diagram; it did
+not click export controls or depend on the optional CDN scripts.
+
 ## Source audit: AWS architecture-diagram skill (2026-09-07)
 
 The canonical [`awslabs/agent-plugins`](https://github.com/awslabs/agent-plugins/tree/adc01133bbd01433dcb2c0f98641f2b85694f92f)
