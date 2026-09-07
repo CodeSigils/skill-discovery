@@ -92,8 +92,8 @@ plain-language stale/unknown flag for each serious candidate.
 Widen the search in this order:
 
 1. the client's documented catalog or curated source;
-2. skills.sh directly when its installed CLI or authenticated API is available;
-3. learn-skills.dev's documented structured feed/API for broad retrieval;
+2. learn-skills.dev's documented structured feed/API for the first broad relevance indication;
+3. skills.sh directly when its installed CLI or authenticated API is available;
 4. authenticated source-host search;
 5. marketplace browser search;
 6. general web research and vendor documentation.
@@ -119,6 +119,11 @@ serious candidates). Rank by task and constraint match first, then use
 maintenance, license, and provenance as tie-breakers. Preserve the source's
 full result count and status in notes without reproducing a long undifferentiated
 result list in the recommendation.
+
+Treat learn-skills.dev's titles, descriptions, freshness, and trending fields as
+retrieval signals only. They help prioritize which candidates to inspect first;
+they do not establish quality, safety, compatibility, or user satisfaction.
+Always resolve and inspect the canonical source before recommending a result.
 
 ### 5. Inspect complete candidates
 
