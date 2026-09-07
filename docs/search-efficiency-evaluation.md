@@ -1006,3 +1006,39 @@ accept Claude/plugin adaptation. Prefer it over the Excalidraw candidate for an
 offline-first workflow; use AWS’s architecture skill instead when the request
 is specifically AWS infrastructure. No runtime smoke test was run because this
 is a source-template evaluation rather than an installed candidate.
+
+## Source audit: AWS architecture-diagram skill (2026-09-07)
+
+The canonical [`awslabs/agent-plugins`](https://github.com/awslabs/agent-plugins/tree/adc01133bbd01433dcb2c0f98641f2b85694f92f)
+repository was inspected at commit `adc01133bbd01433dcb2c0f98641f2b85694f92f`.
+GitHub reports Apache-2.0 licensing, 890 stars, and a recent push on
+2026-09-04. Its `plugins/deploy-on-aws/skills/aws-architecture-diagram/`
+payload contains a detailed instruction file, AWS/general icon references,
+layout/style/XML rules, templates, post-processing guidance, and export docs.
+
+This is the strongest conditional candidate for AWS-specific diagrams. It
+generates uncompressed draw.io XML with official AWS4 icons, requires explicit
+mode selection and user confirmation when analyzing infrastructure, validates
+XML/IDs/geometry through a post-processing hook, and supports deterministic
+badge fixing. It also has clear rules for boundaries, service containers,
+labels, edges, legends, and dark-mode styling.
+
+Risks and limits:
+
+- The payload allows `Bash`, `Write`, `Read`, `Glob`, and `Grep`; codebase
+  analysis can read infrastructure files and write diagrams under `./docs/`.
+  It should therefore remain explicitly authorized and scoped to the user’s
+  repository.
+- PNG/SVG/PDF export requires the draw.io desktop CLI. Preview generation may
+  open a browser and export tooling is not guaranteed to exist on every host.
+- The skill is AWS/plugin-specific and not a general diagram generator. It may
+  map non-AWS technologies to generic icons, but AWS semantics remain its
+  center of gravity.
+- No installation, infrastructure scan, diagram write, export, or external
+  mutation was performed during this inspection.
+
+Classify it as a **strong conditional recommendation** for explicitly AWS
+architecture requests, subject to repository-read and file-write authorization.
+For general architecture diagrams, prefer the offline HTML/SVG system-design
+candidate; keep Excalidraw lower priority until its renderer dependency issue
+is resolved.
