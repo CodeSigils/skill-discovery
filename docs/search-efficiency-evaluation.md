@@ -613,6 +613,26 @@ needed canonical/web fallback. Provisional usefulness scores are 2, 2, 3, and
 execution, deployment, database mutation, or external project creation
 occurred.
 
+## Real discovery requests: refreshed catalog (2026-09-07)
+
+Three read-only requests were run with the local-first workflow after refreshing
+learn-skills.dev (`updatedAt=2026-09-07T03:55:10.137Z`, 113,458 entries). The
+`skills` CLI was unavailable, so the authenticated skills.sh path was not
+queried. No installation, copying, execution, or mutation occurred.
+
+| Request | Local results / retrieval | learn-skills results / matching | Outcome |
+|---|---:|---:|---|
+| Architecture diagram | 1,053 raw; 500 reported cap / 238 ms | 19 / 49 ms | Conditional-to-strong: `proyecto26` general, AWS-specific skill for AWS, Lanshu for animation |
+| Python workflow/review | 13 / 230 ms | 14 / 62 ms | Direct: local `py-review` router |
+| Novel writing | 7 / 237 ms | 3 / 51 ms | Conditional/partial: provider- and style-specific candidates require inspection |
+
+The architecture query demonstrates lexical noise and the value of bounded
+shortlists; the Python query demonstrates local-first precision; and the novel
+writing query shows that catalog breadth does not guarantee an unconditional
+recommendation. These observations support the current policy: use
+learn-skills.dev as a first relevance indication, then inspect canonical source
+and constraints before recommending.
+
 The authorized synthetic smoke test was partial: the declared Python/Playwright
 dependencies and Chromium installed in an isolated `/tmp` directory, but the
 renderer did not produce a PNG within a bounded retry because the template waits
