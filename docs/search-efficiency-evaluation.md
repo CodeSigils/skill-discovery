@@ -595,3 +595,44 @@ needed canonical/web fallback. Provisional usefulness scores are 2, 2, 3, and
 2 respectively; user acceptance is `unknown`. No installation, copying,
 execution, deployment, database mutation, or external project creation
 occurred.
+
+## Real-task observations: additional trending selections (2026-09-07)
+
+The requester selected three more topics from learn-skills.dev's trending view.
+Trend status was treated as a retrieval hint only, not as evidence of quality,
+safety, or maintenance. Installation and execution were not authorized.
+
+| Request | Query | Matches | Retrieval |
+|---|---|---:|---:|
+| Sprint planning | `sprint planning` | 356 | 209 ms |
+| Forge idea | `forge idea` | 0 | 206 ms |
+| AI video generation | `ai video generation` | 207 | 210 ms |
+
+### Candidate review and outcomes
+
+The local `scrum-master` result was a generated catalog entry whose apparent
+source repository was unavailable for canonical verification; it was therefore
+inspection-blocked rather than recommended. The canonical
+[`forge-shape`](https://github.com/mgratzer/forge/tree/05afc6a8852d98cdd7450aad7a1d3298c0ede3fa/skills/forge-shape)
+skill (commit `05afc6a8852d98cdd7450aad7a1d3298c0ede3fa`) is a conditional fit:
+it shapes a vague idea through repository investigation and one-at-a-time
+questions, but is GitHub-centric and includes issue-workflow integration.
+
+For AI video generation, the local `1nfsh` entries were not present at the
+current canonical `1nfsh/skills` revision (`becc25649700d5457772a00e5143e28ccf9e5afa`);
+only related prompting and marketing-video skills exist there. The cached
+`ai-video-generation` payload requires an `inference.sh` CLI, login, network,
+and paid/model-provider accounts, so it is inspection-blocked and
+service-dependent rather than a portable recommendation. The related
+`video-prompting-guide` is a partial, read-only alternative for prompt writing
+only.
+
+### Query outcome
+
+No unconditional direct fit passed. Sprint planning needs a verified Scrum or
+team-planning source; “forge idea” has a conditional match in `forge-shape`
+when GitHub issue workflows are desired; AI video generation needs an explicit
+provider, budget, and authorization before any service-backed skill can be
+considered. Provisional usefulness scores are 1, 2, and 1 respectively; user
+acceptance is `unknown`. No installation, execution, login, media generation,
+issue creation, or external mutation occurred.

@@ -320,6 +320,10 @@ installation implicitly mutating.
   brainstorming, and UX design) were recorded on 2026-09-07. The sample now
   spans eleven requests; trend status remains a retrieval hint and acceptance
   ratings are still required.
+- Three additional selections (sprint planning, forge idea, and AI video
+  generation) were recorded on 2026-09-07. The sample now spans fourteen
+  requests; stale catalog provenance and service dependencies remain common
+  failure modes, and acceptance ratings are still required.
 
 ### 2026-09-06 — Proportioned cross-platform CI
 
