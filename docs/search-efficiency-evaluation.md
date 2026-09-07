@@ -771,6 +771,31 @@ additional installer/MCP control plane. Always pin a selected skill to its
 source revision and inspect the individual payload before installation.
 No installation, MCP setup, or candidate execution occurred.
 
+## Source audit: unicodeveloper/shannon (2026-09-07)
+
+The canonical [`unicodeveloper/shannon`](https://github.com/unicodeveloper/shannon/tree/6a97124bee816c7cc76c6e17bb2b0fe8c0eae032)
+repository was inspected at commit `6a97124bee816c7cc76c6e17bb2b0fe8c0eae032`.
+GitHub reported 50 stars, 7 forks, no declared repository license, and a
+README claiming an AGPL-3.0 skill license. The repository contains a root
+`SKILL.md`, README, and scripts, and points to the upstream
+`KeygraphHQ/shannon` framework.
+
+This is not a normal read-only security-review skill. Its complete payload
+explicitly executes real exploits, clones or updates a framework, launches
+Docker containers, reads source code, may use target credentials, and scans
+live URLs. It requires explicit written authorization, a non-production target,
+Docker, Git, and an Anthropic or cloud-provider credential. The skill reports a
+96.15% XBOW exploit-success claim, but that benchmark assertion was not
+independently validated during this inspection.
+
+Classify Shannon as **high-risk / conditional**: potentially useful for an
+authorized, isolated pentest of an owned staging target, but incompatible with
+the default static, read-only discovery boundary. Never recommend it merely
+because it is “popular,” and never install, authenticate, clone, or execute it
+as part of discovery. Any future behavioral evaluation would require explicit
+scope, synthetic fixtures where possible, isolated infrastructure, credential
+handling, and a separate authorization gate.
+
 ## Source audit: PlanetScale Database Skills description (2026-09-07)
 
 The supplied description was compared with the canonical
