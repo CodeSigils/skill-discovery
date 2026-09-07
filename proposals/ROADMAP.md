@@ -323,7 +323,9 @@ installation implicitly mutating.
 - Three additional selections (sprint planning, forge idea, and AI video
   generation) were recorded on 2026-09-07. The sample now spans fourteen
   requests; stale catalog provenance and service dependencies remain common
-  failure modes, and acceptance ratings are still required.
+  failure modes. The requester subsequently rated all three latest results
+  3/3 and accepted them; popularity was recorded only as user-provided context,
+  not as quality evidence.
 
 ### 2026-09-06 — Proportioned cross-platform CI
 
