@@ -656,3 +656,23 @@ each of the three topics. The requester also described them as most popular on
 skills.sh; that popularity claim is user-provided and was not used as trust
 evidence. No installation, execution, login, media generation,
 issue creation, or external mutation occurred.
+
+## Real-task observations: BMAD Method selections (2026-09-07)
+
+The requester asked for two additional pilot candidates selected from
+[`bmad-code-org/bmad-method`](https://github.com/bmad-code-org/bmad-method),
+whose current `main` revision is
+`abe4eb1bce919c9d22cd18b3519353d5824c4b75`. Selection was based on direct
+task coverage, not repository popularity. Installation and execution were not
+authorized.
+
+| Candidate | Scope and inspection | Provisional fit | User usefulness | Acceptance |
+|---|---|---:|---:|---|
+| `bmad-sprint-planning` | 62-line payload; readiness gate, deterministic sprint-status generation, validation and repair paths | 3 | pending | unknown |
+| `bmad-forge-idea` | 107-line payload; one-at-a-time questioning, pressure testing, optional brief handoff | 3 | pending | unknown |
+
+Both candidates have valid frontmatter and clear triggers. Their workflows
+reference additional BMAD project files and scripts, so they are portable only
+when used inside a BMAD-configured project; they are not drop-in generic
+planning utilities. No scripts, issue operations, file writes, or external
+service calls were performed.
