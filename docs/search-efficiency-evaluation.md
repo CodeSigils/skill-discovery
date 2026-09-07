@@ -666,9 +666,9 @@ whose current `main` revision is
 task coverage, not repository popularity. Installation and execution were not
 authorized.
 
-| Candidate | Scope and inspection | Provisional fit | User usefulness | Acceptance |
+| Candidate | Scope and inspection | Agent fit | User usefulness | Acceptance |
 |---|---|---:|---:|---|
-| `bmad-sprint-planning` | 62-line payload; readiness gate, deterministic sprint-status generation, validation and repair paths | 3 | pending | unknown |
+| `bmad-sprint-planning` | 62-line payload; readiness gate, deterministic sprint-status generation, validation and repair paths | 2 | pending | unknown |
 | `bmad-forge-idea` | 107-line payload; one-at-a-time questioning, pressure testing, optional brief handoff | 3 | pending | unknown |
 
 Both candidates have valid frontmatter and clear triggers. Their workflows
@@ -676,3 +676,9 @@ reference additional BMAD project files and scripts, so they are portable only
 when used inside a BMAD-configured project; they are not drop-in generic
 planning utilities. No scripts, issue operations, file writes, or external
 service calls were performed.
+
+Agent fit is the maintainer's static assessment, not a user-success claim:
+`bmad-sprint-planning` loses a point because it requires a BMAD-configured
+project; `bmad-forge-idea` directly matches idea pressure-testing. User
+usefulness and acceptance remain unmeasured until the skills are used in a
+real task.

@@ -327,8 +327,9 @@ installation implicitly mutating.
   3/3 and accepted them; popularity was recorded only as user-provided context,
   not as quality evidence.
 - Two BMAD candidates (`bmad-sprint-planning` and `bmad-forge-idea`) were added
-  on 2026-09-07. The sample now spans sixteen requests; explicit usefulness and
-  acceptance ratings are pending for these two selections.
+  on 2026-09-07. The sample now spans sixteen requests; agent-fit scores are
+  2/3 and 3/3 respectively, while user usefulness and acceptance remain
+  pending.
 
 ### 2026-09-06 — Proportioned cross-platform CI
 
