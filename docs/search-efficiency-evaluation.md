@@ -1353,6 +1353,13 @@ repository maintenance. Recommend it only when the user explicitly wants to
 assemble an article from raw material. It writes incrementally to a user file,
 so any behavior test would require an explicit output path and approval.
 
+An authorized isolated smoke test used synthetic observatory notes in
+`~/projects/writing-skill-pilot/prose/raw-material.md`. Three distinct starting
+beats were proposed and the workflow stopped before creating the requested
+`article.md`. This passed the first interaction boundary; beat selection and
+the reread-after-write loop remain untested until a user chooses a starting
+beat.
+
 ### Decision
 
 Use `writing-great-skills` as an occasional authoring checklist when editing
