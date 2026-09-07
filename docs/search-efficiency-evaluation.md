@@ -118,6 +118,21 @@ catalog retrieval should produce candidates for inspection rather than an
 automatic recommendation. The observation supports a future read-only provider
 adapter, but does not establish a stable public search API contract.
 
+### Popular-query pilot: code review (2026-09-07)
+
+The broad [`q=code%20review`](https://www.learn-skills.dev/en/skills?q=code%20review)
+lookup over the synchronized index returned 1,009 lexical matches from the
+113,458-entry snapshot. The bounded popularity-ranked shortlist was:
+`mattpocock/skills/code-review`, `obra/superpowers/requesting-code-review`,
+`obra/superpowers/receiving-code-review`, and
+`addyosmani/agent-skills/code-review-and-quality`.
+
+The top repository metadata was reachable, but the advertised skill path was
+not present at the guessed location and the canonical tree could not be
+retrieved reliably in this run. These remain unreviewed discovery pointers,
+not recommendations. This query demonstrates the value of broad catalog
+retrieval while reinforcing the canonical-inspection gate.
+
 ## Bounded task-fit pilot (2026-09-06)
 
 To make the next experiment concrete, five representative requests were run
