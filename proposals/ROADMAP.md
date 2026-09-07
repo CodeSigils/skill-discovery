@@ -314,6 +314,8 @@ installation implicitly mutating.
 - Four additional requests were recorded on 2026-09-07; provisional fit is
   documented, but acceptance is still unknown. Obtain explicit ratings before
   drawing a product or architecture conclusion.
+- A seventh request (mobile app design) was added on 2026-09-07. The sample
+  now spans seven requests, but still lacks explicit user acceptance ratings.
 
 ### 2026-09-06 — Proportioned cross-platform CI
 
