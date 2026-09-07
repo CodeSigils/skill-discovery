@@ -393,6 +393,15 @@ installation implicitly mutating.
   Bundled eval fixtures (24/14/43) improve instruction coverage but are not
   executable proof. No implementation change is justified until user
   usefulness is explicitly rated.
+- A read-only Python pilot tested `py-review` against Requests, HTTPX, and
+  pytest (framework checkouts were excluded) and compared it with a broad
+  Python-standards candidate. `py-review` was a direct 3/3 routing fit; the
+  standards collection was a contextual 2/3 supplement. A writing pilot found
+  `creative-writing-craft` a direct 3/3 fit for a small prose task, while
+  `writing-for-agents` was a scope mismatch; one catalog path was stale.
+  Keep these as evidence for canonical inspection and task-fit filtering, not
+  as automated quality scores. User acceptance is still required before
+  ranking, provider adapters, caching, or a language rewrite.
 
 ### 2026-09-06 — Proportioned cross-platform CI
 

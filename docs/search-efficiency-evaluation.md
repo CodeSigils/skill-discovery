@@ -1228,6 +1228,69 @@ frames at 20 FPS with nonzero frame differences, and `--check` returned
 files. This validates the bundled renderer contract only, not diagram content
 quality for arbitrary user specifications.
 
+## Real-task pilot: Python review and writing (2026-09-07)
+
+### Python projects
+
+Three non-framework Python projects were shallow-cloned for a read-only pilot:
+
+- [`psf/requests`](https://github.com/psf/requests/tree/dae7ef63b4df6eded86637f251fc4e3a06c3b479)
+  at `dae7ef63b4df6eded86637f251fc4e3a06c3b479` (Python >=3.10, Ruff,
+  Pyright, pytest).
+- [`encode/httpx`](https://github.com/encode/httpx/tree/b5addb64f0161ff6bfe94c124ef76f6a1fba5254)
+  at `b5addb64f0161ff6bfe94c124ef76f6a1fba5254` (Python >=3.9, Ruff, mypy,
+  async and sync HTTP code).
+- [`pytest-dev/pytest`](https://github.com/pytest-dev/pytest/tree/431f3e1f5fd70b9b0f8afa2d20a10421542e5c6a)
+  at `431f3e1f5fd70b9b0f8afa2d20a10421542e5c6a` (Python >=3.10, Ruff, mypy,
+  pytest, mature test-focused project).
+
+FastAPI and Flask were also downloaded during discovery but deliberately
+excluded from this assessment: they are frameworks, while this pilot measures
+general Python review routing rather than framework-specific guidance.
+
+The local `py-review` router was a **3/3 direct fit**. It correctly separates
+Python-version and maturity checks, detects each project’s configured toolchain,
+routes async rules only to HTTPX, and keeps findings tied to changed files.
+The `ludo-technologies/python-best-practices/coding-standards` candidate was a
+**2/3 supplementary fit**: its focused rules and examples are useful, but broad
+performance labels (such as a universal list-comprehension speed claim),
+Pydantic-at-boundaries guidance, and a large recommended toolset require local
+context. Neither candidate was executed; these are source and project-metadata
+findings, not defect findings or user-acceptance scores.
+
+### Writing candidates and prose task
+
+The synchronized learn-skills.dev snapshot returned 1,079 lexical matches for
+`writing`; its leading results are concentrated in Matt Pocock’s writing
+collection. The catalog page may be rate-limited, so this count is a
+timestamped local index signal rather than a live API result. The strongest
+fiction candidate inspected was
+[`haowjy/creative-writing-skills`](https://github.com/haowjy/creative-writing-skills/tree/fd7a3ad9cd7697a0645ff6ff4bd5e809cf7673a3)
+at `fd7a3ad9cd7697a0645ff6ff4bd5e809cf7673a3`, using the current
+`cw/skills/creative-writing-craft` skill and its `resources/prose-writing.md`.
+
+A 150–200 word close-third-person storm/radio-courier scene was drafted in the
+isolated artifact `~/projects/writing-skill-pilot/prose-craft-test.md`. Static
+assessment found stable POV, sensory grounding, varied rhythm, action-based
+interiority, and no unnecessary backstory: **3/3 direct task fit**, with user
+acceptance still unmeasured. The candidate’s catalog label
+`cw-prose-writing` does not match the current repository path, so canonical
+tree inspection is essential before recommending or installing it.
+
+Matt Pocock’s `writing-for-agents` was a **1/3 fit for this task** despite its
+strong documentation guidance: it targets agent-facing skills and repository
+instructions, not fictional prose. This is a useful scope-mismatch example for
+future ranking. No writing skill was installed or executed as a subprocess.
+
+### Pilot decision
+
+The pilots support the existing pipeline: local search, broad catalog retrieval,
+canonical revision inspection, then task-specific recommendation. Keep
+framework-specific and general Python candidates distinct, treat catalog paths
+as stale until verified, and do not add ranking or provider adapters yet.
+Collect explicit user usefulness/acceptance ratings before changing the
+implementation or claiming behavioral quality.
+
 ## Source audit: Lanshu animated architecture diagram (2026-09-07)
 
 The canonical [`cclank/lanshu-animated-architecture-diagram`](https://github.com/cclank/lanshu-animated-architecture-diagram/tree/c17f5b4e5de99d3603b364530ad04d930d038d24)
