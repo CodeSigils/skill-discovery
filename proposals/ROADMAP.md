@@ -374,6 +374,12 @@ installation implicitly mutating.
   on 2026-09-07. The sample now spans sixteen requests; agent-fit scores are
   2/3 and 3/3 respectively, while user usefulness and acceptance remain
   pending.
+- The popular `code review` query was followed by canonical inspection of
+  `mattpocock/skills` at commit `3cca18b368ae95cdbdebbff572ccafa662551015`.
+  Its focused payload is a strong 3/3 static fit when fixed-point, issue/spec,
+  and parallel-sub-agent prerequisites exist; otherwise it is conditional 2/3.
+  User acceptance remains pending, so no ranking or provider adapter is
+  justified yet.
 
 ### 2026-09-06 — Proportioned cross-platform CI
 

@@ -133,6 +133,24 @@ retrieved reliably in this run. These remain unreviewed discovery pointers,
 not recommendations. This query demonstrates the value of broad catalog
 retrieval while reinforcing the canonical-inspection gate.
 
+### Canonical inspection: mattpocock/skills code-review (2026-09-07)
+
+The strongest broad-query result was inspected at repository commit
+`3cca18b368ae95cdbdebbff572ccafa662551015` (MIT; repository metadata reported
+255,325 stars and a 2026-09-04 push). The payload is
+`skills/engineering/code-review/SKILL.md` with a small `agents/openai.yaml`
+interface file; no scripts or nested references are required.
+
+The skill is structurally strong: valid frontmatter, a discriminating trigger,
+clear fixed-point requirements, explicit standards/spec separation, bounded
+reporting, and useful scope boundaries. It also has important conditional costs:
+it requires a user-supplied fixed point and issue/spec context, assumes
+`docs/agents/issue-tracker.md` or a setup workflow, and requires parallel
+sub-agent support. Those assumptions are not portable to every Agent Skills
+client. Static fit for a request to review a diff is **3/3 when those project
+and client prerequisites exist**, otherwise **conditional 2/3**. No scripts were
+executed and no installation occurred; user acceptance remains unmeasured.
+
 ## Bounded task-fit pilot (2026-09-06)
 
 To make the next experiment concrete, five representative requests were run
