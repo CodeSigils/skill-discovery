@@ -633,6 +633,9 @@ No unconditional direct fit passed. Sprint planning needs a verified Scrum or
 team-planning source; “forge idea” has a conditional match in `forge-shape`
 when GitHub issue workflows are desired; AI video generation needs an explicit
 provider, budget, and authorization before any service-backed skill can be
-considered. Provisional usefulness scores are 1, 2, and 1 respectively; user
-acceptance is `unknown`. No installation, execution, login, media generation,
+considered. Static provisional fit scores were 1, 2, and 1 respectively; the
+requester later recorded user usefulness as accepted with `3/3` for
+each of the three topics. The requester also described them as most popular on
+skills.sh; that popularity claim is user-provided and was not used as trust
+evidence. No installation, execution, login, media generation,
 issue creation, or external mutation occurred.
