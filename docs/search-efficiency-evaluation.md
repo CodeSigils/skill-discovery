@@ -1016,6 +1016,11 @@ title/body text small, so a real user should review readability and may need a
 more focused diagram. No project files, credentials, or external services were
 used.
 
+Maintainer provisional usefulness for this real-task artifact: **2/3** (useful
+with adaptation). The workflow structure is coherent, but text sizing requires
+focused diagrams or manual refinement. User acceptance remains unknown; this
+score is not a substitute for user feedback.
+
 An isolated Lanshu smoke test using its bundled `default-spec.json` passed. The
 renderer produced PNG, GIF, and Excalidraw outputs; `--verify` observed 41 GIF
 frames at 20 FPS with nonzero frame differences, and `--check` returned
