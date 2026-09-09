@@ -59,12 +59,22 @@ Searched:
 | skills.sh | table, markdown, formatter | <UTC timestamp> | unknown freshness | 4 results; shortlist capped at 3 |
 | GitHub code search | table, markdown, formatter | <UTC timestamp> | unavailable | authentication unavailable |
 
-Candidate review:
-| Candidate | Revision/update/license | Freshness | Path | Loader | Gate | Result |
-|---|---|---|---|---|---|---|
-| owner/repo@formatter | commit <sha>; updated <date>; MIT | known | present | verified | pass | direct_fit |
+Candidate evidence:
+| Candidate | Path | Revision/update/license | Freshness | Payload | References | Loader | State |
+|---|---|---|---|---|---|---|---|
+| owner/repo@formatter | present | commit <sha>; updated <date>; MIT | known | complete | complete | verified | payload-inspected |
+
+Evidence:
+- The candidate's documented workflow explicitly preserves fenced code.
+
+Interpretation:
+- The candidate is a direct fit for the stated formatting task.
+
+Unknowns:
+- Runtime behavior was not tested.
 
 Recommendation: owner/repo@formatter
+Recommendation gate: direct_fit
 Why it fits: explicitly preserves fences and validates GFM table structure
 Trust review: read SKILL.md and two scripts at commit <sha>; no network access;
   writes only the selected Markdown files; dependency versions disclosed
@@ -75,5 +85,12 @@ Behavior validation: not run; static inspection only
 Tradeoffs: requires Node.js <supported-version>
 
 Inspection limits: 2 files; 14 KiB; no skipped files
+Report completeness:
+- Retrieval: complete
+- Canonical inspection: complete
+- Behavior validation: not run
+- Recommendation confidence: medium
+
+Performed: read-only source inspection
 Not performed: no installation or execution without approval; no secrets copied.
 ```

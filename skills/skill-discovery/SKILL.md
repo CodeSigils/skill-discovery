@@ -264,13 +264,23 @@ Searched:
 |---|---|---|---|---|
 | <source> | <terms> | <UTC timestamp> | <successful/unavailable/etc.> | <count and cap> |
 
-Candidate review:
-| Candidate | Revision/update/license | Freshness | Path | Loader | Gate | Result |
-|---|---|---|---|---|---|---|
-| <candidate> | <commit/tag/date/license> | <known/stale/unknown> | <present/stale> | <status> | <pass/fail> | <fit class> |
+Candidate evidence:
+| Candidate | Path | Revision/update/license | Freshness | Payload | References | Loader | State |
+|---|---|---|---|---|---|---|---|
+| <candidate> | <present/stale> | <commit/tag/date/license> | <known/stale/unknown> | <complete/partial/blocked> | <complete/missing/unknown> | <verified/structural/unavailable> | <retrieved-only/path-verified/payload-inspected/behavior-tested/blocked/rejected> |
+
+Evidence:
+- <fact directly observed from the source or command>
+
+Interpretation:
+- <task-specific meaning of the evidence; do not promote ranking to quality>
+
+Unknowns:
+- <missing inspection, unavailable provider, or untested behavior>
 
 Recommendation: <skill name and source>
-Why it fits: <task-specific evidence>
+Recommendation gate: <direct_fit/conditional_fit/partial_fit/inspection_incomplete/blocked/rejected>
+Why it fits: <task-specific evidence; omit a recommendation when inspection is incomplete>
 Trust review: <provenance, inspected files, dependencies, permissions, audits>
 Compatibility: <client and location per candidate>
 Compatibility gate: <frontmatter, location, references, client extensions, loader status> (from Step 5)
@@ -282,8 +292,15 @@ Tradeoffs: <known gaps or risks>
 Alternatives:
 - <candidate>: <why it ranked lower>
 
-Not performed: no installation, execution, or file creation without approval;
-no secrets or private data copied into this report.
+Report completeness:
+- Retrieval: <complete/partial>
+- Canonical inspection: <complete/partial/not run>
+- Behavior validation: <not run/partial/pass>
+- Recommendation confidence: <low/medium/high>
+
+Performed: <read-only searches, downloads, or inspections actually completed>
+Not performed: <installation, execution, mutation, external messages, or other
+  actions not taken; no secrets or private data copied into this report>
 ```
 
 If no candidate passes review, report the exhausted sources and skipped stages.
