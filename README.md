@@ -179,6 +179,7 @@ skill-discovery/
 ├── docs/
 │   ├── evidence-urls.json             # external contract manifest (13 URLs)
 │   ├── hub-marketplace-research.md    # dated skill marketplace evidence
+│   ├── skills-cli-discovery-evidence.md # bounded Skills CLI search evidence
 │   └── search-efficiency-evaluation.md # dated local-search baseline
 ├── proposals/
 │   └── ROADMAP.md                     # implementation history and deferred proposals
