@@ -129,6 +129,26 @@ Widen the search in this order after local discovery:
    browsing is useful or structured artifacts are unavailable;
 5. general web research and vendor documentation.
 
+When the official Skills CLI is available, run a broad retrieval query before
+narrowing the shortlist:
+
+```bash
+npx --yes skills find '<user keyword query>'
+```
+
+Use the user's original terms plus one or two aliases; for example,
+`npx --yes skills find zensical` surfaced related site, setup, authoring, and
+debugging skills that a direct repository lookup missed. Record the query,
+UTC timestamp, result count, and provider output status. `skills find` is a
+retrieval signal only: install counts and ordering are not quality evidence,
+and absence from the result set is not proof that no matching skill exists.
+For each serious result, use `npx --yes skills add <owner/repository> --list`
+or the canonical repository to verify the actual skill path before inspection.
+The `npx --yes` form downloads and executes external CLI code; use it only with
+explicit user authorization and an isolated working directory. If the CLI is
+not already available and authorization is absent, use the documented API or
+report the source as unavailable rather than bootstrapping it silently.
+
 For external catalogs, query the documented remote artifact/API by default.
 Use a local checkout only as an explicitly labelled cache or offline fallback;
 report its synchronization status separately from the catalog's own generation

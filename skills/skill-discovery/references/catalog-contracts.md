@@ -109,6 +109,15 @@ If `skills` is not already installed, prefer the read-only API below or another
 documented fallback. Running `npx` for a missing CLI downloads and executes
 external code and requires explicit user approval before discovery begins.
 
+For an authorized broad search, `npx --yes skills find '<query>'` is a useful
+retrieval path. Record the query timestamp, provider status, and full result
+count separately from the small shortlist selected for inspection. Search terms
+should include the user's wording and likely aliases. Treat result order,
+install counts, and absence of a candidate as provisional retrieval signals;
+they do not establish quality, compatibility, safety, or catalog completeness.
+Use `npx --yes skills add <owner/repository> --list` or the source repository to
+verify each candidate's canonical skill path before reading or recommending it.
+
 Programmatic search uses the documented v1 endpoint:
 
 ```text
