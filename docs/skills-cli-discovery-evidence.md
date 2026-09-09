@@ -47,3 +47,44 @@ with canonical source-host search.
 - Results and install counts change; rerun before a release or recommendation.
 - This record does not certify candidate quality, safety, compatibility, or
   marketplace indexing.
+
+## Quality inspection example: markdown accessibility (2026-09-09)
+
+Candidate: `community-access/accessibility-agents@markdown-accessibility`
+
+- Canonical repository: `Community-Access/accessibility-agents`
+- Reviewed revision: `161c60c`
+- License: MIT
+- Repository update observed: 2026-08-11
+- Skill path: `.github/skills/markdown-accessibility/SKILL.md` (present)
+- Frontmatter: valid
+- Payload inspection: complete for the selected skill file
+- Behavior validation: not run
+
+Strengths:
+
+- Covers descriptive links, alt text, headings, tables, emoji, Mermaid/ASCII
+  alternatives, anchors, and plain-language structure.
+- Maps findings to WCAG references and severity levels.
+- Distinguishes human-judgment findings from bounded auto-fixes.
+- Provides remediation templates and a transparent scoring formula.
+
+Risks and limitations:
+
+- The repository contains broader accessibility tooling; seven sibling skills
+  were skipped by the installer because of YAML parse errors.
+- The numeric score and grade are opinionated and are not formal WCAG
+  conformance evidence.
+- Auto-fixes for headings, links, diagrams, and descriptions require context.
+- No runtime scanner or fixture behavior was executed.
+
+Assessment: conditional fit. Use as a supplementary Markdown-accessibility
+reference after reviewing its scope; do not replace site-specific Zensical
+accessibility review or install the entire repository automatically.
+
+Report completeness:
+
+- Retrieval: complete
+- Canonical inspection: complete for selected candidate
+- Behavior validation: not run
+- Recommendation confidence: medium
