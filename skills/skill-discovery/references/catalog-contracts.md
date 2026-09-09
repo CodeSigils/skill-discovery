@@ -62,6 +62,22 @@ they do not establish quality, compatibility, safety, or catalog completeness.
 Use `npx --yes skills add <owner/repository> --list` or the source repository to
 verify each candidate's canonical skill path before reading or recommending it.
 
+### One-shot package runners
+
+`uvx` is the Python-tool analogue of `npx`: it is an alias for `uv tool run`
+and creates an isolated, temporary environment. [`pipx run`](https://pipx.pypa.io/latest/tutorial/run-applications.html)
+is a comparable Python fallback. Neither runner can replace `npx` for the
+Node-based Skills CLI. For JavaScript projects, `pnpm dlx` and `bunx` are
+one-shot alternatives, but they remain provider-specific and should not be
+added as runtime dependencies.
+
+Mention these only as a soft suggestion when the user already uses the
+corresponding ecosystem or `npx` is unavailable. Any one-shot runner downloads
+and executes external code, so require the same explicit discovery authorization,
+isolated working directory, version pinning where practical, and separate
+installation/execution approval. Prefer an already-installed CLI or a
+documented read-only API first.
+
 Programmatic search uses the documented v1 endpoint:
 
 ```text

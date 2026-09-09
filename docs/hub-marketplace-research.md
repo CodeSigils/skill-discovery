@@ -10,6 +10,20 @@ purpose: >
 
 # Hub and marketplace research snapshot
 
+## One-shot runner research (2026-09-09)
+
+Official [`uv` tool documentation](https://docs.astral.sh/uv/guides/tools/)
+defines `uvx` as an alias for `uv tool run`; it runs Python CLI tools in an
+isolated temporary environment. Official [`pipx run` documentation](https://pipx.pypa.io/latest/tutorial/run-applications.html)
+describes the closest Python fallback: a temporary environment with no
+persistent installation. These are useful soft suggestions for Python-based
+validators such as `skills-ref`, but they cannot run the Node-based Skills CLI.
+
+For JavaScript users, `pnpm dlx` and `bunx` are ecosystem-specific one-shot
+runners. They should remain optional alternatives to `npx`, not dependencies of
+the skill. Every runner downloads and executes external code, so discovery must
+retain explicit authorization, isolation, and version-pinning guidance.
+
 This document is a historical research record. It is not product documentation
 and its counts, rankings, endpoints, client support, and install commands must be
 re-verified before use.

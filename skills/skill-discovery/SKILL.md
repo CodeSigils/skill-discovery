@@ -14,6 +14,9 @@ read-only by default: do not install, copy, create, or execute candidate content
 without explicit user authorization. Do not bootstrap a missing CLI with
 `npx --yes` (or an equivalent package runner) without calling out that it
 downloads and executes external code and receiving approval.
+`uvx`/`pipx run` are optional Python-tool runners, not replacements for the
+Node-based Skills CLI; mention them only when the user's toolchain makes them
+relevant.
 
 ## Boundaries
 
