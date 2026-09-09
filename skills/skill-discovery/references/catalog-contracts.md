@@ -5,6 +5,26 @@ documentation when a query depends on exact authentication or response fields.
 
 ## Provider selection and fallback
 
+### Remote source versus local cache
+
+The local-first rule applies to installed and project skills. It does not make
+an unverified checkout of an external catalog authoritative. For a catalog such
+as learn-skills.dev, prefer the provider's documented remote JSON/RSS artifact
+or API at query time. If a checkout is used as an offline or performance cache,
+record all of the following independently:
+
+- canonical remote URL and branch or artifact URL;
+- local commit or file retrieval time;
+- catalog generation timestamp from the artifact;
+- remote comparison result (`matched`, `diverged`, or `unknown`);
+- whether the search was completed remotely or from cache.
+
+Use a read-only remote comparison when practical (for example, `git ls-remote`
+or an HTTP GET of the documented artifact). Do not silently `pull`, `fetch`, or
+rewrite the checkout as part of discovery. If comparison fails, continue with
+reachable remote sources or report the catalog as unavailable; never convert a
+cached empty result into evidence that no skill exists.
+
 Do not query every provider for every request. Search applicable local roots
 first, then choose the smallest useful set of external sources:
 

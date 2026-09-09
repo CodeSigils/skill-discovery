@@ -102,6 +102,19 @@ reviewed repository revision, its latest source update, and whether maintenance
 appears stale. Record the commit or tag, repository update date, license, and a
 plain-language stale/unknown flag for each serious candidate.
 
+Treat an external catalog checkout as a cache, never as the external source
+itself. A timestamp embedded in files inside an unverified clone does not prove
+that the clone contains the current remote catalog. Before relying on a local
+catalog mirror, record its canonical remote, local revision, and generation
+metadata, then compare its revision with the remote branch or documented
+artifact when network access is available. A read-only `git ls-remote` or an
+HTTP request for the documented artifact is preferable to mutating the clone
+with `pull` or `fetch` during discovery. If remote comparison is unavailable,
+label synchronization `unknown` and do not use the mirror to conclude that a
+skill is absent. Local filesystem search remains valid for installed and
+project skills because those are the subject of the local search, not a proxy
+for an external catalog.
+
 ### 4. Search external sources
 
 Widen the search in this order after local discovery:
@@ -115,6 +128,11 @@ Widen the search in this order after local discovery:
 4. the learn-skills.dev UI or other marketplace browser search when human
    browsing is useful or structured artifacts are unavailable;
 5. general web research and vendor documentation.
+
+For external catalogs, query the documented remote artifact/API by default.
+Use a local checkout only as an explicitly labelled cache or offline fallback;
+report its synchronization status separately from the catalog's own generation
+timestamp.
 
 Use only interfaces documented by their provider. An undocumented endpoint that
 currently returns data is a legacy observation, not a stable contract. Read
