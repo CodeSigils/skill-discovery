@@ -117,30 +117,6 @@ for an external catalog.
 
 ### 4. Search external sources
 
-Widen the search in this order after local discovery:
-
-1. learn-skills.dev's documented generated artifacts for the first broad
-   relevance indication. Prefer `data/version.json` plus
-   `data/skills_search_index*.json` or `skills_index.json`; search IDs, titles,
-   and descriptions and record the artifact timestamp and total count;
-2. skills.sh directly when its installed CLI or authenticated API is available;
-3. other documented catalogs or authenticated source-host search;
-4. the learn-skills.dev UI or other marketplace browser search when human
-   browsing is useful or structured artifacts are unavailable;
-5. general web research and vendor documentation.
-
-For the learn-skills.dev stage, inspect the publisher's current remote artifacts
-at query time from the canonical repository
-`https://github.com/NeverSight/learn-skills.dev/tree/main/data` before using any
-local checkout. Inspect the corresponding raw `data/version.json` for
-generation metadata, then search the remote `data/skills_index.json` and the
-`data/skills_search_index*.json` shards by ID, title, and description. Record
-the artifact URL, generation timestamp, total count, and retrieval status. The
-repository README documents these files as generated outputs; the site's human
-search page is only a browsing fallback. Treat cached markdown and leaderboard
-ordering as retrieval hints, then inspect the canonical source repository and
-exact revision before recommending a candidate.
-
 When the official Skills CLI is available, run a broad retrieval query before
 narrowing the shortlist:
 
@@ -181,10 +157,6 @@ installation-sorted and popularity-biased; use it to widen retrieval, not to
 select a winner. Inspect multiple candidates and rank by task fit and canonical
 evidence.
 
-Do not make the learn-skills.dev UI URL a required machine-search step. It is a
-human-facing fallback, not a stable search API. If a documented provider API is
-available, use it; never invent or scrape an undocumented endpoint.
-
 For remote sources, use documented provider interfaces and bounded, read-only
 requests. Use a 15-second request timeout and a total external-search budget of
 two minutes unless the user explicitly authorizes a longer investigation. Do not
@@ -197,20 +169,6 @@ serious candidates). Rank by task and constraint match first, then use
 maintenance, license, and provenance as tie-breakers. Preserve the source's
 full result count and status in notes without reproducing a long undifferentiated
 result list in the recommendation.
-
-Treat learn-skills.dev's titles, descriptions, freshness, and trending fields as
-retrieval signals only. Its generated JSON/search shards are a broad discovery
-source, not a quality authority; no stable public search API contract has been
-verified. Check the current schema, freshness metadata, and access path at use
-time. These signals help prioritize which candidates to inspect first; they do
-not establish quality, safety, compatibility, or user satisfaction. Always
-resolve and inspect the canonical source before recommending a result.
-
-Treat cached-payload availability as a separate coverage signal. The provider's
-README says it fetches `SKILL.md` files by default only for top-list entries;
-missing cached markdown means “not fetched” or rate-limited, not “invalid.”
-Record provider/fetch status and continue to canonical source inspection when a
-candidate is otherwise relevant.
 
 ### 5. Inspect complete candidates
 

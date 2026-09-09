@@ -22,19 +22,11 @@ time rather than cached.
 
 ## Relationship to skill catalogs
 
-[`learn-skills.dev`](https://www.learn-skills.dev) is a catalog crawler and
-presentation layer with broader coverage and a stronger user-facing search,
-copy, and sharing experience. Its primary mechanism is provider aggregation and
-ranking; the synchronized data snapshot inspected on 2026-09-07 was generated
-that day, but freshness still depends on the crawler workflow and must be
-checked at use time.
-
-This skill does not compete by building another catalog. It adds an
-evidence-backed assessment layer:
+This skill does not build another catalog. It uses the official Skills CLI for
+fresh broad retrieval, then adds an evidence-backed assessment layer:
 
 1. Search local skills first.
-2. Use `learn-skills.dev` for broad retrieval, then skills.sh and other providers
-   as candidate sources.
+2. Use `npx --yes skills find '<user keyword query>'` for broad retrieval.
 3. Inspect the canonical repository and exact revision.
 4. Evaluate compatibility, permissions, provenance, and maintenance.
 5. Recommend or reject with explicit evidence.
@@ -44,12 +36,6 @@ When considering new discovery infrastructure, inspect reusable catalogs,
 indexes, and provider implementations first. Prefer adopting or referencing a
 source that already meets the need; create local infrastructure only for a
 measured, documented gap.
-
-Learn-skills.dev generated feeds and JSON/search data are broad discovery
-signals only. We have not verified a stable public search API contract; use the
-documented artifacts and freshness metadata at query time, and inspect the
-canonical repository and exact revision before a recommendation. Report the
-provider's total matches separately from the small shortlist selected for review.
 
 This repository contains a methodology, not a static skill collection. Catalog
 sizes, client support, endpoints, and install commands change frequently, so the
@@ -79,12 +65,9 @@ The workflow guides the agent to:
    separately record each candidate's reviewed revision, repository update date,
    license, and stale/unknown status. A skill indexed six months ago with no
    release update is flagged, not silently trusted.
-4. **Search externally** — use learn-skills.dev for broad retrieval, then
-   skills.sh and other documented catalogs or source-host search as applicable.
-   Each source is tried with documented fallbacks; no single outage blocks the
-   workflow. Keep each source to a ranked shortlist of about five serious
-   candidates, use bounded requests, and record unavailable inspection
-   separately.
+4. **Search externally** — use the official Skills CLI for broad retrieval,
+   then inspect canonical repositories or source-host search as applicable.
+   Record the query, timestamp, result count, and unavailable stages.
 5. **Inspect candidates** — for each serious match, read the full payload:
    `SKILL.md`, any scripts or templates, dependency declarations, license,
    provenance, and maintenance activity.
