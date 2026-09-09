@@ -88,3 +88,45 @@ Report completeness:
 - Canonical inspection: complete for selected candidate
 - Behavior validation: not run
 - Recommendation confidence: medium
+
+## Zensical skill search report (2026-09-09)
+
+Need: find reusable skills for Zensical site work, especially authoring, setup,
+migration, and maintenance.
+
+### Searched
+
+| Source/root | Query | Timestamp | Status | Results/limitations |
+|---|---|---|---|---|
+| Installed/project skills | `zensical`, `static site`, `documentation site` | 2026-09-09 18:55 UTC | successful | Found the local `zensical-skill` plus cached comparison candidates |
+| Skills CLI | `npx --yes skills find zensical` | 2026-09-09 18:55 UTC | successful | 21 displayed results; provider total not exposed |
+| GitHub metadata | top repositories | 2026-09-09 | partial | Repository metadata succeeded; some later tree/raw requests hit DNS failures |
+
+### Candidate assessment
+
+| Candidate | Evidence | Fit | Recommendation |
+|---|---|---|---|
+| `CodeSigils/zensical-skill@zensical` | Complete local payload; valid frontmatter; maintenance, accessibility, links, media, builds, and deployment boundaries | Direct fit | Use for the real Zensical blog |
+| `layeredcraft/skills@zensical-site` | Cached payload inspected; complete referenced reference/template files; MIT; remote currently reports update on 2026-09-09 | Conditional fit | Strong authoring/reference supplement; verify exact current payload before installation |
+| `brpaz/agent-skills@zensical-setup` | Current repository metadata and payload path observed; setup, migration, `zensical.toml`, and GitHub Pages workflow guidance | Partial/conditional fit | Useful for initial setup or MkDocs migration; not a replacement for maintenance review |
+| `xcode-nlp/kodaskills@koda-zensical` | Cached payload inspected; MIT; remote update observed 2026-07-21 | Partial fit | Detailed formatting guidance, but Russian-language and more prescriptive than the blog workflow |
+| `zeulewan/claude-code-skills@zensical-development` | Repository exists, but no license and current payload could not be re-fetched due DNS failure | Inspection incomplete | Defer |
+
+### Best result
+
+Use the local `zensical-skill` for this blog. It is the only candidate already
+aligned with the repository's maintenance workflow and security boundaries.
+
+Potential supplement: `layeredcraft/skills@zensical-site` for
+editorial/reference patterns, after verifying the exact remote revision. It
+should not be installed wholesale automatically.
+
+Behavior validation was not run for third-party candidates. No candidate was
+installed or executed, and no secrets or private data were copied.
+
+Report completeness:
+
+- Retrieval: complete for local roots and Skills CLI; GitHub metadata partial
+- Canonical inspection: complete for local candidates; partial for remote-only refreshes
+- Behavior validation: not run
+- Recommendation confidence: medium
