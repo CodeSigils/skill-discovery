@@ -64,11 +64,22 @@ verify each candidate's canonical skill path before reading or recommending it.
 
 ### One-shot package runners
 
-`uvx` is the Python-tool analogue of `npx`: it is an alias for `uv tool run`
-and creates an isolated, temporary environment. [`pipx run`](https://pipx.pypa.io/latest/tutorial/run-applications.html)
-is a comparable Python fallback. Neither runner can replace `npx` for the
-Node-based Skills CLI. For JavaScript projects, `pnpm dlx` and `bunx` are
-one-shot alternatives, but they remain provider-specific and should not be
+For the Node-based Skills CLI, the direct one-shot alternatives are
+`npm exec`, `pnpm dlx`, and `bunx`:
+
+```bash
+npm exec --yes -- skills find zensical
+pnpm dlx skills find zensical
+bunx skills find zensical
+```
+
+`npm exec --yes -- skills ...` is the explicit long form of `npx --yes
+skills ...`; the `--` prevents npm from consuming CLI arguments. `pnpm dlx`
+fetches a package without adding it to project dependencies, and `bunx` runs
+npm packages with Bun's Node-compatible launcher. `uvx` and [`pipx run`](https://pipx.pypa.io/latest/tutorial/run-applications.html)
+are Python-tool runners and cannot execute this npm package.
+
+These alternatives remain optional and ecosystem-specific; they should not be
 added as runtime dependencies.
 
 Mention these only as a soft suggestion when the user already uses the
