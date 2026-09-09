@@ -25,6 +25,29 @@ rewrite the checkout as part of discovery. If comparison fails, continue with
 reachable remote sources or report the catalog as unavailable; never convert a
 cached empty result into evidence that no skill exists.
 
+### learn-skills.dev remote artifacts
+
+Use the documented publisher artifacts at
+`https://raw.githubusercontent.com/NeverSight/learn-skills.dev/main/data/`:
+
+```text
+version.json
+skills_index.json
+skills_search_index.json
+skills_search_index2.json
+skills_search_index3.json
+```
+
+Fetch `version.json` first and record its generation metadata. Search the index
+and shards for the original query plus aliases, preserving the provider's full
+result count separately from the shortlist. These artifacts are retrieval
+sources, not evaluation authorities: cached descriptions, install counts, and
+missing enrichment do not establish safety or compatibility. Resolve each
+serious result to its canonical repository and reviewed commit. If a remote
+artifact is unavailable or its schema is unclear, report that limitation and
+continue to the next documented source; do not silently substitute an
+unverified local mirror.
+
 Do not query every provider for every request. Search applicable local roots
 first, then choose the smallest useful set of external sources:
 

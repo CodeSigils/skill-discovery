@@ -129,6 +129,16 @@ Widen the search in this order after local discovery:
    browsing is useful or structured artifacts are unavailable;
 5. general web research and vendor documentation.
 
+For the learn-skills.dev stage, query the publisher's current remote artifacts
+directly before using any local checkout. Fetch `data/version.json` for
+generation metadata, then search `data/skills_index.json` and the
+`data/skills_search_index*.json` shards by ID, title, and description. Record
+the artifact URL, generation timestamp, total count, and retrieval status. The
+repository README documents these files as generated outputs; the site's human
+search page is only a browsing fallback. Treat cached markdown and leaderboard
+ordering as retrieval hints, then inspect the canonical source repository and
+exact revision before recommending a candidate.
+
 When the official Skills CLI is available, run a broad retrieval query before
 narrowing the shortlist:
 
