@@ -129,9 +129,11 @@ Widen the search in this order after local discovery:
    browsing is useful or structured artifacts are unavailable;
 5. general web research and vendor documentation.
 
-For the learn-skills.dev stage, query the publisher's current remote artifacts
-directly before using any local checkout. Fetch `data/version.json` for
-generation metadata, then search `data/skills_index.json` and the
+For the learn-skills.dev stage, inspect the publisher's current remote artifacts
+at query time from the canonical repository
+`https://github.com/NeverSight/learn-skills.dev/tree/main/data` before using any
+local checkout. Inspect the corresponding raw `data/version.json` for
+generation metadata, then search the remote `data/skills_index.json` and the
 `data/skills_search_index*.json` shards by ID, title, and description. Record
 the artifact URL, generation timestamp, total count, and retrieval status. The
 repository README documents these files as generated outputs; the site's human

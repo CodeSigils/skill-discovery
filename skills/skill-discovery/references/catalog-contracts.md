@@ -38,8 +38,9 @@ skills_search_index2.json
 skills_search_index3.json
 ```
 
-Fetch `version.json` first and record its generation metadata. Search the index
-and shards for the original query plus aliases, preserving the provider's full
+Inspect `version.json` remotely first and record its generation metadata and
+retrieval timestamp. Search the remote index and shards for the original query
+plus aliases, preserving the provider's full
 result count separately from the shortlist. These artifacts are retrieval
 sources, not evaluation authorities: cached descriptions, install counts, and
 missing enrichment do not establish safety or compatibility. Resolve each
@@ -78,7 +79,7 @@ API contract, so do not scrape the website or rely on an observed undocumented
 endpoint. Preserve the provider's total result count separately from the
 shortlist returned for inspection.
 
-For agent retrieval, fetch `data/version.json` and the compact
+For agent retrieval, inspect the current remote `data/version.json` and compact
 `data/skills_search_index*.json` shards (or `data/skills_index.json`) before
 considering the human-facing `/en/skills?q=...` page. Search IDs, titles, and
 descriptions in those artifacts, preserve their timestamp and total count, and
