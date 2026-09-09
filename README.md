@@ -42,6 +42,10 @@ sizes, client support, endpoints, and install commands change frequently, so the
 shipped workflow verifies volatile contracts at use time and keeps dated research
 outside the core instructions.
 
+The Skills CLI and `npx --yes` are optional discovery-time tools, not runtime
+dependencies. Their authorized use and a bounded Zensical search result are
+recorded in [`docs/skills-cli-discovery-evidence.md`](docs/skills-cli-discovery-evidence.md).
+
 ## What it does in practice
 
 Suppose you ask your agent:
