@@ -25,6 +25,12 @@ All of these runners download and execute external code. Keep them as soft,
 ecosystem-aware suggestions—not runtime dependencies—and retain explicit
 authorization, isolation, and version-pinning guidance.
 
+The official skills.sh CLI reference still documents `npx` as its only
+zero-install invocation. The documented authenticated v1 API is the preferred
+read-only fallback when the CLI or npm runtime is unavailable; it exposes search,
+detail, curated, and audit endpoints and returns `401` without a valid Vercel
+OIDC token.
+
 This document is a historical research record. It is not product documentation
 and its counts, rankings, endpoints, client support, and install commands must be
 re-verified before use.

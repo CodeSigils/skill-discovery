@@ -78,7 +78,10 @@ The workflow guides the agent to:
    release update is flagged, not silently trusted.
 4. **Search externally** — use the official Skills CLI for broad retrieval,
    then inspect canonical repositories or source-host search as applicable.
-   Record the query, timestamp, result count, and unavailable stages.
+   If the CLI is unavailable, prefer the documented authenticated skills.sh API
+   for read-only retrieval; `npm exec`, `pnpm dlx`, and `bunx` are optional
+   ecosystem alternatives. Record the query, timestamp, result count, and
+   unavailable stages.
 5. **Inspect candidates** — for each serious match, read the full payload:
    `SKILL.md`, any scripts or templates, dependency declarations, license,
    provenance, and maintenance activity.

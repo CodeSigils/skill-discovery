@@ -153,6 +153,14 @@ use an isolated working directory. If the CLI is
 not already available and authorization is absent, use the documented API or
 report the source as unavailable rather than bootstrapping it silently.
 
+For a read-only skills.sh fallback, use its documented authenticated API:
+`GET https://skills.sh/api/v1/skills/search?q=<query>&limit=<n>` with a
+Vercel OIDC bearer token. Treat missing, expired, or unavailable credentials as
+an `auth`/`provider` limitation, not as evidence that no skill exists. The API
+can retrieve search, detail, curated, and audit records, but it does not replace
+canonical repository inspection. If a user wants to avoid skills.sh telemetry,
+mention `DISABLE_TELEMETRY=1` when using the CLI.
+
 For external catalogs, query the documented remote artifact/API by default.
 Use a local checkout only as an explicitly labelled cache or offline fallback;
 report its synchronization status separately from the catalog's own generation
