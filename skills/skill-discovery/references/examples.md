@@ -64,6 +64,11 @@ Candidate evidence:
 |---|---|---|---|---|---|---|---|
 | owner/repo@formatter | present | commit <sha>; updated <date>; MIT | known | complete | complete | verified | payload-inspected |
 
+Quality assessment:
+| Candidate | Strengths | Risks/limitations | Capability fit | Recommendation |
+|---|---|---|---|---|
+| owner/repo@formatter | Preserves fenced code; validates tables | Node.js dependency; no runtime test | direct | use after local smoke test |
+
 Evidence:
 - The candidate's documented workflow explicitly preserves fenced code.
 
@@ -76,6 +81,8 @@ Unknowns:
 Recommendation: owner/repo@formatter
 Recommendation gate: direct_fit
 Why it fits: explicitly preserves fences and validates GFM table structure
+Quality suggestions: run a synthetic fence/table fixture before installation;
+  keep the skill scoped to Markdown files
 Trust review: read SKILL.md and two scripts at commit <sha>; no network access;
   writes only the selected Markdown files; dependency versions disclosed
 Compatibility gate: valid frontmatter; references present; loader verified

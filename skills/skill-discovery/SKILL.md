@@ -269,6 +269,11 @@ Candidate evidence:
 |---|---|---|---|---|---|---|---|
 | <candidate> | <present/stale> | <commit/tag/date/license> | <known/stale/unknown> | <complete/partial/blocked> | <complete/missing/unknown> | <verified/structural/unavailable> | <retrieved-only/path-verified/payload-inspected/behavior-tested/blocked/rejected> |
 
+Quality assessment:
+| Candidate | Strengths | Risks/limitations | Capability fit | Recommendation |
+|---|---|---|---|---|
+| <candidate> | <specific inspected strengths> | <specific risks or gaps> | <direct/conditional/partial/incompatible> | <use, supplement, defer, or reject> |
+
 Evidence:
 - <fact directly observed from the source or command>
 
@@ -281,6 +286,7 @@ Unknowns:
 Recommendation: <skill name and source>
 Recommendation gate: <direct_fit/conditional_fit/partial_fit/inspection_incomplete/blocked/rejected>
 Why it fits: <task-specific evidence; omit a recommendation when inspection is incomplete>
+Quality suggestions: <concrete ways to use, constrain, supplement, or improve the candidate>
 Trust review: <provenance, inspected files, dependencies, permissions, audits>
 Compatibility: <client and location per candidate>
 Compatibility gate: <frontmatter, location, references, client extensions, loader status> (from Step 5)
@@ -309,6 +315,11 @@ Then offer one of these next actions without performing it:
 - refine the search terms or search another named source;
 - install a user-selected candidate after another confirmation;
 - create a minimal new skill after the user explicitly authorizes creation.
+
+Never end an inspected-candidate report with retrieval counts alone. If a
+candidate was only retrieved or its payload was truncated, label it
+`retrieved-only` or `inspection_incomplete` and put quality suggestions under
+Unknowns/next steps rather than implying a recommendation.
 
 ## Installation and creation boundary
 
