@@ -54,6 +54,11 @@ as the first catalog query before applying narrower AND refinements. Keep the
 provider's total match count separate from the bounded shortlist shown to the
 user; never describe a top-N shortlist as the catalog total.
 
+For each candidate, retain a small fit record rather than relying on lexical
+rank alone: task match, client compatibility, provenance/maintenance, and
+safety/dependency cost (each scored 0–3). Use the scores to explain ordering;
+do not turn them into false precision or a quality guarantee.
+
 ### 2. Search installed and local skills
 
 Use the current client's skill listing or search capability first. If only the
@@ -68,15 +73,19 @@ you need placement or discovery details for a named client.
 Use fast local search tools such as `rg` for discovery (finding candidate files),
 with portable fallbacks. When parsing YAML frontmatter, prefer a frontmatter-aware
 parser over line-oriented grep: YAML descriptions may be folded across multiple
-lines.
+lines. Apply exclusions before scanning: `.git`, dependency and virtual
+environment directories, generated output, caches, vendored trees, and symlink
+escapes are out of scope unless the user names one explicitly.
 
 Keep local discovery bounded and useful: search the applicable project, user,
 admin, and extension roots; rank matches by name/description relevance; and
 report a shortlist of the strongest candidates rather than dumping every text
 match. Exclude VCS metadata, dependency directories, caches, generated output,
 and symlink escapes. Stop after 500 candidate files or 10,000 searched files,
-and report that the search was capped. Record the roots searched, query terms,
-result count, and any roots that were inaccessible or unavailable.
+and report that the search was capped. Enforce these limits in the search helper
+or command wrapper, not only in prose, and report searched-file count, candidate
+count, exclusions, and cap state. Group duplicate paths and obvious forks by
+canonical repository before presenting the shortlist.
 
 ### 3. Check catalog freshness
 
@@ -130,10 +139,13 @@ debugging skills that a direct repository lookup missed. Record the query,
 UTC timestamp, result count, and provider output status. `skills find` is a
 retrieval signal only: install counts and ordering are not quality evidence,
 and absence from the result set is not proof that no matching skill exists.
-For each serious result, use `npx --yes skills add <owner/repository> --list`
-or the canonical repository to verify the actual skill path before inspection.
-The `npx --yes` form downloads and executes external CLI code; use it only with
-explicit user authorization and an isolated working directory. If the CLI is
+For each serious result, prefer the canonical repository tree/API and fetch only
+the advertised `SKILL.md` plus required references to verify the actual path.
+Use `npx --yes skills add <owner/repository> --list` only when the canonical
+tree cannot resolve the provider path. The `npx --yes` form downloads and
+executes external CLI code; require explicit authorization for this discovery
+download, separately from authorization to install or execute a candidate, and
+use an isolated working directory. If the CLI is
 not already available and authorization is absent, use the documented API or
 report the source as unavailable rather than bootstrapping it silently.
 
@@ -148,8 +160,11 @@ currently returns data is a legacy observation, not a stable contract. Read
 query patterns, authentication requirements, and fallbacks.
 
 Record each source searched, the query, the timestamp, and whether the source was
-unavailable, unauthenticated, stale, empty, or successful. Do not silently skip a
-stage because tooling or network access is missing.
+unavailable, unauthenticated, stale, empty, or successful. Classify network
+failures explicitly as `dns`, `timeout`, `rate_limited`, `auth`, or `provider`.
+Retry a transient DNS or timeout failure once within the external-search budget;
+then stop and use a documented fallback. Do not silently skip a stage because
+tooling or network access is missing.
 
 When a catalog UI exposes sorting, record the selected mode (for example,
 installations, trend, newest, name, or favorites). Assume the default may be
@@ -211,9 +226,10 @@ the named client, classify referenced-file presence using the required versus
 optional rule above, and label platform-specific extensions or integration
 steps explicitly.
 
-Bound inspection of each candidate to at most 32 referenced files, 100 KiB per
-file, 1 MiB total, and three nested directory levels. Skip binary and generated
-files and report every skipped item and budget cap. Never copy secrets, tokens,
+Bound inspection of each candidate to at most 32 files including the primary
+`SKILL.md`, 100 KiB per file, 1 MiB total, and three nested directory levels.
+Skip binary and generated files and report every skipped item and budget cap.
+Never copy secrets, tokens,
 private URLs, personal data, or credential material into the report; summarize
 only the capability and risk category.
 
@@ -273,6 +289,9 @@ Quality assessment:
 | Candidate | Strengths | Risks/limitations | Capability fit | Recommendation |
 |---|---|---|---|---|
 | <candidate> | <specific inspected strengths> | <specific risks or gaps> | <direct/conditional/partial/incompatible> | <use, supplement, defer, or reject> |
+
+Fit scores (0–3, supporting evidence rather than a gate): task match, client
+compatibility, provenance/maintenance, and safety/dependency cost.
 
 Evidence:
 - <fact directly observed from the source or command>

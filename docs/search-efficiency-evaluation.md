@@ -14,6 +14,14 @@ This is an initial maintainer measurement, not a quality or user-satisfaction
 claim. It measures local candidate retrieval only; it does not measure external
 provider latency, agent reasoning, inspection time, or recommendation usefulness.
 
+The broad-root baseline also exposed a correctness risk: cached and duplicated
+trees can dominate lexical matches. Current guidance therefore applies
+pre-scan exclusions, enforces file/candidate caps, groups duplicates/forks, and
+records cap state. A 2026-09-09 GitHub retry observed DNS resolution failure for
+`github.com` and `raw.githubusercontent.com`; this is classified as a provider
+availability failure rather than candidate evidence, with one bounded retry and
+local/canonical fallback.
+
 ## Method
 
 On 2026-09-06, five representative queries were run with `rg` over

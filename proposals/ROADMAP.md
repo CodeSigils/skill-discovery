@@ -151,6 +151,17 @@ When real usage shows that discovery is too slow, optimize in this order:
 These are evaluation priorities, not a mandate to add a catalog, cache, or
 second implementation now.
 
+### Discovery guardrails (implemented 2026-09-09)
+
+The shipped workflow now requires pre-scan exclusions and enforceable local
+search caps, explicit DNS/timeout/rate-limit/auth/provider failure classes,
+one bounded retry for transient network failures, canonical tree/API inspection
+before `skills add --list`, and separate authorization for discovery downloads,
+installation, and execution. Candidate ordering is explained with four small
+fit dimensions (task match, client compatibility, provenance/maintenance, and
+safety/dependency cost), while duplicate/fork results are grouped before the
+shortlist. These dimensions support evidence; they are not a quality score.
+
 ### Python-source evaluation
 
 Completed 2026-09-07. For Python coding requests, prefer the local `py-review`

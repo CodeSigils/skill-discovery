@@ -32,6 +32,13 @@ fresh broad retrieval, then adds an evidence-backed assessment layer:
 5. Recommend or reject with explicit evidence.
 6. Ask separately before installation.
 
+Discovery downloads and candidate installation are separate authorization
+events. Canonical repository tree/API inspection is preferred; `skills add
+--list` is a fallback when the provider path cannot be resolved. Local search
+must apply exclusions and enforce its 10,000-file/500-candidate caps, report
+cap state, and deduplicate obvious forks. Transient DNS and timeout failures
+are retried once and then classified with a documented fallback.
+
 When considering new discovery infrastructure, inspect reusable catalogs,
 indexes, and provider implementations first. Prefer adopting or referencing a
 source that already meets the need; create local infrastructure only for a
