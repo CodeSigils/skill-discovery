@@ -340,6 +340,16 @@ installation implicitly mutating.
 
 ## Implementation record
 
+### 2026-09-15 — Skill payload budget review
+
+- Reviewed the `skill-budget` cron-health warning: `skills/skill-discovery/SKILL.md`
+  is 380 lines against the 350-line warning threshold, unchanged since the last
+  payload edit (2026-09-09).
+- Accepted the current size via the advisory baseline: the lines are dense
+  guardrail and reporting-contract prose with no recoverable duplication, and the
+  exact-string baseline still flags any growth beyond 380 lines.
+- Left the 350-line threshold in place for future regression detection.
+
 ### 2026-09-06 — Static discovery scope complete
 
 - Completed the non-Claude roadmap for the portable discovery skill.
