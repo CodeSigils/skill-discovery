@@ -1,4 +1,6 @@
 {
-  "reviewed": "2026-08-21",
-  "warnings": []
+  "reviewed": "2026-09-15",
+  "warnings": [
+    "skill-budget: skills/skill-discovery/SKILL.md: 380 lines (budget 350)"
+  ]
 }
