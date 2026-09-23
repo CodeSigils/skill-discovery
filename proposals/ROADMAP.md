@@ -355,6 +355,19 @@ installation implicitly mutating.
 
 ## Implementation record
 
+### 2026-09-23 — skill-discovery indexed in skills.sh
+
+Verified live on 2026-09-23 that this repository is already discoverable on
+skills.sh: the detail page (`https://www.skills.sh/codesigils/skill-discovery`)
+returns 200 with the install command `npx skills add codesigils/skill-discovery`
+and lists the `skill-discovery` skill entry. skills.sh (vercel-labs/skills)
+indexes repositories that follow the standard `skills/` layout automatically;
+there is no manual submission flow. The README badge and the "Catalog status"
+section already reflect this accurately, so no README change was needed. The
+Hermes hub (ZeroPointRepo/awesome-hermes-skills) is a Hermes-agent-specific
+curated list and was not pursued: an agent-agnostic methodology skill is a poor
+fit and inclusion would require its own contribution PR.
+
 ### 2026-09-23 — Contract-monitor automation split
 
 Timestamp-only evidence refreshes (`last_verified` bumps) no longer open a
