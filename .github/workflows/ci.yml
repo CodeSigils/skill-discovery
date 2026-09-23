@@ -140,7 +140,7 @@ jobs:
             - Verification timestamps refreshed: ${{ steps.verify-contracts.outputs.timestamp_refresh_count }}
             - Canonical URL corrections: ${{ steps.verify-contracts.outputs.canonical_url_fix_count }}
 
-            Timestamp-only refreshes are auto-merged on a green run.
+            Timestamp-only refreshes are merged directly when the run succeeds.
             Canonical URL corrections require semantic review of the affected
             provider contract and are labeled `needs:semantic-review`.
           branch: automation/external-contract-drift
@@ -150,11 +150,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh pr edit "${{ steps.create-pr.outputs.pull-request-number }}" --repo CodeSigils/skill-discovery --add-label "needs:semantic-review"
-      - name: Auto-merge timestamp-only refresh
+      - name: Merge timestamp-only refresh
         if: steps.create-pr.outputs.pull-request-number != '' && steps.verify-contracts.outputs.canonical_url_fix_count == '0'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh pr merge "${{ steps.create-pr.outputs.pull-request-number }}" --repo CodeSigils/skill-discovery --auto --squash --delete-branch
+        run: gh pr merge "${{ steps.create-pr.outputs.pull-request-number }}" --repo CodeSigils/skill-discovery --squash --delete-branch
       - name: Check research expiry and create issues
         run: uv run python .github/scripts/verify-marketplace-urls.py --check-expiry
         env:
