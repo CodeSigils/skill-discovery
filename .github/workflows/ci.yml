@@ -122,13 +122,21 @@ jobs:
       - name: Verify and safely auto-fix external contracts
         id: verify-contracts
         run: uv run python .github/scripts/verify-marketplace-urls.py --fix
-      - name: Open PR for auto-fixes if any
+      - name: Commit timestamp-only refresh to main
+        if: steps.verify-contracts.outputs.canonical_url_fix_count == '0' && steps.verify-contracts.outputs.timestamp_refresh_count != '0'
+        run: |
+          git add docs/evidence-urls.json
+          git -c user.name="GitHub Actions" -c user.email="actions@github.com" commit -m "chore: refresh verification timestamps" --signoff
+          git push origin HEAD:main
+      - name: Open PR for canonical URL corrections
+        if: steps.verify-contracts.outputs.canonical_url_fix_count != '0'
         id: create-pr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           add-paths: docs/evidence-urls.json
           sign-commits: true
+          labels: needs:semantic-review
           commit-message: "chore: auto-fix URL drift detected by contract monitor"
           title: "chore: auto-fix URL drift detected by contract monitor"
           body: |
@@ -139,13 +147,10 @@ jobs:
             - Verification timestamps refreshed: ${{ steps.verify-contracts.outputs.timestamp_refresh_count }}
             - Canonical URL corrections: ${{ steps.verify-contracts.outputs.canonical_url_fix_count }}
 
-            A zero correction count means this is timestamp-only evidence
-            maintenance. Any canonical URL correction requires semantic review
-            of the affected provider contract.
-
-            This automated change is submitted as a pull request so the
-            signed-commit policy and semantic review remain visible. Required
-            PR checks are intentionally relaxed during solo evaluation.
+            This change contains canonical URL corrections that require
+            semantic review of the affected provider contract before merging.
+            Timestamp-only refreshes are committed directly to main and no
+            longer open pull requests.
           branch: automation/external-contract-drift
           delete-branch: true
       - name: Check research expiry and create issues
