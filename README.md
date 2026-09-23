@@ -263,11 +263,12 @@ CI performs payload and documentation checks on pushes and pull requests.
 External URL monitoring runs on a schedule or manually so transient third-party
 outages do not make ordinary documentation changes flaky. The monitor uses
 bounded retries and response sizes, checks independent sources concurrently,
-and opens a reviewable PR only for safe canonical-URL corrections or refreshed
-verification evidence. Its PR body reports the number of contracts checked,
-timestamp refreshes, and canonical URL corrections. Workflow-authored changes
-remain reviewable and signed; required PR checks are intentionally relaxed
-during solo evaluation.
+and opens a reviewable PR only when a drift fix changes a canonical URL
+(timestamp-only refreshes are merged directly). Its PR body reports the number
+of contracts checked, timestamp refreshes, and canonical URL corrections.
+Canonical-URL correction PRs carry the `needs:semantic-review` label and require
+a maintainer merge; timestamp-only refreshes are merged by the workflow with a
+signed squash commit.
 
 ### Catalog status
 
