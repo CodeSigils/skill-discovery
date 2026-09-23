@@ -340,6 +340,20 @@ installation implicitly mutating.
 
 ## Implementation record
 
+### 2026-09-23 — Contract-monitor automation split
+
+Timestamp-only evidence refreshes (`last_verified` bumps) no longer open a
+reviewable PR: the monitor workflow merges them directly with a signed squash
+commit via `gh pr merge --squash --delete-branch`. Auto-merge (`--auto`) is
+intentionally not used here — main has zero required status checks, so GitHub
+declines enabling auto-merge on immediately-mergeable PRs ("Pull request is in
+clean status (enablePullRequestAutoMerge)"). Canonical URL corrections still
+open a review PR carrying the `needs:semantic-review` label and require a
+maintainer merge. Main requires verified signatures (`required_signatures`), so
+direct pushes are impossible and all changes land as GitHub-signed squash
+merges. This resolves the stuck bot-PR loop seen with #102/#105 (open PRs never
+merged; #105 closed as superseded).
+
 ### 2026-09-15 — Skill payload budget review
 
 - Reviewed the `skill-budget` cron-health warning: `skills/skill-discovery/SKILL.md`

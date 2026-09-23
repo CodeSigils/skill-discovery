@@ -68,15 +68,15 @@ safety.
 2. Update `docs/evidence-urls.json` with the observed status and verification
    date; keep durable guidance in the relevant reference file.
 3. Run the URL verifier and documentation checks.
-4. If the scheduled monitor opens a drift PR, read its check counts and review
-   the diff for semantic changes. A timestamp refresh alone is not evidence
-   that a contract is still correct.
-5. GitHub may require explicit approval before the workflow-authored PR's
-   required checks can run. Approve only after confirming the PR is
-   repository-owned and changes only the evidence manifest; this approval is
-   intentional and must not be weakened into a broad bypass.
+4. If the scheduled monitor opens a drift PR, it is a canonical-URL correction
+   and carries the `needs:semantic-review` label. Read its check counts and
+   review the diff for semantic changes; a timestamp refresh alone is not
+   evidence that a contract is still correct.
+5. Timestamp-only refreshes do not open a PR: the workflow merges them directly
+   with a signed squash commit, so no human step is required for them.
 6. The monitor signs its commits to satisfy the protected branch's
-   signed-commit rule. Required checks must still pass before merge.
+   signed-commit rule; canonical-URL correction PRs are merged by a maintainer
+   after review.
 
 Never copy credentials, private URLs, or candidate secrets into evidence files,
 issues, or reports.
