@@ -111,6 +111,21 @@ reviewed, or collaborative changes. Re-enable required PR checks before the
 repository accepts regular external contributions or needs a formal release
 review.
 
+### Git workflow hygiene
+
+- **Squash-merge every PR** (`gh pr merge N --squash --delete-branch`). Main
+  stays one commit per PR and remote branches self-clean.
+- **Direct-merge bot PRs.** `main` has no required status checks, so GitHub
+  declines `--auto` on already-mergeable PRs ('Pull request is in clean
+  status (enablePullRequestAutoMerge)'). Merge workflow-created PRs directly
+  with `gh pr merge N --squash --delete-branch`.
+- **All changes land as GitHub-signed squash merges.** `main` requires
+  verified commit signatures (`required_signatures: true`); unsigned direct
+  pushes are rejected (GH006). Never push to `main` directly.
+- **Pushing workflow files needs a workflow-scope token.** A fine-grained PAT
+  without `workflow` scope is refused for `.github/workflows/**`; use a token
+  with that scope for such pushes.
+
 ### Runtime execution harness for third-party skills
 
 Not planned. Discovery remains static by default. Behavior checks require
