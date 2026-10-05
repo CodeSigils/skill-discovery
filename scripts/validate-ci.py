@@ -42,6 +42,7 @@ LINT_COMMANDS = (
     "uv run python3 scripts/check-version-consistency.py",
     "uv run python3 scripts/check-readme-tree.py",
     "uv run ruff check .github/scripts/ scripts/",
+    "uv run ty check --extra-search-path scripts .github/scripts scripts",
     "uv run python .github/scripts/ci-check.py",
     SKILLS_REF_COMMAND,
     "uv run python scripts/validate-evaluation-fixtures.py",

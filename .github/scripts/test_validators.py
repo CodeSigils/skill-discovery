@@ -9,14 +9,16 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from types import ModuleType
 from unittest import mock
 
 
-def load_script(name: str):
+def load_script(name: str) -> ModuleType:
     path = Path(__file__).with_name(f"{name}.py")
     spec = importlib.util.spec_from_file_location(name.replace("-", "_"), path)
+    if spec is None or spec.loader is None:
+        raise AssertionError(f"could not load {path}")
     module = importlib.util.module_from_spec(spec)
-    assert spec.loader is not None
     sys.modules[spec.name] = module
     spec.loader.exec_module(module)
     return module

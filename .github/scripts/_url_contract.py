@@ -118,7 +118,7 @@ def check_url(entry: dict[str, Any], timeout: int = 15) -> CheckResult:
             if exc.code in RETRYABLE_STATUS_CODES and attempt < MAX_ATTEMPTS - 1:
                 time.sleep(0.25 * (attempt + 1))
                 continue
-            return CheckResult(exc.code, tracker.count, f"HTTP_{exc.code}", exc.geturl())
+            return CheckResult(exc.code, tracker.count, f"HTTP_{exc.code}", exc.url)
         except (urllib.error.URLError, TimeoutError, ValueError) as exc:
             if attempt < MAX_ATTEMPTS - 1:
                 time.sleep(0.25 * (attempt + 1))

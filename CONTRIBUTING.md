@@ -38,6 +38,7 @@ uv run python scripts/check-version-consistency.py
 uv run python scripts/check-readme-tree.py
 uv run python scripts/cron-health.py
 uv run ruff check .github/scripts/ scripts/
+uv run ty check --extra-search-path scripts .github/scripts scripts
 uv run python .github/scripts/test_validators.py
 uv run python -m pytest .github/scripts/test_integration.py -v
 uv run python scripts/test_validate_skill.py

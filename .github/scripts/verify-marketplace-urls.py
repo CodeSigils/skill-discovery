@@ -8,17 +8,19 @@ import os
 import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date
+from typing import Any
 
 from _expiry import check_research_expiry, create_expiry_issue
 from _manifest import ROOT, apply_fixes, load_manifest, save_manifest
 from _url_contract import (
+    CheckResult,
     check_url,
     contract_drift_reasons,
     validate_entry,
 )
 
 
-def can_auto_fix(entry: dict[str, object], result, reasons: list[str]) -> bool:
+def can_auto_fix(entry: dict[str, Any], result: CheckResult, reasons: list[str]) -> bool:
     """Allow only a canonical URL correction with an otherwise valid response."""
     return (
         len(reasons) == 1
@@ -29,7 +31,7 @@ def can_auto_fix(entry: dict[str, object], result, reasons: list[str]) -> bool:
     )
 
 
-def check_indexed(item):
+def check_indexed(item: tuple[int, dict[str, Any]]) -> tuple[int, dict[str, Any], CheckResult]:
     """Check one manifest entry for threaded execution."""
     index, entry = item
     return index, entry, check_url(entry)
@@ -71,8 +73,8 @@ def main() -> int:
     timestamp_refresh_count = 0
     print(f"{'Name':<44} {'Status':<8} {'Redirects':<10} {'Content':<28} Result")
     print("-" * 105)
-    checked: list[tuple[int, dict, object]] = []
-    valid_entries = []
+    checked: list[tuple[int, dict[str, Any], CheckResult]] = []
+    valid_entries: list[tuple[int, dict[str, Any]]] = []
     for index, entry in enumerate(entries):
         try:
             validate_entry(entry)
