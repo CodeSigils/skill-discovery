@@ -13,6 +13,9 @@ AGENTS_SYMLINK = ROOT / ".agents" / "skills" / "skill-discovery"
 PAYLOAD_DIR = ROOT / "skills" / "skill-discovery"
 
 SHA_PIN_RE = re.compile(r"^[^@\s]+@[0-9a-f]{40}$")
+CHECKOUT_STEP_RE = re.compile(
+    r"(?ms)^\s*-\s+uses:\s*actions/checkout@.*?(?=^\s*-\s|\Z)"
+)
 
 # Python version policy — single source of truth for CI version checks
 LINT_PYTHON_VERSION = "3.14"
@@ -77,6 +80,14 @@ def has_run_command(body: str, command: str) -> bool:
     )
 
 
+def checkout_credential_errors(workflow: str, label: str) -> list[str]:
+    return [
+        f"{label}: checkout must set 'persist-credentials: false'"
+        for step in CHECKOUT_STEP_RE.findall(workflow)
+        if "persist-credentials: false" not in step
+    ]
+
+
 def check_symlink() -> list[str]:
     """Verify .agents symlink points to the canonical skill directory."""
     errors: list[str] = []
@@ -99,18 +110,12 @@ def validate_workflow(workflow: str) -> list[str]:
     active = active_workflow_lines(workflow)
     errors: list[str] = []
 
-    # Path triggers
     push = section_body(active, "push")
     pull_request = section_body(active, "pull_request")
     if push is None:
         errors.append("ci.yml: missing push event")
-    else:
-        if not re.search(r"(?m)^\s*paths:\s*&ci_paths\s*$", push):
-            errors.append("ci.yml: push paths must define the shared ci_paths anchor")
-        if not re.search(r'(?m)^\s+-\s+["\']?\.gitignore["\']?\s*$', push):
-            errors.append("ci.yml: shared workflow paths must include .gitignore")
-        if not re.search(r'(?m)^\s+-\s+["\']?tests/\*\*["\']?\s*$', push):
-            errors.append("ci.yml: shared workflow paths must include tests/**")
+    elif re.search(r"(?m)^\s*paths(?:-ignore)?:", push):
+        errors.append("ci.yml: push must not use path filters")
     if pull_request is None:
         errors.append("ci.yml: missing pull_request event")
     # Required branch-protection checks must run for every PR. A path filter
@@ -180,6 +185,8 @@ def validate_workflow(workflow: str) -> list[str]:
         if not SHA_PIN_RE.fullmatch(reference):
             errors.append(f"ci.yml: action reference must use a full commit SHA: {reference}")
 
+    errors.extend(checkout_credential_errors(workflow, "ci.yml"))
+
     return errors
 
 
@@ -193,6 +200,9 @@ def main() -> int:
     workflow = WORKFLOW.read_text(encoding="utf-8")
     errors.extend(validate_workflow(workflow))
     errors.extend(check_symlink())
+    for path in sorted((ROOT / ".github" / "workflows").glob("*.y*ml")):
+        if path != WORKFLOW:
+            errors.extend(checkout_credential_errors(path.read_text(encoding="utf-8"), path.name))
 
     if errors:
         for error in errors:
@@ -223,9 +233,9 @@ def self_test() -> int:
             "lint job missing run command",
         ),
         (
-            "removed push paths anchor",
-            workflow.replace("paths: &ci_paths", "paths:"),
-            "push paths must define the shared ci_paths anchor",
+            "push path filter",
+            workflow.replace("    branches: [main]", "    branches: [main]\n    paths: ['docs/**']", 1),
+            "push must not use path filters",
         ),
         (
             "mutable action tag instead of SHA",
@@ -246,6 +256,11 @@ def self_test() -> int:
             "unsigned monitor commits",
             workflow.replace("sign-commits: true", "sign-commits: false"),
             "monitor PR creation must enable sign-commits",
+        ),
+        (
+            "checkout persists credentials",
+            workflow.replace("persist-credentials: false", "persist-credentials: true", 1),
+            "checkout must set 'persist-credentials: false'",
         ),
         (
             "missing skills-ref gate",

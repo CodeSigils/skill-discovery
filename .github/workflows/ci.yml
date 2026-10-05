@@ -7,23 +7,6 @@ on:
 
   push:
     branches: [main]
-    paths: &ci_paths
-      - '.gitignore'
-      - 'README.md'
-      - 'SECURITY.md'
-      - 'CITATION.cff'
-      - 'pyproject.toml'
-      - 'uv.lock'
-      - '.agents/skills/skill-discovery'
-      - 'skills/**'
-      - 'docs/**'
-      - 'proposals/**'
-      - '.github/workflows/ci.yml'
-      - '.github/workflows/dependabot-auto-merge.yml'
-      - '.github/workflows/release.yml'
-      - '.github/scripts/**'
-      - 'scripts/**'
-      - 'tests/**'
   pull_request:
     branches: [main]
 
@@ -41,6 +24,8 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: '3.14'
@@ -81,6 +66,8 @@ jobs:
             python-version: "3.10"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: ${{ matrix.python-version }}
@@ -111,6 +98,8 @@ jobs:
       issues: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: '3.14'
@@ -161,3 +150,17 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Weekly repo health checks
         run: uv run python scripts/cron-health.py
+
+  release-integrity:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Verify latest tag has a GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release view "$(git tag --sort=-version:refname | head -n 1)" --repo "$GITHUB_REPOSITORY"
