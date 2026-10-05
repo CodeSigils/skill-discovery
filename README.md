@@ -214,6 +214,8 @@ skill-discovery/
 │       ├── platform-locations.md      # per-client skill directories
 │       ├── skill-format.md            # frontmatter spec, description quality
 │       └── trust-review.md            # safety, privacy, and trust checklist
+├── .githooks/
+│   └── pre-commit                      # local gate: ty check via core.hooksPath
 └── .github/
     ├── ISSUE_TEMPLATE/
     │   ├── bug_report.yml             # structured bug report form
