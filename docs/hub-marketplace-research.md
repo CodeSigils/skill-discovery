@@ -1,8 +1,8 @@
 ---
 status: historical-reference
 date: 2026-07-01
-updated: 2026-09-06
-expires: 2026-10-01
+updated: 2026-10-05
+expires: 2027-01-03
 purpose: >
   Preserve the evidence and lessons from the original marketplace survey while
   clearly separating dated measurements from current discovery contracts.
@@ -277,13 +277,14 @@ When updating this document:
 | 2026-09-07 | Queried broad `q=golang` search and synchronized generated index | The local snapshot contained 158 lexical `golang` matches; leading results were concentrated in `samber/cc-skills-golang`. Direct website access returned HTTP 429 in this environment. Treat generated artifacts as the usable broad-retrieval fallback and verify schema/freshness at query time. |
 | 2026-09-07 | Checked Learn Skills `q=video` behavior and homepage controls | UI exposes Installations, Installations Trend, Newest, Name, and Favorites sorting; top skills are explicitly sorted by installs. Treat default query ordering as popularity-biased retrieval, not quality ranking. |
 | 2026-09-07 | Assessed learn-skills.dev artifacts for agent use | `skills.json` and `skills_index.json` are structured, timestampable retrieval inputs with source IDs and cached-path metadata; descriptions/cached markdown are partial and mutable `@main` URLs are not immutable provenance. Canonical inspection remains mandatory. |
+| 2026-10-05 | Re-checked skills.sh and learn-skills.dev retrieval contracts | The skill detail page returned HTTP 200; anonymous skills.sh v1 search returned HTTP 401; learn-skills.dev `version.json` reported `updatedAt` `2026-10-05T05:02:04Z`. The published README still documents generated indexes, cached descriptions, optional full payload sync, and a daily crawler. |
 
 ## Sources
 
 | Source | URL | Method | Notes |
 |---|---|---|---|
-| skills.sh API documentation | https://www.skills.sh/docs/api | docs | v1 endpoints, authentication, pagination, response fields; checked 2026-09-06 |
-| skills.sh skill detail | https://www.skills.sh/codesigils/skill-discovery/skill-discovery | tested | Indexed detail page and install command; checked 2026-09-06 |
-| learn-skills.dev repository | https://github.com/NeverSight/learn-skills.dev | docs | Canonical publisher repository; README documents generated feeds and raw/CDN consumption; checked 2026-09-07 |
-| learn-skills.dev version manifest | https://raw.githubusercontent.com/NeverSight/learn-skills.dev/main/data/version.json | tested | Freshness timestamps, file hashes, and generated artifact inventory; checked 2026-09-06 |
-| learn-skills.dev data README | https://raw.githubusercontent.com/NeverSight/learn-skills.dev/main/README.md | docs | Documents generated indexes, descriptions, feeds, and raw/CDN consumption; checked 2026-09-06 |
+| skills.sh API documentation | https://www.skills.sh/docs/api | docs | v1 endpoints, authentication, pagination, response fields; checked 2026-10-05 |
+| skills.sh skill detail | https://www.skills.sh/codesigils/skill-discovery/skill-discovery | tested | Detail page returned HTTP 200; checked 2026-10-05 |
+| learn-skills.dev repository | https://github.com/NeverSight/learn-skills.dev | docs | Canonical publisher repository; README documents generated feeds and raw/CDN consumption; checked 2026-10-05 |
+| learn-skills.dev version manifest | https://raw.githubusercontent.com/NeverSight/learn-skills.dev/main/data/version.json | tested | Freshness timestamps, file hashes, and generated artifact inventory; checked 2026-10-05 |
+| learn-skills.dev data README | https://raw.githubusercontent.com/NeverSight/learn-skills.dev/main/README.md | docs | Documents generated indexes, descriptions, feeds, and raw/CDN consumption; checked 2026-10-05 |
