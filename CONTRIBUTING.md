@@ -62,6 +62,17 @@ official Agent Skills format check. It requires network access unless the
 package is already cached; a passing result does not certify runtime quality or
 safety.
 
+## How-to: enable local hooks
+
+Enable the repository-managed pre-commit gate once per clone:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+The hook runs the same `ty` check required by CI. CI remains the authoritative
+gate.
+
 ## How-to: update external evidence
 
 1. Read the provider's current documentation before changing a URL, endpoint,

@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+
+uv run ty check --extra-search-path scripts .github/scripts scripts
