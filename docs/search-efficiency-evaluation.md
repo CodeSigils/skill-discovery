@@ -1,14 +1,36 @@
 ---
 status: baseline
 date: 2026-09-06
-updated: 2026-09-06
-expires: 2026-10-06
+updated: 2026-10-17
+expires: 2026-11-16
 purpose: >
   Record a small, repeatable baseline for local skill-search cost before adding
   caching, indexing, or a new implementation language.
 ---
 
 # Search-efficiency baseline
+
+## Repeat observation (2026-10-17)
+
+The original broad-root protocol was repeated on this machine with `rg
+--hidden --no-ignore`, the same two roots and `.git`/`node_modules` exclusions.
+The scan found 113,703 `SKILL.md` files. Fixed-string, case-insensitive
+file-level searches produced the following counts and elapsed times:
+
+| Query | Matches | Retrieval time |
+|---|---:|---:|
+| `zola` | 21 | 1,348 ms |
+| `python review` | 12 | 171 ms |
+| `repository health` | 24 | 180 ms |
+| `markdown formatter` | 25 | 178 ms |
+| `skill discovery` | 253 | 179 ms |
+
+The first query ran before the later warm-cache queries; these single timings
+are not a benchmark. The roots and exclusions still include caches and duplicate
+installations, and the result counts do not establish task fit. This observation
+supports keeping the bounded, local-first workflow; it does not repeat the
+provider pilot, candidate inspection, or user-task quality evaluation below.
+Recheck within 30 days or before a decision about indexing or caching.
 
 This is an initial maintainer measurement, not a quality or user-satisfaction
 claim. It measures local candidate retrieval only; it does not measure external
@@ -40,8 +62,8 @@ and duplicated installations.
 
 ## Findings
 
-1. Raw local retrieval is sub-second on this machine, so HTTP implementation
-   language is not an observed bottleneck.
+1. In the original run, raw local retrieval was sub-second on this machine;
+   HTTP implementation language was not an observed bottleneck.
 2. The broad roots exceed the skill's 10,000-file search cap by an order of
    magnitude. Applicable project, user, and extension roots must be selected
    before scanning; broad recursive search creates noise despite low latency.
