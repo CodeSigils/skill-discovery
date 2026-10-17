@@ -286,6 +286,24 @@ runtime behavior, safety, or skills.sh indexing.
 
 ### Maintainer maintenance
 
+The complete local gate is in [CONTRIBUTING.md](CONTRIBUTING.md#how-to-validate-a-change).
+CI and scheduled monitoring use these checks; the URL monitor below is the
+read-only form, while its workflow may update evidence or create issues:
+
+```bash
+uv run python scripts/validate-ci.py
+uv run python scripts/check-version-consistency.py
+uv run python scripts/check-readme-tree.py
+uv run python scripts/check-expiry.py
+uv run python .github/scripts/ci-check.py
+uv run python scripts/validate-evaluation-fixtures.py
+uv run python .github/scripts/test_validators.py
+uv run python scripts/test_validate_skill.py
+uv run python .github/scripts/validate-docs.py
+uv run python .github/scripts/verify-marketplace-urls.py  # network
+uv run python scripts/cron-health.py
+```
+
 | Check | Trigger | Action |
 |---|---|---|
 | Payload, documentation, evaluation fixtures, and dependency validation | Every push and pull request | CI reports failures; required PR checks are relaxed during solo evaluation, so review failures before merging. |
