@@ -5,6 +5,7 @@
 [![Skill](https://img.shields.io/badge/skill-discovery-purple)](skills/skill-discovery/SKILL.md)
 [![skills.sh](https://skills.sh/b/codesigils/skill-discovery)](https://skills.sh/codesigils/skill-discovery/skill-discovery)
 [![CI](https://github.com/CodeSigils/skill-discovery/actions/workflows/ci.yml/badge.svg)](https://github.com/CodeSigils/skill-discovery/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/CodeSigils/skill-discovery/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/CodeSigils/skill-discovery/actions/workflows/github-code-scanning/codeql)
 
 `skill-discovery` interprets a user's request, searches the best available local
 and external sources, filters candidates against the stated constraints,
@@ -271,6 +272,11 @@ of contracts checked, timestamp refreshes, and canonical URL corrections.
 Canonical-URL correction PRs carry the `needs:semantic-review` label and require
 a maintainer merge; timestamp-only refreshes are merged by the workflow with a
 signed squash commit.
+
+Dependabot's minor and patch GitHub Actions updates wait for the pull request's
+`validate` workflow to succeed before they are squash-merged. This protects
+automation without imposing required checks on the repository's direct
+maintenance-push workflow.
 
 ### Catalog status
 

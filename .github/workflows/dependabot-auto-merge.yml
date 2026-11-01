@@ -3,6 +3,7 @@ name: dependabot-auto-merge
 on: pull_request
 
 permissions:
+  actions: read
   contents: write
   pull-requests: write
 
@@ -10,6 +11,7 @@ jobs:
   auto-merge:
     if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
+    timeout-minutes: 12
     steps:
       - name: Fetch Dependabot metadata
         id: metadata
@@ -17,9 +19,33 @@ jobs:
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Auto-merge minor and patch updates
+      - name: Wait for validation
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          for attempt in $(seq 1 60); do
+            status="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?event=pull_request&head_sha=$HEAD_SHA&per_page=100" --jq '[.workflow_runs[] | select(.name == "validate")] | sort_by(.created_at) | last | .status // empty')"
+            conclusion="$(gh api "repos/$GITHUB_REPOSITORY/actions/runs?event=pull_request&head_sha=$HEAD_SHA&per_page=100" --jq '[.workflow_runs[] | select(.name == "validate")] | sort_by(.created_at) | last | .conclusion // empty')"
+
+            if [ "$status" = "completed" ]; then
+              if [ "$conclusion" = "success" ]; then
+                exit 0
+              fi
+              echo "validate concluded with: $conclusion" >&2
+              exit 1
+            fi
+
+            sleep 10
+          done
+
+          echo "timed out waiting for validate on $HEAD_SHA" >&2
+          exit 1
+
+      - name: Squash-merge validated minor and patch updates
         if: steps.metadata.outputs.update-type != 'version-update:semver-major'
-        run: gh pr merge --auto --squash "$PR_URL"
+        run: gh pr merge --squash --match-head-commit "$HEAD_SHA" "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
