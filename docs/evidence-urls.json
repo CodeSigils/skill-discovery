@@ -56,13 +56,13 @@
     },
     {
       "name": "GitHub Copilot agent skills documentation",
-      "url": "https://docs.github.com/en/copilot/concepts/agents/about-agent-skills",
+      "url": "https://docs.github.com/en/copilot/concepts/customizations/agent-skills",
       "expected_statuses": [
         200
       ],
       "max_redirects": 0,
       "source_section": "references/platform-locations.md",
-      "last_verified": "2026-10-19"
+      "last_verified": "2026-11-04"
     },
     {
       "name": "GitHub code search documentation",

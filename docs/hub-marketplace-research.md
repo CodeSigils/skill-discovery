@@ -108,7 +108,7 @@ Current sources should be checked directly:
 - Cursor: <https://cursor.com/docs/skills>
 - OpenCode: <https://opencode.ai/docs/skills>
 - Gemini CLI: <https://geminicli.com/docs/cli/using-agent-skills/>
-- GitHub Copilot: <https://docs.github.com/en/copilot/concepts/agents/about-agent-skills>
+- GitHub Copilot: <https://docs.github.com/en/copilot/concepts/customizations/agent-skills>
 
 In particular, Codex uses `.agents/skills` for repository and user skill
 discovery; Cursor supports native skills rather than requiring `.cursor/rules`;
