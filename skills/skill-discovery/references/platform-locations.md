@@ -23,4 +23,4 @@ Sources to verify:
 - Cursor: <https://cursor.com/docs/skills>
 - OpenCode: <https://opencode.ai/docs/skills>
 - Gemini CLI: <https://geminicli.com/docs/cli/using-agent-skills/>
-- GitHub Copilot: <https://docs.github.com/en/copilot/concepts/agents/about-agent-skills>
+- GitHub Copilot: <https://docs.github.com/en/copilot/concepts/customizations/agent-skills>
