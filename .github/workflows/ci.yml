@@ -147,7 +147,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh pr merge "${{ steps.create-pr.outputs.pull-request-number }}" --repo CodeSigils/skill-discovery --squash --delete-branch
       - name: Check research expiry and create issues
-        run: uv run python .github/scripts/verify-marketplace-urls.py --check-expiry
+        run: uv run python .github/scripts/verify-marketplace-urls.py --expiry-only
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Weekly repo health checks

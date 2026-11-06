@@ -114,6 +114,30 @@ class ContractDriftTests(unittest.TestCase):
                 verify_urls.write_workflow_output("checked_count", 13)
             self.assertEqual(output_path.read_text(encoding="utf-8"), "checked_count=13\n")
 
+    def test_build_summary_reports_counts(self):
+        lines = verify_urls.build_summary(
+            checked_count=13,
+            drift_names=["Example"],
+            timestamp_refresh_count=12,
+            canonical_fix_count=0,
+            validation_errors=False,
+        )
+        self.assertEqual(lines[0], "## External contract monitor")
+        self.assertIn("- Checked: 13", lines)
+        self.assertIn("- Drift detected: 1", lines)
+        self.assertIn("- Example", lines)
+        self.assertNotIn("- Manifest validation errors: yes", lines)
+
+    def test_write_step_summary_appends(self):
+        with tempfile.TemporaryDirectory() as directory:
+            summary_path = Path(directory) / "github-summary"
+            with mock.patch.dict(os.environ, {"GITHUB_STEP_SUMMARY": str(summary_path)}):
+                verify_urls.write_step_summary(["## Summary", "- Checked: 1"])
+            self.assertEqual(
+                summary_path.read_text(encoding="utf-8"),
+                "## Summary\n- Checked: 1\n",
+            )
+
     def test_status_mismatch_detected(self):
         entry = {"expected_statuses": [200], "max_redirects": 5}
         result = url_contract.CheckResult(404, 0, "-", "https://example.com")
@@ -161,6 +185,17 @@ class ContractDriftTests(unittest.TestCase):
         }
         result = url_contract.CheckResult(200, 0, "VALID_SCHEMA", "https://example.com/current")
         self.assertTrue(verify_urls.can_auto_fix(entry, result, ["final_url=https://example.com/current"]))
+
+    def test_canonical_fix_allows_absent_redirect_limit(self):
+        entry = {"expected_statuses": [200]}
+        result = url_contract.CheckResult(200, 1, "-", "https://example.com/current")
+        self.assertTrue(
+            verify_urls.can_auto_fix(
+                entry,
+                result,
+                ["final_url=https://example.com/current"],
+            )
+        )
 
     def test_status_drift_is_not_auto_fixable(self):
         entry = {"expected_statuses": [200], "max_redirects": 0}
@@ -222,6 +257,49 @@ class ContractTests(unittest.TestCase):
             url_contract.contract_drift_reasons(entry, result),
             ["redirects=1"],
         )
+
+    def test_retry_does_not_accumulate_redirects(self):
+        class FakeResponse:
+            status = 200
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *args):
+                return False
+
+            def read(self, _size):
+                return b""
+
+            def geturl(self):
+                return "https://example.com"
+
+        class FakeOpener:
+            def __init__(self, tracker):
+                self.tracker = tracker
+                self.calls = 0
+
+            def open(self, _request, timeout):
+                self.calls += 1
+                if self.calls == 1:
+                    self.tracker.count += 2
+                    raise url_contract.urllib.error.HTTPError(
+                        "https://example.com", 500, "retry", {}, None
+                    )
+                self.tracker.count += 1
+                return FakeResponse()
+
+        with (
+            mock.patch.object(
+                url_contract.urllib.request,
+                "build_opener",
+                side_effect=FakeOpener,
+            ),
+            mock.patch.object(url_contract.time, "sleep"),
+        ):
+            result = url_contract.check_url({"url": "https://example.com"})
+
+        self.assertEqual(result.redirects, 1)
 
     def test_canonical_url_detects_target_drift(self):
         entry = {

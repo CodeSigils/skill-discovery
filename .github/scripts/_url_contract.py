@@ -96,6 +96,7 @@ def check_url(entry: dict[str, Any], timeout: int = 15) -> CheckResult:
         headers={"User-Agent": "skill-discovery-contract-monitor/2"},
     )
     for attempt in range(MAX_ATTEMPTS):
+        tracker.count = 0
         try:
             with opener.open(request, timeout=timeout) as response:
                 if entry.get("content_type") != "json":

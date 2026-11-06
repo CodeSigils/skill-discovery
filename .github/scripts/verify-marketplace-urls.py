@@ -22,11 +22,12 @@ from _url_contract import (
 
 def can_auto_fix(entry: dict[str, Any], result: CheckResult, reasons: list[str]) -> bool:
     """Allow only a canonical URL correction with an otherwise valid response."""
+    max_redirects = entry.get("max_redirects")
     return (
         len(reasons) == 1
         and reasons[0].startswith("final_url=")
         and result.status in entry["expected_statuses"]
-        and result.redirects <= entry.get("max_redirects", result.redirects)
+        and (max_redirects is None or result.redirects <= max_redirects)
         and result.content in {"-", "VALID_JSON", "VALID_SCHEMA"}
     )
 
@@ -45,6 +46,51 @@ def write_workflow_output(name: str, value: int) -> None:
             output.write(f"{name}={value}\n")
 
 
+def build_summary(
+    *,
+    checked_count: int,
+    drift_names: list[str],
+    timestamp_refresh_count: int,
+    canonical_fix_count: int,
+    validation_errors: bool,
+) -> list[str]:
+    """Build a compact Markdown summary for the workflow run."""
+    lines = [
+        "## External contract monitor",
+        "",
+        f"- Checked: {checked_count}",
+        f"- Drift detected: {len(drift_names)}",
+        f"- Timestamp refreshes: {timestamp_refresh_count}",
+        f"- Canonical fixes: {canonical_fix_count}",
+    ]
+    if validation_errors:
+        lines.append("- Manifest validation errors: yes")
+    if drift_names:
+        lines.extend(["", "### Drift", *[f"- {name}" for name in drift_names]])
+    return lines
+
+
+def write_step_summary(lines: list[str]) -> None:
+    """Append the monitor summary to the GitHub Actions step summary."""
+    summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if summary_path:
+        with open(summary_path, "a", encoding="utf-8") as summary:
+            summary.write("\n".join(lines) + "\n")
+
+
+def check_and_create_expiry_issues() -> None:
+    """Report research files nearing expiry and open one issue per file."""
+    docs_dir = ROOT / "docs"
+    expiring = check_research_expiry(docs_dir)
+    if expiring:
+        print(f"\nEXPIRING: {len(expiring)} research file(s) nearing expiry:")
+        for info in expiring:
+            print(f"  - {info['file']}: expires {info['expires']} ({info['days_until']} days)")
+            create_expiry_issue(info)
+    else:
+        print("\nEXPIRY: no research files nearing expiry")
+
+
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
@@ -60,16 +106,25 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Check research files for upcoming expiry and create issues",
     )
+    parser.add_argument(
+        "--expiry-only",
+        action="store_true",
+        help="Skip URL checks and only check research expiry",
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     """Run scheduled external contract monitoring."""
     args = parse_args()
+    if args.expiry_only:
+        check_and_create_expiry_issues()
+        return 0
     document, entries = load_manifest()
     validation_errors = False
     drift_count = 0
     fixes: list[tuple[int, str]] = []
+    drift_names: list[str] = []
     timestamp_refresh_count = 0
     print(f"{'Name':<44} {'Status':<8} {'Redirects':<10} {'Content':<28} Result")
     print("-" * 105)
@@ -93,6 +148,7 @@ def main() -> int:
         valid = not reasons
         if not valid:
             drift_count += 1
+            drift_names.append(str(entry.get("name", "<unnamed>")))
             if args.fix and can_auto_fix(entry, result, reasons):
                 fixes.append((original_idx, reasons[0]))
         # Update last_verified on success
@@ -116,16 +172,17 @@ def main() -> int:
     write_workflow_output("checked_count", len(checked))
     write_workflow_output("timestamp_refresh_count", timestamp_refresh_count)
     write_workflow_output("canonical_url_fix_count", len(fixes))
+    write_step_summary(
+        build_summary(
+            checked_count=len(checked),
+            drift_names=drift_names,
+            timestamp_refresh_count=timestamp_refresh_count,
+            canonical_fix_count=len(fixes),
+            validation_errors=validation_errors,
+        )
+    )
     if args.check_expiry:
-        docs_dir = ROOT / "docs"
-        expiring = check_research_expiry(docs_dir)
-        if expiring:
-            print(f"\nEXPIRING: {len(expiring)} research file(s) nearing expiry:")
-            for info in expiring:
-                print(f"  - {info['file']}: expires {info['expires']} ({info['days_until']} days)")
-                create_expiry_issue(info)
-        else:
-            print("\nEXPIRY: no research files nearing expiry")
+        check_and_create_expiry_issues()
     if validation_errors or drift_count:
         print("\nFAIL: one or more external contracts drifted")
         return 1

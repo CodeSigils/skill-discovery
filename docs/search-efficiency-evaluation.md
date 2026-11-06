@@ -1,14 +1,34 @@
 ---
 status: baseline
 date: 2026-09-06
-updated: 2026-10-17
-expires: 2026-11-16
+updated: 2026-11-06
+expires: 2026-12-06
 purpose: >
   Record a small, repeatable baseline for local skill-search cost before adding
   caching, indexing, or a new implementation language.
 ---
 
 # Search-efficiency baseline
+
+## Repeat observation (2026-11-06)
+
+The broad-root protocol was repeated with the same two roots and `.git`/
+`node_modules` exclusions. The scan found 115,124 `SKILL.md` files. Fixed-string,
+case-insensitive file-level searches produced:
+
+| Query | Matches | Retrieval time |
+|---|---:|---:|
+| `zola` | 21 | 189 ms |
+| `python review` | 12 | 164 ms |
+| `repository health` | 24 | 166 ms |
+| `markdown formatter` | 24 | 160 ms |
+| `skill discovery` | 314 | 165 ms |
+
+The root set grew by 1,421 files since 2026-10-17. `markdown formatter`
+decreased by one match and `skill discovery` increased from 253 to 314; these
+remain lexical retrieval counts, not task-fit evidence. The conclusion is
+unchanged: keep the bounded, local-first workflow and recheck before adding an
+index, cache, or new implementation language. Recheck within 30 days.
 
 ## Repeat observation (2026-10-17)
 
