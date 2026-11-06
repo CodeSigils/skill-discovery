@@ -266,12 +266,11 @@ CI performs payload and documentation checks on pushes and pull requests.
 External URL monitoring runs on a schedule or manually so transient third-party
 outages do not make ordinary documentation changes flaky. The monitor uses
 bounded retries and response sizes, checks independent sources concurrently,
-and opens a reviewable PR only when a drift fix changes a canonical URL
-(timestamp-only refreshes are merged directly). Its PR body reports the number
-of contracts checked, timestamp refreshes, and canonical URL corrections.
-Canonical-URL correction PRs carry the `needs:semantic-review` label and require
-a maintainer merge; timestamp-only refreshes are merged by the workflow with a
-signed squash commit.
+and opens a PR for any manifest change. Timestamp-only refreshes are merged
+directly by the workflow with a signed squash commit; canonical-URL corrections
+carry the `needs:semantic-review` label and require a maintainer merge. Its PR
+body reports the number of contracts checked, timestamp refreshes, and canonical
+URL corrections.
 
 Dependabot's minor and patch GitHub Actions updates wait for the pull request's
 `validate` workflow to succeed before they are squash-merged. This protects
@@ -293,11 +292,12 @@ runtime behavior, safety, or skills.sh indexing.
 ### Maintainer maintenance
 
 The complete local gate is in [CONTRIBUTING.md](CONTRIBUTING.md#how-to-validate-a-change).
-CI and scheduled monitoring use these checks; the URL monitor below is the
-read-only form, while its workflow may update evidence or create issues:
+The checks below are the non-mutating forms; CI and scheduled monitoring run
+them where applicable, while the workflow may update evidence or create issues:
 
 ```bash
 uv run python scripts/validate-ci.py
+uv run python scripts/validate-ci.py --self-test
 uv run python scripts/check-version-consistency.py
 uv run python scripts/check-readme-tree.py
 uv run python scripts/check-expiry.py
@@ -308,6 +308,7 @@ uv run python scripts/test_validate_skill.py
 uv run python .github/scripts/validate-docs.py
 uv run python .github/scripts/verify-marketplace-urls.py  # network
 uv run python scripts/cron-health.py
+uvx --from git+https://github.com/agentskills/agentskills.git@69ef37e#subdirectory=skills-ref skills-ref validate skills/skill-discovery
 ```
 
 | Check | Trigger | Action |

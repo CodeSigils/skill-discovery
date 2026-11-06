@@ -1,14 +1,23 @@
 ---
 status: current-observation
 date: 2026-09-09
-updated: 2026-10-17
-expires: 2026-11-16
+updated: 2026-11-06
+expires: 2026-12-06
 purpose: >
   Preserve a bounded Skills CLI discovery result and clarify its optional
   dependency boundary.
 ---
 
 # Skills CLI discovery evidence
+
+## Documentation recheck (2026-11-06)
+
+The [official Skills CLI documentation](https://github.com/vercel-labs/skills/blob/main/README.md)
+still documents `npx skills find [query]` for keyword search and keeps `npx` and
+the CLI as optional discovery-time tools. The README now also documents
+`experimental_sync` and `experimental_install`; neither is used by this skill.
+The original Zensical query was not rerun, and its results remain historical.
+Recheck within 30 days or before relying on these volatile observations.
 
 ## Documentation recheck (2026-10-17)
 

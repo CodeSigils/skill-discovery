@@ -36,6 +36,7 @@ uv run python scripts/validate-ci.py
 uv run python scripts/validate-ci.py --self-test
 uv run python scripts/check-version-consistency.py
 uv run python scripts/check-readme-tree.py
+uv run python scripts/check-expiry.py
 uv run python scripts/cron-health.py
 uv run ruff check .github/scripts/ scripts/
 uv run ty check --extra-search-path scripts .github/scripts scripts

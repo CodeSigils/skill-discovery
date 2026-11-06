@@ -1,7 +1,7 @@
 ---
 status: historical-reference
 date: 2026-07-01
-updated: 2026-10-05
+updated: 2026-11-06
 expires: 2027-01-03
 purpose: >
   Preserve the evidence and lessons from the original marketplace survey while
