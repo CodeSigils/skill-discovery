@@ -1,18 +1,20 @@
 # skill-discovery
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![agentskills.io](https://img.shields.io/badge/agentskills.io-v1-blue)](https://agentskills.io/specification)
-[![Skill](https://img.shields.io/badge/skill-discovery-purple)](skills/skill-discovery/SKILL.md)
-[![skills.sh](https://skills.sh/b/codesigils/skill-discovery)](https://skills.sh/codesigils/skill-discovery/skill-discovery)
-[![CI](https://github.com/CodeSigils/skill-discovery/actions/workflows/ci.yml/badge.svg)](https://github.com/CodeSigils/skill-discovery/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/CodeSigils/skill-discovery/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/CodeSigils/skill-discovery/actions/workflows/github-code-scanning/codeql)
 
-`skill-discovery` interprets a user's request, searches the best available local
-and external sources, filters candidates against the stated constraints,
-inspects the strongest matches, and presents an evidence-backed recommendation
-to the agent and user before any installation. It is a portable workflow: it
-checks candidate safety and compatibility without installing or creating
-anything unless the user explicitly asks.
+> **Archived.** This repository is retained as historical research and an
+> implementation record. For active skill discovery, use Vercel's
+> [`find-skills`](https://www.skills.sh/vercel-labs/skills/find-skills). A
+> discovered skill still needs a separate safety, compatibility, provenance,
+> and installation-authorization review; that boundary is being evaluated in
+> [repository stewardship](https://github.com/CodeSigils/repository-stewardship-skill).
+> Do not install or depend on the preserved payload below.
+
+`skill-discovery` was a portable workflow that interpreted a user's request,
+searched local and external sources, filtered candidates against constraints,
+inspected strong matches, and presented an evidence-backed recommendation
+before installation. Its research and implementation remain available so that
+the distinction between discovery and authorization is not lost.
 
 **Input:** a task description and any constraints (language, framework, offline
 requirement, zero-dependency, etc.). **Output:** a structured report with ranked
@@ -104,7 +106,10 @@ The workflow guides the agent to:
    next steps. No skill is installed or created
    unless you explicitly ask.
 
-## Quick start
+## Historical installation guidance
+
+The following installation material is retained for reference only. The skill
+is retired and must not be newly installed or maintained.
 
 Clone the repository:
 
@@ -277,12 +282,12 @@ Dependabot's minor and patch GitHub Actions updates wait for the pull request's
 automation without imposing required checks on the repository's direct
 maintenance-push workflow.
 
-### Catalog status
+### Historical catalog status
 
-The repository is directly installable by compatible GitHub skill installers.
-Catalog indexing is separate from local installability and may change
-independently; use the verified local installation paths above. The historical
-marketplace evidence and current contract limits are recorded in
+The repository was directly installable by compatible GitHub skill installers.
+Catalog indexing was separate from local installability and may have changed
+after archival; do not use the installation paths above. The historical
+marketplace evidence and contract limits are recorded in
 [`docs/hub-marketplace-research.md`](docs/hub-marketplace-research.md).
 
 The CI gate also runs the official pinned `skills-ref validate` check. That

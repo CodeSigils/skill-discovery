@@ -1,5 +1,10 @@
 # Contributing
 
+> **Archived.** The repository is retained as an implementation and research
+> record. It no longer accepts feature, maintenance, release, or distribution
+> changes. See [README.md](README.md) for the active discovery successor and
+> the stewardship boundary that remains under evaluation.
+
 This page is the maintainer entry point. It follows the Diátaxis model:
 
 - **Tutorial** — make and validate a first change.

@@ -1,8 +1,14 @@
 # Security Policy
 
+> **Archived.** This repository no longer receives security maintenance. Do not
+> open a new report here. Report an issue in Vercel's active `find-skills`
+> project to its maintainers; if this historical material identifies a concern
+> in another active CodeSigils repository, report it through that repository's
+> current security policy.
+
 ## Reporting a Vulnerability
 
-Report security issues privately through the
+Before archival, security issues were reported privately through the
 [GitHub Security Advisory](https://github.com/CodeSigils/skill-discovery/security/advisories/new)
 rather than opening a public issue. Do not include exploit details, credentials,
 or other sensitive values in public reports.
