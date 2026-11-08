@@ -1,8 +1,19 @@
 # Roadmap and implementation record
 
-This file contains active maintenance decisions and a compact implementation
-record. It is not a changelog; release notes come from commit history. Remove
-completed detail when it no longer explains a current constraint.
+This file is a historical implementation record. The repository was archived
+on 2026-11-08 after Vercel's `find-skills` became the selected active discovery
+workflow. Its preserved research remains useful for the separate question of
+how a discovered skill is evaluated before installation; that question now
+belongs to repository stewardship. No roadmap item authorizes work here.
+
+## Archival decision — 2026-11-08
+
+The standalone discovery payload is retired rather than extended or renamed.
+Vercel's `find-skills` owns broad ecosystem retrieval; this repository's
+distinct safety, compatibility, provenance, and authorization findings are
+historical evidence for stewardship, not a second discovery runtime. Keep the
+repository public and read-only after the retirement commit. Do not create a
+replacement catalog, release, or migration here.
 
 ## Maintenance discipline
 
